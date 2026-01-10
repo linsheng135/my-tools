@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>手机实用工具</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .tool-item {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        
+        .tool-item:hover, .tool-item:active {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #6a11cb;
+            background: white;
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #6a11cb;
+        }
+        
+        .tool-name {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .tool-desc {
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .calculator {
+            grid-column: span 2;
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+        
+        .calc-display {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 2rem;
+            text-align: right;
+            margin-bottom: 15px;
+            min-height: 60px;
+            overflow-x: auto;
+            word-break: break-all;
+        }
+        
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        
+        .calc-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .calc-btn:active {
+            background: #f0f0f0;
+            transform: scale(0.95);
+        }
+        
+        .calc-btn.operator {
+            background: #6a11cb;
+            color: white;
+            border-color: #6a11cb;
+        }
+        
+        .calc-btn.equals {
+            background: #2575fc;
+            color: white;
+            border-color: #2575fc;
+        }
+        
+        .calc-btn.clear {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+        
+        .note-pad {
+            grid-column: span 2;
+            background: #fffaf0;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 480px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-item, .calculator, .note-pad {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="../" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1><i class="fas fa-mobile-alt"></i> 手机实用工具</h1>
+            <p class="subtitle">专为手机优化的实用工具集合</p>
+        </header>
+        
+        <div class="tool-grid">
+            <!-- 计算器 -->
+            <div class="calculator">
+                <h3 style="margin-bottom: 15px; color: #6a11cb;"><i class="fas fa-calculator"></i> 计算器</h3>
+                <div class="calc-display" id="display">0</div>
+                <div class="calc-buttons">
+                    <button class="calc-btn clear" onclick="clearDisplay()">C</button>
+                    <button class="calc-btn" onclick="backspace()">⌫</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('/')">÷</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('*')">×</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('7')">7</button>
+                    <button class="calc-btn" onclick="appendToDisplay('8')">8</button>
+                    <button class="calc-btn" onclick="appendToDisplay('9')">9</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('-')">-</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('4')">4</button>
+                    <button class="calc-btn" onclick="appendToDisplay('5')">5</button>
+                    <button class="calc-btn" onclick="appendToDisplay('6')">6</button>
+                    <button class="calc-btn operator" onclick="appendToDisplay('+')">+</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('1')">1</button>
+                    <button class="calc-btn" onclick="appendToDisplay('2')">2</button>
+                    <button class="calc-btn" onclick="appendToDisplay('3')">3</button>
+                    <button class="calc-btn equals" onclick="calculate()" rowspan="2">=</button>
+                    
+                    <button class="calc-btn" onclick="appendToDisplay('0')" style="grid-column: span 2;">0</button>
+                    <button class="calc-btn" onclick="appendToDisplay('.')">.</button>
+                </div>
+            </div>
+            
+            <!-- 记事本 -->
+            <div class="note-pad">
+                <h3 style="margin-bottom: 15px; color: #6a11cb;"><i class="fas fa-edit"></i> 记事本</h3>
+                <textarea id="note" placeholder="在这里记录您的想法...">这是一个手机记事本，内容会自动保存到本地，即使关闭页面也不会丢失。</textarea>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="saveNote()"><i class="fas fa-save"></i> 保存</button>
+                    <button class="btn" onclick="clearNote()" style="background: linear-gradient(to right, #ff6b6b, #ff8e53);"><i class="fas fa-trash"></i> 清空</button>
+                </div>
+            </div>
+            
+            <!-- 其他工具 -->
+            <a href="#" class="tool-item">
+                <div class="tool-icon"><i class="fas fa-ruler"></i></div>
+                <div class="tool-name">单位转换</div>
+                <div class="tool-desc">长度、重量、温度等单位换算</div>
+            </a>
+            
+            <a href="#" class="tool-item">
+                <div class="tool-icon"><i class="fas fa-clock"></i></div>
+                <div class="tool-name">倒计时</div>
+                <div class="tool-desc">设置定时提醒和倒计时</div>
+            </a>
+            
+            <a href="#" class="tool-item">
+                <div class="tool-icon"><i class="fas fa-lightbulb"></i></div>
+                <div class="tool-name">手电筒</div>
+                <div class="tool-desc">屏幕变白作为临时照明</div>
+            </a>
+            
+            <a href="#" class="tool-item">
+                <div class="tool-icon"><i class="fas fa-qrcode"></i></div>
+                <div class="tool-name">二维码</div>
+                <div class="tool-desc">生成和扫描二维码</div>
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p><i class="fas fa-info-circle"></i> 所有工具均在浏览器中运行，无需安装App</p>
+            <p>📱 建议添加到手机主屏幕，像原生App一样使用</p>
+            <p>© 2024 手机实用工具 | <a href="../" style="color: #6a11cb;">返回工具集</a></p>
+        </div>
+    </div>
+    
+    <script>
+        // 计算器功能
+        let display = document.getElementById('display');
+        
+        function appendToDisplay(value) {
+            if (display.innerText === '0') {
+                display.innerText = value;
+            } else {
+                display.innerText += value;
+            }
+        }
+        
+        function clearDisplay() {
+            display.innerText = '0';
+        }
+        
+        function backspace() {
+            if (display.innerText.length > 1) {
+                display.innerText = display.innerText.slice(0, -1);
+            } else {
+                display.innerText = '0';
+            }
+        }
+        
+        function calculate() {
+            try {
+                // 将显示的符号转换为JS能识别的符号
+                let expression = display.innerText
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/');
+                display.innerText = eval(expression) || '0';
+            } catch {
+                display.innerText = '错误';
+            }
+        }
+        
+        // 记事本功能
+        let note = document.getElementById('note');
+        
+        // 加载保存的笔记
+        if (localStorage.getItem('mobileToolNote')) {
+            note.value = localStorage.getItem('mobileToolNote');
+        }
+        
+        function saveNote() {
+            localStorage.setItem('mobileToolNote', note.value);
+            alert('笔记已保存到本地！');
+        }
+        
+        function clearNote() {
+            if (confirm('确定要清空笔记吗？')) {
+                note.value = '';
+                localStorage.removeItem('mobileToolNote');
+                alert('笔记已清空！');
+            }
+        }
+        
+        // 自动保存（每10秒）
+        setInterval(saveNote, 10000);
+        
+        // 触摸反馈
+        document.querySelectorAll('.tool-item, .calc-btn, .btn').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.style.opacity = '0.8';
+            });
+            
+            btn.addEventListener('touchend', function() {
+                this.style.opacity = '1';
+            });
+        });
+        
+        // 键盘支持
+        document.addEventListener('keydown', function(e) {
+            if (e.key >= '0' && e.key <= '9') {
+                appendToDisplay(e.key);
+            } else if (['+', '-', '*', '/', '.'].includes(e.key)) {
+                appendToDisplay(e.key);
+            } else if (e.key === 'Enter') {
+                calculate();
+            } else if (e.key === 'Escape') {
+                clearDisplay();
+            } else if (e.key === 'Backspace') {
+                backspace();
+            }
+        });
+    </script>
+</body>
+</html>
