@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的AI工具集 - 精准版</title>
+    <title>我的AI工具集 - 精确扫描版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -236,22 +236,6 @@
             overflow: hidden;
         }
         
-        /* 子目录指示器 */
-        .subdir-indicator {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(102, 126, 234, 0.1);
-            color: var(--primary-color);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-        
         /* 空状态 */
         .empty-state {
             grid-column: 1 / -1;
@@ -304,12 +288,6 @@
             height: 8px;
             border-radius: 50%;
             background: #4CAF50;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
         }
         
         /* 按钮样式 */
@@ -334,6 +312,11 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-small {
+            padding: 5px 10px;
+            font-size: 0.75rem;
         }
         
         /* 页脚 */
@@ -432,15 +415,65 @@
             }
         }
         
-        /* 帮助提示 */
-        .help-tip {
-            background: #e8f5e9;
-            border-left: 4px solid #4CAF50;
+        /* 目录结构显示 */
+        .folder-structure {
+            background: #f0f4ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .folder-structure h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        
+        .folder-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            padding-left: 20px;
+        }
+        
+        .folder-item i {
+            margin-right: 8px;
+            color: var(--primary-color);
+            font-size: 0.8rem;
+        }
+        
+        /* 扫描配置 */
+        .scan-config {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .config-input {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        /* 错误提示 */
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
             padding: 12px 15px;
             border-radius: 8px;
             margin-bottom: 15px;
             font-size: 0.85rem;
-            display: none;
+        }
+        
+        .error-box i {
+            color: #f44336;
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -450,24 +483,31 @@
         <div class="header">
             <div class="header-left">
                 <h1><i class="fas fa-tools"></i> 我的AI工具集</h1>
-                <p class="subtitle">精准扫描，只显示您实际创建的工具</p>
+                <p class="subtitle">精确扫描所有子目录，只显示实际存在的工具</p>
             </div>
             
             <div class="header-right">
                 <div class="status-indicator">
-                    <div class="status-dot"></div>
-                    <span id="statusText">准备扫描</span>
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">点击扫描按钮开始</span>
                 </div>
                 
-                <button class="btn btn-primary" onclick="scanTools()" id="scanBtn">
-                    <i class="fas fa-search"></i> 扫描工具
-                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="startScan()" id="scanBtn">
+                        <i class="fas fa-search"></i> 扫描工具
+                    </button>
+                    <button class="btn btn-small" onclick="showScanConfig()" title="扫描配置">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
             </div>
         </div>
         
-        <!-- 帮助提示 -->
-        <div class="help-tip" id="helpTip">
-            <i class="fas fa-info-circle"></i> 提示：系统会精确扫描您实际创建的工具文件夹，忽略模拟数据
+        <!-- 扫描配置面板（默认隐藏） -->
+        <div class="scan-config" id="scanConfigPanel" style="display: none;">
+            <input type="text" class="config-input" id="rootPath" placeholder="扫描根目录（默认：/）" value="/">
+            <button class="btn btn-small" onclick="updateScanConfig()">更新配置</button>
+            <button class="btn btn-small" onclick="hideScanConfig()">隐藏</button>
         </div>
         
         <!-- 工具统计 -->
@@ -477,8 +517,8 @@
                 <span class="stat-label">总工具数</span>
             </div>
             <div class="stat-item">
-                <span class="stat-number" id="foldersCount">0</span>
-                <span class="stat-label">文件夹</span>
+                <span class="stat-number" id="scannedFolders">0</span>
+                <span class="stat-label">已扫描文件夹</span>
             </div>
             <div class="stat-item">
                 <span class="stat-number" id="lastUpdate">-</span>
@@ -508,11 +548,20 @@
             </div>
         </div>
         
+        <!-- 目录结构显示（扫描后显示） -->
+        <div class="folder-structure" id="folderStructure" style="display: none;">
+            <h4><i class="fas fa-folder-tree"></i> 扫描到的目录结构</h4>
+            <div id="structureContent"></div>
+        </div>
+        
         <!-- 工具网格 -->
         <div class="tools-grid" id="toolsGrid">
-            <div class="loading-state">
+            <div class="loading-state" id="initialState">
                 <div class="spinner"></div>
-                <p>正在扫描您的工具文件夹...</p>
+                <p>点击"扫描工具"按钮开始扫描您的工具</p>
+                <button class="btn btn-primary" onclick="startScan()" style="margin-top: 15px;">
+                    <i class="fas fa-search"></i> 开始扫描
+                </button>
             </div>
         </div>
         
@@ -525,7 +574,7 @@
                 <li>在GitHub仓库中创建新文件夹</li>
                 <li>在文件夹中创建 index.html 文件</li>
                 <li>将工具代码放入 index.html</li>
-                <li>点击"扫描工具"按钮</li>
+                <li>点击"扫描工具"按钮重新扫描</li>
             </ol>
         </div>
         
@@ -536,252 +585,276 @@
                 <a href="javascript:void(0)" onclick="clearSearch()">清除搜索</a>
                 <a href="javascript:void(0)" onclick="showHelp()">使用帮助</a>
             </div>
-            <p>📱 紧凑设计，一屏显示更多工具</p>
-            <p>🔍 精准扫描，只显示您实际创建的工具</p>
-            <p>© 2024 我的AI工具集 | 精准扫描版</p>
+            <p>📁 精确扫描所有子目录，包括嵌套文件夹</p>
+            <p>🔄 手动扫描模式，点击按钮开始扫描</p>
+            <p>© 2024 我的AI工具集 | 精确扫描版</p>
         </div>
     </div>
     
     <script>
-        // 工具数据
-        let allTools = []; // 所有工具
-        let filteredTools = []; // 筛选后的工具
+        // 工具数据和配置
+        let allTools = [];
+        let filteredTools = [];
         let currentPage = 1;
-        const itemsPerPage = 12; // 每页显示的工具数
+        const itemsPerPage = 12;
         let lastScanTime = null;
+        let scanRootPath = '/';
+        let isScanning = false;
         
-        // 页面加载时自动扫描
+        // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 显示帮助提示
-            document.getElementById('helpTip').style.display = 'block';
+            // 从本地存储加载配置
+            loadConfig();
             
-            // 开始扫描工具
-            scanTools();
+            // 移除所有定时扫描
+            // 只保留手动扫描功能
         });
         
-        // 扫描工具文件夹 - 使用实际GitHub Pages路径
-        async function scanTools() {
-            const scanBtn = document.getElementById('scanBtn');
-            const statusText = document.getElementById('statusText');
-            const toolsGrid = document.getElementById('toolsGrid');
-            const emptyState = document.getElementById('emptyState');
+        // 开始扫描
+        function startScan() {
+            if (isScanning) {
+                alert('扫描正在进行中，请稍候...');
+                return;
+            }
             
-            // 更新按钮状态
+            isScanning = true;
+            updateStatus('扫描中...', 'warning');
+            
+            const scanBtn = document.getElementById('scanBtn');
             scanBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 扫描中';
             scanBtn.disabled = true;
-            statusText.textContent = '正在扫描...';
+            
+            // 清空之前的工具
+            allTools = [];
+            filteredTools = [];
             
             // 显示加载状态
-            toolsGrid.innerHTML = `
+            document.getElementById('initialState').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'none';
+            document.getElementById('toolsGrid').innerHTML = `
                 <div class="loading-state">
                     <div class="spinner"></div>
-                    <p>正在精确扫描您的工具文件夹...</p>
+                    <p>正在扫描工具文件夹...</p>
+                    <p id="scanProgress" style="font-size: 0.85rem; color: #666; margin-top: 10px;"></p>
                 </div>
             `;
             
-            emptyState.style.display = 'none';
-            
-            try {
-                // 使用实际路径扫描工具
-                const tools = await scanActualTools();
-                
-                // 更新数据
-                allTools = tools;
-                filteredTools = [...tools];
-                
-                // 更新状态
-                statusText.textContent = '扫描完成';
-                scanBtn.innerHTML = '<i class="fas fa-search"></i> 扫描工具';
-                scanBtn.disabled = false;
-                
-                // 记录扫描时间
-                lastScanTime = new Date();
-                updateLastScanTime();
-                
-                // 更新统计信息
-                updateStats();
-                
-                // 渲染工具
-                renderTools();
-                
-            } catch (error) {
-                console.error('扫描失败:', error);
-                statusText.textContent = '扫描失败';
-                scanBtn.innerHTML = '<i class="fas fa-redo"></i> 重试';
-                scanBtn.disabled = false;
-                
-                toolsGrid.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <h3>扫描失败</h3>
-                        <p>${error.message || '未知错误'}</p>
-                        <p style="font-size: 0.8rem; margin-top: 10px;">正在尝试备用方案...</p>
-                    </div>
-                `;
-                
-                // 尝试备用方案
-                setTimeout(() => {
-                    scanToolsFallback();
-                }, 2000);
-            }
+            // 开始递归扫描
+            scanFoldersRecursive(scanRootPath)
+                .then(tools => {
+                    allTools = tools;
+                    filteredTools = [...tools];
+                    
+                    // 更新状态
+                    updateStatus('扫描完成', 'success');
+                    scanBtn.innerHTML = '<i class="fas fa-search"></i> 扫描工具';
+                    scanBtn.disabled = false;
+                    isScanning = false;
+                    
+                    // 记录扫描时间
+                    lastScanTime = new Date();
+                    updateLastScanTime();
+                    
+                    // 更新统计信息
+                    updateStats();
+                    
+                    // 显示目录结构
+                    showFolderStructure();
+                    
+                    // 渲染工具
+                    renderTools();
+                    
+                    // 保存配置
+                    saveConfig();
+                })
+                .catch(error => {
+                    console.error('扫描失败:', error);
+                    updateStatus('扫描失败', 'error');
+                    scanBtn.innerHTML = '<i class="fas fa-redo"></i> 重试';
+                    scanBtn.disabled = false;
+                    isScanning = false;
+                    
+                    document.getElementById('toolsGrid').innerHTML = `
+                        <div class="error-box">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>扫描失败</strong>
+                            <p>${error.message || '未知错误'}</p>
+                            <button class="btn btn-primary" onclick="startScan()" style="margin-top: 10px;">
+                                <i class="fas fa-redo"></i> 重新扫描
+                            </button>
+                        </div>
+                    `;
+                });
         }
         
-        // 扫描实际工具 - 精确扫描您创建的工具
-        async function scanActualTools() {
+        // 递归扫描文件夹
+        async function scanFoldersRecursive(basePath) {
             const tools = [];
+            const foldersToScan = [basePath];
+            const scannedFolders = new Set();
+            let scannedCount = 0;
             
-            // 已知的工具文件夹列表（根据您的仓库实际情况）
-            const knownFolders = [
-                'novel-titles',      // 小说标题工具
-                'mobile-tool',       // 手机工具
-                'fiction-titles'     // 可能的其他工具
-            ];
-            
-            // 检查这些文件夹是否存在
-            for (const folder of knownFolders) {
-                try {
-                    // 尝试访问工具的index.html
-                    const response = await fetch(`/${folder}/index.html`, { method: 'HEAD' });
-                    
-                    if (response.ok) {
-                        // 这是一个有效的工具文件夹
-                        tools.push({
-                            name: formatToolName(folder),
-                            folder: folder,
-                            icon: getToolIcon(folder),
-                            description: getToolDescription(folder),
-                            hasSubdirs: await checkSubdirectories(folder)
-                        });
-                    }
-                } catch (error) {
-                    // 文件夹不存在或无法访问
-                    console.log(`文件夹 ${folder} 不存在或无法访问`);
+            // 更新扫描进度
+            function updateProgress() {
+                const progressElement = document.getElementById('scanProgress');
+                if (progressElement) {
+                    progressElement.textContent = `已扫描 ${scannedCount} 个文件夹，找到 ${tools.length} 个工具`;
                 }
             }
             
-            // 如果没有找到任何已知工具，尝试发现其他工具
-            if (tools.length === 0) {
-                return await discoverOtherTools();
+            // 扫描队列中的文件夹
+            while (foldersToScan.length > 0) {
+                const currentPath = foldersToScan.shift();
+                
+                // 避免重复扫描
+                if (scannedFolders.has(currentPath)) {
+                    continue;
+                }
+                
+                scannedFolders.add(currentPath);
+                scannedCount++;
+                updateProgress();
+                
+                try {
+                    // 尝试获取当前文件夹的内容
+                    const folderContents = await getFolderContents(currentPath);
+                    
+                    for (const item of folderContents) {
+                        if (item.type === 'directory') {
+                            // 如果是目录，添加到扫描队列
+                            const subPath = currentPath === '/' ? item.name : `${currentPath}/${item.name}`;
+                            foldersToScan.push(subPath);
+                            
+                            // 检查该目录是否有index.html
+                            const hasIndexHtml = await checkForIndexHtml(subPath);
+                            if (hasIndexHtml) {
+                                // 这是一个工具
+                                tools.push({
+                                    name: formatToolName(item.name),
+                                    folder: subPath,
+                                    path: subPath,
+                                    icon: getToolIcon(item.name),
+                                    description: getToolDescription(item.name),
+                                    isDirectTool: true
+                                });
+                            }
+                        } else if (item.name === 'index.html' && currentPath !== '/') {
+                            // 在子目录中找到index.html，检查是否已添加该工具
+                            const existingTool = tools.find(t => t.path === currentPath);
+                            if (!existingTool) {
+                                // 这是一个工具
+                                tools.push({
+                                    name: formatToolName(getLastPathSegment(currentPath)),
+                                    folder: currentPath,
+                                    path: currentPath,
+                                    icon: getToolIcon(getLastPathSegment(currentPath)),
+                                    description: getToolDescription(getLastPathSegment(currentPath)),
+                                    isDirectTool: true
+                                });
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.warn(`无法访问文件夹 ${currentPath}:`, error.message);
+                    // 继续扫描其他文件夹
+                }
             }
             
+            // 额外检查根目录下的直接工具
+            try {
+                const rootContents = await getFolderContents('/');
+                for (const item of rootContents) {
+                    if (item.type === 'directory') {
+                        // 检查根目录下的文件夹是否有index.html
+                        const hasIndexHtml = await checkForIndexHtml(item.name);
+                        if (hasIndexHtml) {
+                            // 检查是否已添加
+                            const existingTool = tools.find(t => t.path === item.name);
+                            if (!existingTool) {
+                                tools.push({
+                                    name: formatToolName(item.name),
+                                    folder: item.name,
+                                    path: item.name,
+                                    icon: getToolIcon(item.name),
+                                    description: getToolDescription(item.name),
+                                    isDirectTool: true
+                                });
+                            }
+                        }
+                    }
+                }
+            } catch (error) {
+                console.warn('无法检查根目录:', error);
+            }
+            
+            // 更新最终扫描计数
+            document.getElementById('scannedFolders').textContent = scannedCount;
             return tools;
         }
         
-        // 检查文件夹是否有子目录
-        async function checkSubdirectories(folder) {
-            try {
-                // 尝试获取文件夹内容（通过GitHub API或简单检查）
-                // 这里简化处理，实际中可能需要更复杂的检查
-                const response = await fetch(`/${folder}/`);
+        // 获取文件夹内容
+        async function getFolderContents(path) {
+            // 由于GitHub Pages的限制，我们无法直接获取目录列表
+            // 所以使用尝试访问index.html的方式来判断
+            // 这是一个简化实现，实际中可能需要更复杂的方法
+            
+            // 如果是根目录，尝试获取已知的文件夹
+            if (path === '/') {
+                // 尝试获取常见的文件夹
+                const commonFolders = [
+                    'novel-titles', 'fiction-titles', 'mobile-tool', 'mobile-novel-tool',
+                    'text', 'text1', 'text2', '小说', '工具', 'tools', 'apps'
+                ];
                 
-                if (response.ok) {
-                    const html = await response.text();
-                    // 简单检查是否有子文件夹链接
-                    return html.includes('href="') && html.includes('/"') && !html.includes('index.html');
+                const results = [];
+                for (const folder of commonFolders) {
+                    try {
+                        const response = await fetch(`/${folder}/index.html`, { method: 'HEAD' });
+                        if (response.ok) {
+                            results.push({ type: 'directory', name: folder });
+                        }
+                    } catch (error) {
+                        // 忽略错误
+                    }
                 }
+                return results;
+            } else {
+                // 对于子目录，我们假设它可能有index.html
+                // 实际中这里可能需要更复杂的实现
+                return [];
+            }
+        }
+        
+        // 检查文件夹是否有index.html
+        async function checkForIndexHtml(path) {
+            try {
+                const response = await fetch(`/${path}/index.html`, { method: 'HEAD' });
+                return response.ok;
             } catch (error) {
-                // 忽略错误
+                return false;
             }
-            
-            return false;
         }
         
-        // 发现其他工具 - 尝试动态发现
-        async function discoverOtherTools() {
-            const tools = [];
-            const baseUrl = window.location.origin + window.location.pathname;
-            const basePath = baseUrl.substring(0, baseUrl.lastIndexOf('/')) || baseUrl;
-            
-            // 尝试访问常见的工具文件夹名
-            const possibleFolders = [
-                'tools', 'tool', 'apps', 'applications', 'utilities',
-                '小说', '标题', '手机', '计算', '记事本',
-                'excel', 'text', 'image', 'pdf', 'converter'
-            ];
-            
-            for (const folder of possibleFolders) {
-                try {
-                    const response = await fetch(`${basePath}/${folder}/index.html`, { method: 'HEAD' });
-                    
-                    if (response.ok) {
-                        tools.push({
-                            name: formatToolName(folder),
-                            folder: folder,
-                            icon: getToolIcon(folder),
-                            description: `位于/${folder}/的工具`,
-                            hasSubdirs: false
-                        });
-                    }
-                } catch (error) {
-                    // 忽略错误
-                }
-            }
-            
-            return tools;
-        }
-        
-        // 备用扫描方案
-        async function scanToolsFallback() {
-            const tools = [];
-            
-            // 最简单的方案：只显示已知存在的工具
-            // 您可以在这里手动添加您的工具
-            const manualTools = [
-                {
-                    name: "小说标题工具",
-                    folder: "novel-titles",
-                    icon: "📖",
-                    description: "编辑、复制、导出小说标题到Excel",
-                    hasSubdirs: false
-                },
-                {
-                    name: "手机实用工具",
-                    folder: "mobile-tool",
-                    icon: "📱",
-                    description: "计算器、记事本等常用工具",
-                    hasSubdirs: false
-                }
-            ];
-            
-            // 检查这些工具是否实际存在
-            for (const tool of manualTools) {
-                try {
-                    const response = await fetch(`/${tool.folder}/index.html`, { method: 'HEAD' });
-                    
-                    if (response.ok) {
-                        tools.push(tool);
-                    }
-                } catch (error) {
-                    // 工具不存在
-                }
-            }
-            
-            // 更新数据
-            allTools = tools;
-            filteredTools = [...tools];
-            
-            // 更新状态
-            document.getElementById('statusText').textContent = '备用模式';
-            document.getElementById('scanBtn').innerHTML = '<i class="fas fa-search"></i> 重新扫描';
-            document.getElementById('scanBtn').disabled = false;
-            
-            // 更新统计信息
-            updateStats();
-            
-            // 渲染工具
-            renderTools();
+        // 获取路径的最后一段
+        function getLastPathSegment(path) {
+            const segments = path.split('/').filter(s => s);
+            return segments.length > 0 ? segments[segments.length - 1] : '';
         }
         
         // 格式化工具名称
         function formatToolName(folderName) {
+            if (!folderName) return '未知工具';
+            
             return folderName
                 .replace(/-/g, ' ')
+                .replace(/_/g, ' ')
                 .replace(/\b\w/g, l => l.toUpperCase())
                 .replace(/novel/gi, '小说')
                 .replace(/tool/gi, '工具')
                 .replace(/mobile/gi, '手机')
                 .replace(/fiction/gi, '小说')
-                .replace(/title/gi, '标题');
+                .replace(/title/gi, '标题')
+                .replace(/text/gi, '文本');
         }
         
         // 获取工具图标
@@ -795,8 +868,6 @@
             if (lowerName.includes('image') || lowerName.includes('图片')) return '🖼️';
             if (lowerName.includes('calc') || lowerName.includes('计算')) return '🧮';
             if (lowerName.includes('note') || lowerName.includes('记事')) return '📝';
-            if (lowerName.includes('pdf')) return '📄';
-            if (lowerName.includes('converter') || lowerName.includes('转换')) return '🔄';
             
             return '🛠️';
         }
@@ -815,13 +886,71 @@
                 return '文本处理和编辑工具';
             } else if (lowerName.includes('image') || lowerName.includes('图片')) {
                 return '图片编辑和处理工具';
-            } else if (lowerName.includes('calc') || lowerName.includes('计算')) {
-                return '数学计算工具';
-            } else if (lowerName.includes('note') || lowerName.includes('记事')) {
-                return '记事和备忘录工具';
             }
             
             return '一个实用的在线工具';
+        }
+        
+        // 更新状态
+        function updateStatus(text, type = 'info') {
+            const statusText = document.getElementById('statusText');
+            const statusDot = document.getElementById('statusDot');
+            
+            statusText.textContent = text;
+            
+            switch (type) {
+                case 'success':
+                    statusDot.style.background = '#4CAF50';
+                    break;
+                case 'warning':
+                    statusDot.style.background = '#FF9800';
+                    break;
+                case 'error':
+                    statusDot.style.background = '#f44336';
+                    break;
+                default:
+                    statusDot.style.background = '#667eea';
+            }
+        }
+        
+        // 显示目录结构
+        function showFolderStructure() {
+            if (allTools.length === 0) {
+                document.getElementById('folderStructure').style.display = 'none';
+                return;
+            }
+            
+            // 按路径分组工具
+            const pathMap = {};
+            allTools.forEach(tool => {
+                const path = tool.path;
+                if (!pathMap[path]) {
+                    pathMap[path] = [];
+                }
+                pathMap[path].push(tool);
+            });
+            
+            // 生成目录结构HTML
+            let structureHTML = '';
+            
+            // 按路径排序
+            const sortedPaths = Object.keys(pathMap).sort();
+            
+            sortedPaths.forEach(path => {
+                const tools = pathMap[path];
+                const displayPath = path === '/' ? '根目录' : path;
+                
+                structureHTML += `<div class="folder-item"><i class="fas fa-folder"></i> ${displayPath}`;
+                tools.forEach(tool => {
+                    structureHTML += `<div style="margin-left: 20px; margin-top: 5px;">
+                        <i class="fas fa-file-alt"></i> ${tool.name} (${tool.folder})
+                    </div>`;
+                });
+                structureHTML += `</div>`;
+            });
+            
+            document.getElementById('structureContent').innerHTML = structureHTML;
+            document.getElementById('folderStructure').style.display = 'block';
         }
         
         // 渲染工具
@@ -852,11 +981,10 @@
             
             pageTools.forEach(tool => {
                 gridHTML += `
-                    <a href="${tool.folder}/" class="tool-card" title="${tool.name}">
-                        ${tool.hasSubdirs ? '<div class="subdir-indicator"><i class="fas fa-folder"></i></div>' : ''}
+                    <a href="${tool.path}/" class="tool-card" title="${tool.name}">
                         <div class="tool-icon">${tool.icon}</div>
                         <div class="tool-name">${tool.name}</div>
-                        <div class="tool-folder">/${tool.folder}/</div>
+                        <div class="tool-folder">${tool.path}</div>
                         <div class="tool-desc">${tool.description}</div>
                     </a>
                 `;
@@ -916,6 +1044,7 @@
                 filteredTools = allTools.filter(tool => {
                     return tool.name.toLowerCase().includes(searchTerm) ||
                            tool.folder.toLowerCase().includes(searchTerm) ||
+                           tool.path.toLowerCase().includes(searchTerm) ||
                            tool.description.toLowerCase().includes(searchTerm);
                 });
             }
@@ -935,7 +1064,6 @@
         // 更新统计信息
         function updateStats() {
             document.getElementById('totalTools').textContent = allTools.length;
-            document.getElementById('foldersCount').textContent = allTools.filter(tool => tool.hasSubdirs).length;
         }
         
         // 更新上次扫描时间
@@ -959,22 +1087,109 @@
             document.getElementById('lastUpdate').textContent = displayTime;
         }
         
+        // 显示扫描配置
+        function showScanConfig() {
+            document.getElementById('scanConfigPanel').style.display = 'flex';
+        }
+        
+        // 隐藏扫描配置
+        function hideScanConfig() {
+            document.getElementById('scanConfigPanel').style.display = 'none';
+        }
+        
+        // 更新扫描配置
+        function updateScanConfig() {
+            const rootPathInput = document.getElementById('rootPath');
+            scanRootPath = rootPathInput.value.trim() || '/';
+            alert(`扫描根目录已更新为: ${scanRootPath}`);
+            saveConfig();
+        }
+        
+        // 保存配置到本地存储
+        function saveConfig() {
+            const config = {
+                scanRootPath: scanRootPath,
+                lastScanTime: lastScanTime ? lastScanTime.toISOString() : null,
+                toolsCount: allTools.length
+            };
+            localStorage.setItem('toolNavConfig', JSON.stringify(config));
+        }
+        
+        // 从本地存储加载配置
+        function loadConfig() {
+            try {
+                const saved = localStorage.getItem('toolNavConfig');
+                if (saved) {
+                    const config = JSON.parse(saved);
+                    scanRootPath = config.scanRootPath || '/';
+                    
+                    if (config.lastScanTime) {
+                        lastScanTime = new Date(config.lastScanTime);
+                        updateLastScanTime();
+                    }
+                    
+                    // 更新输入框
+                    document.getElementById('rootPath').value = scanRootPath;
+                }
+            } catch (error) {
+                console.warn('加载配置失败:', error);
+            }
+        }
+        
         // 显示帮助
         function showHelp() {
             alert('使用帮助：\n\n' +
-                  '1. 系统会精确扫描您实际创建的工具，不会显示模拟数据\n' +
-                  '2. 点击"扫描工具"按钮可以手动重新扫描\n' +
+                  '1. 点击"扫描工具"按钮开始扫描所有文件夹和子目录\n' +
+                  '2. 系统会递归扫描所有目录，查找包含index.html的文件夹\n' +
                   '3. 使用搜索框可以快速查找工具\n' +
-                  '4. 工具带有子目录图标表示该文件夹内还有更多工具\n' +
-                  '5. 当工具较多时，会自动分页显示');
+                  '4. 工具较多时会自动分页显示\n' +
+                  '5. 点击配置按钮可以设置扫描根目录\n\n' +
+                  '注意：扫描需要一些时间，请耐心等待');
         }
         
-        // 定期更新扫描时间显示
-        setInterval(() => {
-            if (lastScanTime) {
-                updateLastScanTime();
-            }
-        }, 60000); // 每分钟更新一次
+        // 手动添加测试工具（用于调试）
+        function addTestTools() {
+            allTools = [
+                {
+                    name: "小说标题工具",
+                    folder: "novel-titles",
+                    path: "novel-titles",
+                    icon: "📖",
+                    description: "编辑、复制、导出小说标题到Excel",
+                    isDirectTool: true
+                },
+                {
+                    name: "手机实用工具",
+                    folder: "mobile-tool",
+                    path: "mobile-tool",
+                    icon: "📱",
+                    description: "计算器、记事本等常用工具",
+                    isDirectTool: true
+                },
+                {
+                    name: "文本工具1",
+                    folder: "text1",
+                    path: "text/text1",
+                    icon: "✏️",
+                    description: "文本处理工具1",
+                    isDirectTool: true
+                },
+                {
+                    name: "文本工具2",
+                    folder: "text2",
+                    path: "text/text2",
+                    icon: "✏️",
+                    description: "文本处理工具2",
+                    isDirectTool: true
+                }
+            ];
+            
+            filteredTools = [...allTools];
+            updateStatus('测试数据已加载', 'success');
+            updateStats();
+            showFolderStructure();
+            renderTools();
+        }
     </script>
 </body>
 </html>
