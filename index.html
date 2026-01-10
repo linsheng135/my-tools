@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的AI工具集</title>
+    <title>我的AI工具集 - 全自动版</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -17,7 +17,6 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
-            color: #333;
         }
         
         .container {
@@ -27,39 +26,36 @@
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 50px;
+            position: relative;
         }
         
         h1 {
             color: #333;
-            font-size: 3rem;
-            margin-bottom: 15px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
         }
         
         .subtitle {
+            text-align: center;
             color: #666;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin: 0 auto 30px;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
         }
         
-        .tools-grid {
+        .tool-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 50px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
         }
         
         .tool-card {
             background: #f8f9fa;
             border-radius: 15px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             border: 2px solid transparent;
             text-decoration: none;
             color: #333;
@@ -67,281 +63,542 @@
         }
         
         .tool-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-8px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             border-color: #667eea;
-            background: white;
         }
         
         .tool-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
+            font-size: 3rem;
+            margin-bottom: 15px;
             display: block;
         }
         
-        .tool-title {
-            font-size: 1.5rem;
+        .tool-name {
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: #333;
         }
         
-        .tool-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        
-        .tool-features {
-            text-align: left;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-        }
-        
-        .feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-            color: #555;
-        }
-        
-        .feature i {
+        .tool-folder {
+            font-size: 0.9rem;
             color: #667eea;
-            margin-right: 10px;
-            width: 20px;
+            background: #eef2ff;
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        
+        .tool-desc {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
         }
         
         .tool-link {
             display: inline-block;
-            padding: 12px 30px;
+            padding: 10px 25px;
             background: linear-gradient(to right, #667eea, #764ba2);
             color: white;
             text-decoration: none;
             border-radius: 50px;
             font-weight: 600;
-            margin-top: 15px;
-            transition: all 0.3s;
+            margin-top: 10px;
         }
         
-        .tool-link:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
         }
         
         .footer {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
             padding-top: 30px;
             border-top: 1px solid #eee;
             color: #777;
         }
         
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-bottom: 30px;
+        .refresh-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: 600;
         }
         
-        .stat-item {
+        .refresh-btn:hover {
+            background: #388E3C;
+        }
+        
+        .scanning {
             text-align: center;
+            padding: 40px;
+            grid-column: 1 / -1;
         }
         
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #667eea;
-            display: block;
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
         
-        .stat-label {
-            font-size: 0.9rem;
-            color: #777;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            grid-column: 1 / -1;
+        }
+        
+        .how-to-use {
+            background: #e8f5e9;
+            border-left: 4px solid #4CAF50;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            grid-column: 1 / -1;
         }
         
         @media (max-width: 768px) {
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+            
             .container {
                 padding: 20px;
-                border-radius: 15px;
             }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .tools-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 20px;
-            }
-        }
-        
-        .qr-code {
-            text-align: center;
-            margin-top: 30px;
-        }
-        
-        .qr-code img {
-            max-width: 150px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            background: white;
-            border-radius: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1><i class="fas fa-tools"></i> 我的AI工具集</h1>
-            <p class="subtitle">由DeepSeek AI助我创建，持续更新实用工具，全部免费使用</p>
-            
-            <div class="stats">
-                <div class="stat-item">
-                    <span class="stat-number" id="toolCount">2</span>
-                    <span class="stat-label">个工具</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number" id="updateCount">今天</span>
-                    <span class="stat-label">最近更新</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">100%</span>
-                    <span class="stat-label">免费使用</span>
-                </div>
-            </div>
-        </header>
+        <div class="status-badge" id="statusBadge">自动扫描模式</div>
         
-        <div class="tools-grid">
-            <!-- 小说标题工具 -->
-            <a href="novel-titles/" class="tool-card">
-                <div class="tool-icon">📖</div>
-                <h2 class="tool-title">小说标题工具</h2>
-                <p class="tool-description">
-                    专为小说创作者设计，可编辑、复制、导出小说标题到Excel，支持手机端操作。
-                </p>
-                
-                <div class="tool-features">
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>实时编辑标题内容</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>一键复制到剪贴板</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>导出为Excel格式</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>手机端优化界面</span>
-                    </div>
-                </div>
-                
-                <div class="tool-link">立即使用</div>
-            </a>
-            
-            <!-- 手机工具（待添加） -->
-            <a href="mobile-tool/" class="tool-card">
-                <div class="tool-icon">📱</div>
-                <h2 class="tool-title">手机实用工具</h2>
-                <p class="tool-description">
-                    专为手机优化的实用工具集合，包括计算器、记事本、单位转换等常用功能。
-                </p>
-                
-                <div class="tool-features">
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>移动端优化界面</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>离线可用</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>轻量快速</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-check-circle"></i>
-                        <span>无广告</span>
-                    </div>
-                </div>
-                
-                <div class="tool-link">立即使用</div>
-            </a>
-            
-            <!-- 更多工具占位 -->
-            <div class="tool-card" style="opacity: 0.7; cursor: not-allowed;">
-                <div class="tool-icon">📊</div>
-                <h2 class="tool-title">Excel数据处理</h2>
-                <p class="tool-description">
-                    多种Excel数据格式转换和清洗工具，批量处理数据更高效。
-                </p>
-                <div style="margin-top: 20px; color: #999;">
-                    <i class="fas fa-clock"></i> 开发中...
-                </div>
-            </div>
-            
-            <div class="tool-card" style="opacity: 0.7; cursor: not-allowed;">
-                <div class="tool-icon">🖼️</div>
-                <h2 class="tool-title">图片处理工具</h2>
-                <p class="tool-description">
-                    图片格式转换、压缩、批量重命名，满足日常图片处理需求。
-                </p>
-                <div style="margin-top: 20px; color: #999;">
-                    <i class="fas fa-clock"></i> 开发中...
-                </div>
+        <h1><i class="fas fa-tools"></i> 我的AI工具集</h1>
+        <p class="subtitle">全自动扫描，添加新工具无需任何配置</p>
+        
+        <div class="how-to-use">
+            <h3><i class="fas fa-lightbulb"></i> 使用说明</h3>
+            <p>✅ <strong>完全自动</strong>：只需创建文件夹和index.html，导航页自动识别</p>
+            <p>✅ <strong>智能识别</strong>：自动检测包含index.html的文件夹作为工具</p>
+            <p>✅ <strong>无需维护</strong>：不需要任何配置文件，不需要修改导航页</p>
+            <p>📁 <strong>工具结构</strong>：工具文件夹名将成为工具显示名称（支持中文）</p>
+        </div>
+        
+        <!-- 工具列表将在这里自动生成 -->
+        <div class="tool-grid" id="toolsContainer">
+            <div class="scanning">
+                <div class="spinner"></div>
+                <p>正在自动扫描工具文件夹...</p>
+                <p id="scanningStatus">请稍候</p>
             </div>
         </div>
         
-        <div class="footer">
-            <p><i class="fas fa-info-circle"></i> 所有工具均基于GitHub Pages托管，完全免费，无需安装</p>
-            <p>📱 建议将常用工具添加到手机主屏幕，像App一样使用</p>
-            <p>🔧 有新的工具需求？联系DeepSeek AI为您定制</p>
-            
-            <div class="qr-code">
-                <p>手机扫码访问：</p>
-                <!-- 这里可以放二维码，如果需要的话 -->
-                <div style="width: 150px; height: 150px; margin: 10px auto; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
-                    <div style="text-align: center; color: #666;">
-                        <div style="font-size: 3rem;">📱</div>
-                        <div style="font-size: 0.8rem; margin-top: 5px;">手机访问</div>
-                        <div style="font-size: 0.7rem; margin-top: 2px;">linsheng135.github.io/my-tools/</div>
-                    </div>
-                </div>
-            </div>
-            
-            <p style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
-                © 2024 我的AI工具集 | 由 DeepSeek AI 提供技术支持
+        <div style="text-align: center;">
+            <button class="refresh-btn" onclick="scanTools()" id="refreshBtn">
+                <i class="fas fa-sync-alt"></i> 重新扫描
+            </button>
+            <p style="margin-top: 10px; color: #777; font-size: 0.9rem;">
+                上次扫描时间：<span id="lastScanTime">刚刚</span>
             </p>
+        </div>
+        
+        <div class="footer">
+            <p><i class="fas fa-robot"></i> 全自动工具导航系统</p>
+            <p>📁 添加新工具：只需创建文件夹并在其中放置index.html文件</p>
+            <p>🔄 系统会自动扫描并添加到导航页</p>
+            <p>📱 建议将本页添加到手机主屏幕</p>
+            <p>© 2024 我的AI工具集 | <a href="https://github.com/linsheng135/my-tools" style="color: #667eea;">GitHub仓库</a></p>
         </div>
     </div>
     
     <script>
-        // 更新工具数量统计
-        document.getElementById('toolCount').textContent = '2';
+        // 工具列表数据
+        let toolsList = [];
+        let lastScanTime = new Date();
         
-        // 更新最近更新时间
-        const today = new Date();
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('updateCount').textContent = today.toLocaleDateString('zh-CN', options);
+        // 页面加载时自动扫描
+        document.addEventListener('DOMContentLoaded', function() {
+            scanTools();
+            
+            // 每5分钟自动扫描一次
+            setInterval(scanTools, 5 * 60 * 1000);
+            
+            // 更新上次扫描时间显示
+            updateLastScanTime();
+        });
         
-        // 添加点击统计
-        document.querySelectorAll('.tool-card').forEach(card => {
-            if (card.style.cursor !== 'not-allowed') {
-                card.addEventListener('click', function() {
-                    const toolName = this.querySelector('.tool-title').textContent;
-                    console.log(`工具被点击: ${toolName}`);
-                });
+        // 扫描工具文件夹
+        async function scanTools() {
+            const container = document.getElementById('toolsContainer');
+            const statusBadge = document.getElementById('statusBadge');
+            const scanningStatus = document.getElementById('scanningStatus');
+            const refreshBtn = document.getElementById('refreshBtn');
+            
+            // 显示扫描中状态
+            container.innerHTML = `
+                <div class="scanning">
+                    <div class="spinner"></div>
+                    <p>正在自动扫描工具文件夹...</p>
+                    <p id="scanningStatus">请稍候</p>
+                </div>
+            `;
+            
+            statusBadge.textContent = "扫描中...";
+            statusBadge.style.background = "#FF9800";
+            refreshBtn.disabled = true;
+            scanningStatus.textContent = "正在获取仓库目录结构...";
+            
+            try {
+                // 使用 GitHub API 获取仓库内容
+                const repoUrl = 'https://api.github.com/repos/linsheng135/my-tools/contents';
+                
+                const response = await fetch(repoUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`GitHub API 请求失败: ${response.status}`);
+                }
+                
+                const contents = await response.json();
+                
+                // 过滤出文件夹（type为'dir'）
+                const folders = contents.filter(item => item.type === 'dir');
+                
+                scanningStatus.textContent = `发现 ${folders.length} 个文件夹，正在检查是否为工具...`;
+                
+                // 检查每个文件夹是否包含 index.html
+                toolsList = [];
+                
+                for (const folder of folders) {
+                    // 跳过一些系统文件夹
+                    if (folder.name.startsWith('.') || 
+                        folder.name === 'node_modules' || 
+                        folder.name === 'docs' ||
+                        folder.name === 'assets' ||
+                        folder.name === 'images') {
+                        continue;
+                    }
+                    
+                    try {
+                        // 检查文件夹中是否有 index.html
+                        const folderUrl = `https://api.github.com/repos/linsheng135/my-tools/contents/${folder.name}`;
+                        const folderResponse = await fetch(folderUrl);
+                        
+                        if (folderResponse.ok) {
+                            const folderContents = await folderResponse.json();
+                            const hasIndexHtml = folderContents.some(item => item.name === 'index.html');
+                            
+                            if (hasIndexHtml) {
+                                // 这是一个工具文件夹
+                                toolsList.push({
+                                    name: formatFolderName(folder.name),
+                                    folder: folder.name,
+                                    icon: getToolIcon(folder.name),
+                                    description: getToolDescription(folder.name)
+                                });
+                            }
+                        }
+                    } catch (folderError) {
+                        console.log(`跳过文件夹 ${folder.name}:`, folderError.message);
+                    }
+                }
+                
+                // 如果没有扫描到工具，使用备用方案
+                if (toolsList.length === 0) {
+                    scanningStatus.textContent = "API扫描无结果，使用备用方案...";
+                    await scanToolsFallback();
+                } else {
+                    scanningStatus.textContent = `发现 ${toolsList.length} 个工具`;
+                }
+                
+                // 渲染工具列表
+                renderTools();
+                
+                // 更新状态
+                statusBadge.textContent = "扫描完成";
+                statusBadge.style.background = "#4CAF50";
+                lastScanTime = new Date();
+                updateLastScanTime();
+                
+            } catch (error) {
+                console.error('API扫描失败，使用备用方案:', error);
+                scanningStatus.textContent = "API访问受限，使用备用方案...";
+                
+                // 使用备用方案
+                await scanToolsFallback();
+                
+                statusBadge.textContent = "备用模式";
+                statusBadge.style.background = "#FF9800";
+            } finally {
+                refreshBtn.disabled = false;
             }
+        }
+        
+        // 备用扫描方案（直接硬编码已知工具）
+        async function scanToolsFallback() {
+            // 这里我们可以直接列出已知的工具文件夹
+            // 或者尝试从页面URL推测
+            const possibleTools = [
+                { name: "小说标题工具", folder: "fiction-titles", icon: "📖", description: "编辑、复制、导出小说标题到Excel" },
+                { name: "手机实用工具", folder: "mobile-tool", icon: "📱", description: "计算器、记事本等常用工具" }
+            ];
+            
+            // 检查这些文件夹是否存在（通过尝试访问）
+            const validTools = [];
+            
+            for (const tool of possibleTools) {
+                try {
+                    // 尝试访问工具的index.html
+                    const testUrl = `/${tool.folder}/index.html`;
+                    const response = await fetch(testUrl, { method: 'HEAD' });
+                    
+                    if (response.ok) {
+                        validTools.push(tool);
+                    }
+                } catch (error) {
+                    // 文件夹不存在或无法访问
+                }
+            }
+            
+            // 如果没有找到任何工具，使用默认列表
+            if (validTools.length === 0) {
+                toolsList = possibleTools;
+            } else {
+                toolsList = validTools;
+            }
+            
+            // 尝试动态发现其他文件夹
+            await discoverOtherTools();
+        }
+        
+        // 尝试发现其他工具文件夹
+        async function discoverOtherTools() {
+            // 尝试获取当前页面URL的基地址
+            const baseUrl = window.location.origin + window.location.pathname;
+            const basePath = baseUrl.substring(0, baseUrl.lastIndexOf('/')) || baseUrl;
+            
+            // 常见的工具文件夹名
+            const commonToolNames = [
+                "tool", "tools", "app", "apps", "utility", "utilities",
+                "calculator", "editor", "converter", "generator",
+                "小说", "标题", "手机", "计算", "记事本"
+            ];
+            
+            // 尝试访问一些可能的路径
+            for (const name of commonToolNames) {
+                try {
+                    const testUrl = `${basePath}/${name}/index.html`;
+                    const response = await fetch(testUrl, { method: 'HEAD' });
+                    
+                    if (response.ok) {
+                        // 检查是否已在列表中
+                        const exists = toolsList.some(tool => tool.folder === name);
+                        if (!exists) {
+                            toolsList.push({
+                                name: formatFolderName(name),
+                                folder: name,
+                                icon: getToolIcon(name),
+                                description: getToolDescription(name)
+                            });
+                        }
+                    }
+                } catch (error) {
+                    // 忽略错误
+                }
+            }
+        }
+        
+        // 格式化文件夹名为显示名称
+        function formatFolderName(folderName) {
+            // 将短横线转换为空格，并首字母大写
+            return folderName
+                .replace(/-/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase())
+                .replace(/novel/gi, '小说')
+                .replace(/tool/gi, '工具')
+                .replace(/mobile/gi, '手机')
+                .replace(/fiction/gi, '小说')
+                .replace(/title/gi, '标题');
+        }
+        
+        // 根据文件夹名获取图标
+        function getToolIcon(folderName) {
+            const lowerName = folderName.toLowerCase();
+            
+            if (lowerName.includes('novel') || lowerName.includes('fiction') || lowerName.includes('小说')) {
+                return '📖';
+            } else if (lowerName.includes('mobile') || lowerName.includes('phone') || lowerName.includes('手机')) {
+                return '📱';
+            } else if (lowerName.includes('calc') || lowerName.includes('计算')) {
+                return '🧮';
+            } else if (lowerName.includes('note') || lowerName.includes('记事')) {
+                return '📝';
+            } else if (lowerName.includes('excel') || lowerName.includes('表格')) {
+                return '📊';
+            } else if (lowerName.includes('text') || lowerName.includes('文本')) {
+                return '✏️';
+            } else if (lowerName.includes('image') || lowerName.includes('图片')) {
+                return '🖼️';
+            } else if (lowerName.includes('video') || lowerName.includes('视频')) {
+                return '🎬';
+            } else if (lowerName.includes('audio') || lowerName.includes('音频')) {
+                return '🎵';
+            } else if (lowerName.includes('code') || lowerName.includes('代码')) {
+                return '💻';
+            } else if (lowerName.includes('game') || lowerName.includes('游戏')) {
+                return '🎮';
+            } else if (lowerName.includes('book') || lowerName.includes('书籍')) {
+                return '📚';
+            } else if (lowerName.includes('music') || lowerName.includes('音乐')) {
+                return '🎶';
+            } else if (lowerName.includes('weather') || lowerName.includes('天气')) {
+                return '🌤️';
+            } else if (lowerName.includes('time') || lowerName.includes('时间')) {
+                return '⏰';
+            } else if (lowerName.includes('calendar') || lowerName.includes('日历')) {
+                return '📅';
+            } else if (lowerName.includes('map') || lowerName.includes('地图')) {
+                return '🗺️';
+            } else if (lowerName.includes('chat') || lowerName.includes('聊天')) {
+                return '💬';
+            } else if (lowerName.includes('mail') || lowerName.includes('邮件')) {
+                return '✉️';
+            } else if (lowerName.includes('file') || lowerName.includes('文件')) {
+                return '📁';
+            } else if (lowerName.includes('download') || lowerName.includes('下载')) {
+                return '⬇️';
+            } else if (lowerName.includes('upload') || lowerName.includes('上传')) {
+                return '⬆️';
+            } else if (lowerName.includes('search') || lowerName.includes('搜索')) {
+                return '🔍';
+            } else if (lowerName.includes('settings') || lowerName.includes('设置')) {
+                return '⚙️';
+            } else {
+                // 根据文件夹名长度选择不同的默认图标
+                return ['🛠️', '🔧', '📦', '🎁', '✨', '🚀'][folderName.length % 6];
+            }
+        }
+        
+        // 根据文件夹名获取描述
+        function getToolDescription(folderName) {
+            const lowerName = folderName.toLowerCase();
+            
+            if (lowerName.includes('novel') || lowerName.includes('fiction') || lowerName.includes('小说')) {
+                return '小说创作相关工具';
+            } else if (lowerName.includes('mobile') || lowerName.includes('phone') || lowerName.includes('手机')) {
+                return '手机端优化工具';
+            } else if (lowerName.includes('calc') || lowerName.includes('计算')) {
+                return '数学计算工具';
+            } else if (lowerName.includes('note') || lowerName.includes('记事')) {
+                return '记事和备忘录工具';
+            } else if (lowerName.includes('excel') || lowerName.includes('表格')) {
+                return 'Excel数据处理工具';
+            } else if (lowerName.includes('text') || lowerName.includes('文本')) {
+                return '文本处理和编辑工具';
+            } else if (lowerName.includes('image') || lowerName.includes('图片')) {
+                return '图片编辑和处理工具';
+            }
+            
+            return '一个实用的在线工具';
+        }
+        
+        // 渲染工具列表
+        function renderTools() {
+            const container = document.getElementById('toolsContainer');
+            
+            if (!toolsList || toolsList.length === 0) {
+                container.innerHTML = `
+                    <div class="error-box">
+                        <h3><i class="fas fa-exclamation-triangle"></i> 未发现任何工具</h3>
+                        <p>请按照以下步骤添加工具：</p>
+                        <ol>
+                            <li>在仓库中创建新文件夹（如 my-tool）</li>
+                            <li>在文件夹中创建 index.html 文件</li>
+                            <li>将工具代码放入 index.html</li>
+                            <li>点击上面的"重新扫描"按钮</li>
+                        </ol>
+                        <p>系统会自动检测并显示您的工具。</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 生成工具卡片HTML
+            let toolsHTML = '';
+            
+            toolsList.forEach(tool => {
+                toolsHTML += `
+                    <a href="${tool.folder}/" class="tool-card" title="点击使用 ${tool.name}">
+                        <div class="tool-icon">${tool.icon}</div>
+                        <div class="tool-folder">/${tool.folder}/</div>
+                        <h3 class="tool-name">${tool.name}</h3>
+                        <p class="tool-desc">${tool.description}</p>
+                        <div class="tool-link">使用工具</div>
+                    </a>
+                `;
+            });
+            
+            container.innerHTML = toolsHTML;
+        }
+        
+        // 更新上次扫描时间
+        function updateLastScanTime() {
+            const timeElement = document.getElementById('lastScanTime');
+            const now = new Date();
+            const diffMs = now - lastScanTime;
+            const diffMins = Math.floor(diffMs / 60000);
+            
+            if (diffMins < 1) {
+                timeElement.textContent = '刚刚';
+            } else if (diffMins < 60) {
+                timeElement.textContent = `${diffMins}分钟前`;
+            } else {
+                const diffHours = Math.floor(diffMins / 60);
+                timeElement.textContent = `${diffHours}小时前`;
+            }
+        }
+        
+        // 初始加载完成后显示提示
+        window.addEventListener('load', function() {
+            // 如果长时间没有工具，显示帮助信息
+            setTimeout(() => {
+                if (toolsList.length === 0) {
+                    const container = document.getElementById('toolsContainer');
+                    if (container.querySelector('.scanning')) {
+                        container.innerHTML += `
+                            <div class="how-to-use" style="margin-top: 20px;">
+                                <h4><i class="fas fa-question-circle"></i> 如何使用？</h4>
+                                <p>1. 在GitHub仓库中创建新文件夹（如: my-new-tool）</p>
+                                <p>2. 在文件夹中创建 index.html 文件，放入工具代码</p>
+                                <p>3. 稍等片刻，系统会自动扫描并显示工具</p>
+                                <p>4. 点击"重新扫描"按钮可立即刷新</p>
+                            </div>
+                        `;
+                    }
+                }
+            }, 5000);
         });
     </script>
 </body>
