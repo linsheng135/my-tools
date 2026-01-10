@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人导航页 | 简洁高效的链接管理器</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    :root {
+      --primary-color: #6366f1;
+      --secondary-color: #8b5cf6;
+      --background-color: #f8fafc;
+      --card-color: #ffffff;
+      --text-color: #1e293b;
+      --text-secondary: #64748b;
+      --border-color: #e2e8f0;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --danger-color: #ef4444;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --radius: 12px;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .logo i {
+      font-size: 28px;
+    }
+    
+    .actions {
+      display: flex;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      border: none;
+      background: var(--primary-color);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+    
+    .btn:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    
+    .btn-secondary {
+      background: var(--card-color);
+      color: var(--text-color);
+      border: 1px solid var(--border-color);
+    }
+    
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      border-color: var(--primary-color);
+    }
+    
+    .search-container {
+      margin-bottom: 30px;
+      position: relative;
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 16px 20px;
+      padding-left: 50px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      background: var(--card-color);
+      font-size: 16px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      font-size: 18px;
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .folder-card {
+      background: var(--card-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      border: 1px solid var(--border-color);
+    }
+    
+    .folder-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .folder-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .folder-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 20px;
+    }
+    
+    .folder-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .folder-desc {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+    
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .link-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: #f8fafc;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: var(--text-color);
+      border: 1px solid transparent;
+    }
+    
+    .link-item:hover {
+      background: #f1f5f9;
+      border-color: var(--primary-color);
+      transform: translateX(5px);
+    }
+    
+    .link-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 16px;
+      color: var(--primary-color);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+    
+    .link-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .link-info {
+      flex: 1;
+    }
+    
+    .link-name {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .link-url {
+      font-size: 12px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-secondary);
+    }
+    
+    .empty-state i {
+      font-size: 64px;
+      margin-bottom: 20px;
+      color: #cbd5e1;
+    }
+    
+    .empty-state h3 {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--text-color);
+    }
+    
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .modal.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background: var(--card-color);
+      border-radius: var(--radius);
+      padding: 30px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      transform: translateY(20px);
+      transition: all 0.3s ease;
+    }
+    
+    .modal.active .modal-content {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    
+    .modal-title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    
+    .modal-close:hover {
+      color: var(--danger-color);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: var(--card-color);
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    
+    .notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: var(--card-color);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    
+    .notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    
+    .notification.success {
+      border-left: 4px solid var(--success-color);
+    }
+    
+    .notification.error {
+      border-left: 4px solid var(--danger-color);
+    }
+    
+    .notification.warning {
+      border-left: 4px solid var(--warning-color);
+    }
+    
+    .drag-handle {
+      cursor: grab;
+      color: var(--text-secondary);
+      padding: 0 8px;
+    }
+    
+    .drag-handle:active {
+      cursor: grabbing;
+    }
+    
+    .context-menu {
+      position: fixed;
+      background: var(--card-color);
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      min-width: 200px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.2s ease;
+    }
+    
+    .context-menu.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+    
+    .context-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .context-item:hover {
+      background: #f1f5f9;
+    }
+    
+    .context-item.delete {
+      color: var(--danger-color);
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 30px 0;
+      color: var(--text-secondary);
+      font-size: 14px;
+      border-top: 1px solid var(--border-color);
+      margin-top: 30px;
+    }
+    
+    .sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      padding: 8px 12px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-color);
+    }
+    
+    @media (max-width: 768px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+      }
+      
+      .actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .btn {
+        flex: 1;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部导航栏 -->
+    <header class="header">
+      <div class="logo">
+        <i class="fas fa-compass"></i>
+        <span>个人导航</span>
+      </div>
+      <div class="actions">
+        <button class="btn" id="addFolderBtn">
+          <i class="fas fa-folder-plus"></i> 新建文件夹
+        </button>
+        <button class="btn" id="addLinkBtn">
+          <i class="fas fa-plus"></i> 添加链接
+        </button>
+        <button class="btn btn-secondary" id="settingsBtn">
+          <i class="fas fa-cog"></i> 设置
+        </button>
+      </div>
+    </header>
+    
+    <!-- 搜索框 -->
+    <div class="search-container">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" id="searchInput" placeholder="搜索链接或文件夹...">
+    </div>
+    
+    <!-- 主要内容区域 -->
+    <div class="content-grid" id="contentGrid">
+      <!-- 内容将通过JavaScript动态加载 -->
+      <div class="empty-state" id="emptyState">
+        <i class="fas fa-compass"></i>
+        <h3>您的导航页是空的</h3>
+        <p>开始添加第一个文件夹或链接吧！</p>
+        <div style="margin-top: 20px;">
+          <button class="btn" id="firstFolderBtn">
+            <i class="fas fa-folder-plus"></i> 创建第一个文件夹
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 同步状态指示器 -->
+    <div class="sync-status" id="syncStatus" style="display: none;">
+      <i class="fas fa-sync-alt fa-spin"></i>
+      <span>正在同步...</span>
+    </div>
+    
+    <!-- 页脚 -->
+    <footer class="footer">
+      <p>个人导航页 &copy; 2023 | 数据存储于您的浏览器和GitHub Gist</p>
+    </footer>
+  </div>
+  
+  <!-- 模态框：添加/编辑文件夹 -->
+  <div class="modal" id="folderModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="folderModalTitle">新建文件夹</h3>
+        <button class="modal-close" id="folderModalClose">&times;</button>
+      </div>
+      <form id="folderForm">
+        <div class="form-group">
+          <label class="form-label" for="folderName">文件夹名称</label>
+          <input type="text" class="form-input" id="folderName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="folderDescription">描述 (可选)</label>
+          <input type="text" class="form-input" id="folderDescription" placeholder="例如：工作相关的链接">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="folderIcon">图标</label>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;">
+            <div class="folder-icon-option selected" data-icon="folder">
+              <i class="fas fa-folder"></i>
+            </div>
+            <div class="folder-icon-option" data-icon="briefcase">
+              <i class="fas fa-briefcase"></i>
+            </div>
+            <div class="folder-icon-option" data-icon="code">
+              <i class="fas fa-code"></i>
+            </div>
+            <div class="folder-icon-option" data-icon="heart">
+              <i class="fas fa-heart"></i>
+            </div>
+            <div class="folder-icon-option" data-icon="gamepad">
+              <i class="fas fa-gamepad"></i>
+            </div>
+            <div class="folder-icon-option" data-icon="music">
+              <i class="fas fa-music"></i>
+            </div>
+          </div>
+          <input type="hidden" id="folderIcon" value="folder">
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="folderCancelBtn">取消</button>
+          <button type="submit" class="btn" id="folderSubmitBtn">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- 模态框：添加/编辑链接 -->
+  <div class="modal" id="linkModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="linkModalTitle">添加链接</h3>
+        <button class="modal-close" id="linkModalClose">&times;</button>
+      </div>
+      <form id="linkForm">
+        <div class="form-group">
+          <label class="form-label" for="linkName">链接名称</label>
+          <input type="text" class="form-input" id="linkName" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="linkUrl">URL</label>
+          <input type="url" class="form-input" id="linkUrl" placeholder="https://example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="linkFolder">所属文件夹</label>
+          <select class="form-input" id="linkFolder">
+            <option value="">无 (显示在根目录)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">图标</label>
+          <div style="display: flex; align-items: center; gap: 15px;">
+            <div class="link-icon" id="linkIconPreview" style="margin: 0;">
+              <i class="fas fa-link"></i>
+            </div>
+            <div>
+              <p style="font-size: 14px; color: var(--text-secondary);">将自动从网站获取图标</p>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="linkCancelBtn">取消</button>
+          <button type="submit" class="btn" id="linkSubmitBtn">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- 模态框：设置 -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">设置</h3>
+        <button class="modal-close" id="settingsModalClose">&times;</button>
+      </div>
+      
+      <div style="margin-bottom: 30px;">
+        <h4 style="margin-bottom: 15px; font-size: 18px;">数据同步</h4>
+        <div class="form-group">
+          <label class="form-label" for="githubToken">GitHub 个人访问令牌</label>
+          <input type="password" class="form-input" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">
+            用于将数据保存到您的 GitHub Gist。如何获取令牌：
+            <a href="https://docs.github.com/zh/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" target="_blank" style="color: var(--primary-color);">查看指南</a>
+          </p>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="gistId">Gist ID (可选)</label>
+          <input type="text" class="form-input" id="gistId" placeholder="留空将自动创建">
+          <p style="font-size: 13px; color: var(--text-secondary); margin-top: 8px;">
+            如果已存在导航数据 Gist，请填写其 ID。否则将自动创建。
+          </p>
+        </div>
+        <button class="btn" id="saveSettingsBtn" style="width: 100%;">
+          <i class="fas fa-save"></i> 保存设置并同步
+        </button>
+      </div>
+      
+      <div style="margin-bottom: 30px;">
+        <h4 style="margin-bottom: 15px; font-size: 18px;">数据管理</h4>
+        <div style="display: flex; gap: 12px;">
+          <button class="btn btn-secondary" id="exportDataBtn" style="flex: 1;">
+            <i class="fas fa-download"></i> 导出数据
+          </button>
+          <button class="btn btn-secondary" id="importDataBtn" style="flex: 1;">
+            <i class="fas fa-upload"></i> 导入数据
+          </button>
+        </div>
+        <input type="file" id="importFileInput" accept=".json" style="display: none;">
+      </div>
+      
+      <div>
+        <h4 style="margin-bottom: 15px; font-size: 18px;">关于</h4>
+        <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
+          个人导航页是一个纯前端应用，数据存储在您的浏览器和 GitHub Gist 中。<br>
+          项目代码完全开源，可在 GitHub 上查看和贡献。
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 通知消息 -->
+  <div class="notification" id="notification"></div>
+  
+  <!-- 右键菜单 -->
+  <div class="context-menu" id="contextMenu"></div>
+  
+  <script>
+    // 主应用代码
+    document.addEventListener('DOMContentLoaded', function() {
+      // 应用状态
+      const appState = {
+        folders: [],
+        links: [],
+        editingFolderId: null,
+        editingLinkId: null,
+        githubToken: localStorage.getItem('githubToken') || '',
+        gistId: localStorage.getItem('gistId') || '',
+        lastSync: localStorage.getItem('lastSync') || null
+      };
+      
+      // DOM 元素
+      const contentGrid = document.getElementById('contentGrid');
+      const emptyState = document.getElementById('emptyState');
+      const searchInput = document.getElementById('searchInput');
+      const syncStatus = document.getElementById('syncStatus');
+      const notification = document.getElementById('notification');
+      
+      // 初始化
+      initApp();
+      
+      // 初始化应用
+      function initApp() {
+        loadData();
+        setupEventListeners();
+        renderContent();
+        checkFirstTimeUser();
+        
+        // 如果有GitHub令牌，尝试从Gist同步
+        if (appState.githubToken) {
+          syncWithGist('pull');
+        }
+      }
+      
+      // 加载本地数据
+      function loadData() {
+        const savedFolders = localStorage.getItem('navFolders');
+        const savedLinks = localStorage.getItem('navLinks');
+        
+        if (savedFolders) {
+          appState.folders = JSON.parse(savedFolders);
+        } else {
+          // 初始示例数据
+          appState.folders = [
+            { id: 'folder1', name: '工作', description: '日常工作相关链接', icon: 'briefcase', order: 1 },
+            { id: 'folder2', name: '开发', description: '编程和开发资源', icon: 'code', order: 2 },
+            { id: 'folder3', name: '娱乐', description: '视频、音乐和游戏', icon: 'gamepad', order: 3 }
+          ];
+        }
+        
+        if (savedLinks) {
+          appState.links = JSON.parse(savedLinks);
+        } else {
+          // 初始示例链接
+          appState.links = [
+            { id: 'link1', name: 'GitHub', url: 'https://github.com', folderId: 'folder2', icon: '', order: 1 },
+            { id: 'link2', name: 'Google', url: 'https://google.com', folderId: '', icon: '', order: 2 },
+            { id: 'link3', name: 'YouTube', url: 'https://youtube.com', folderId: 'folder3', icon: '', order: 3 },
+            { id: 'link4', name: 'MDN Web Docs', url: 'https://developer.mozilla.org', folderId: 'folder2', icon: '', order: 4 },
+            { id: 'link5', name: 'Stack Overflow', url: 'https://stackoverflow.com', folderId: 'folder2', icon: '', order: 5 }
+          ];
+        }
+      }
+      
+      // 保存数据到本地存储
+      function saveData() {
+        localStorage.setItem('navFolders', JSON.stringify(appState.folders));
+        localStorage.setItem('navLinks', JSON.stringify(appState.links));
+        localStorage.setItem('lastSync', new Date().toISOString());
+        
+        // 如果有GitHub令牌，同步到Gist
+        if (appState.githubToken) {
+          syncWithGist('push');
+        }
+        
+        showNotification('数据已保存', 'success');
+      }
+      
+      // 与GitHub Gist同步
+      async function syncWithGist(action) {
+        if (!appState.githubToken) return;
+        
+        syncStatus.style.display = 'flex';
+        
+        try {
+          const data = {
+            folders: appState.folders,
+            links: appState.links,
+            updatedAt: new Date().toISOString()
+          };
+          
+          if (action === 'push') {
+            // 推送到Gist
+            if (appState.gistId) {
+              // 更新现有Gist
+              await updateGist(appState.gistId, data);
+            } else {
+              // 创建新Gist
+              const gistId = await createGist(data);
+              if (gistId) {
+                appState.gistId = gistId;
+                localStorage.setItem('gistId', gistId);
+              }
+            }
+            showNotification('数据已同步到 GitHub', 'success');
+          } else if (action === 'pull') {
+            // 从Gist拉取
+            if (appState.gistId) {
+              const remoteData = await fetchGist(appState.gistId);
+              if (remoteData) {
+                appState.folders = remoteData.folders || [];
+                appState.links = remoteData.links || [];
+                saveData();
+                renderContent();
+                showNotification('已从 GitHub 同步数据', 'success');
+              }
+            }
+          }
+        } catch (error) {
+          console.error('同步失败:', error);
+          showNotification('同步失败: ' + error.message, 'error');
+        } finally {
+          setTimeout(() => {
+            syncStatus.style.display = 'none';
+          }, 1000);
+        }
+      }
+      
+      // 创建Gist
+      async function createGist(data) {
+        const response = await fetch('https://api.github.com/gists', {
+          method: 'POST',
+          headers: {
+            'Authorization': `token ${appState.githubToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            description: '个人导航数据',
+            public: false,
+            files: {
+              'navigation-data.json': {
+                content: JSON.stringify(data, null, 2)
+              }
+            }
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('创建 Gist 失败');
+        }
+        
+        const result = await response.json();
+        return result.id;
+      }
+      
+      // 更新Gist
+      async function updateGist(gistId, data) {
+        const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `token ${appState.githubToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            description: '个人导航数据',
+            files: {
+              'navigation-data.json': {
+                content: JSON.stringify(data, null, 2)
+              }
+            }
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error('更新 Gist 失败');
+        }
+      }
+      
+      // 获取Gist数据
+      async function fetchGist(gistId) {
+        const response = await fetch(`https://api.github.com/gists/${gistId}`, {
+          headers: {
+            'Authorization': `token ${appState.githubToken}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('获取 Gist 失败');
+        }
+        
+        const result = await response.json();
+        const content = result.files['navigation-data.json'].content;
+        return JSON.parse(content);
+      }
+      
+      // 渲染内容
+      function renderContent(searchTerm = '') {
+        contentGrid.innerHTML = '';
+        
+        // 过滤文件夹和链接
+        const filteredFolders = appState.folders.filter(folder => 
+          folder.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (folder.description && folder.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+        
+        // 如果没有内容且没有搜索词，显示空状态
+        if (filteredFolders.length === 0 && searchTerm === '') {
+          emptyState.style.display = 'block';
+          return;
+        } else {
+          emptyState.style.display = 'none';
+        }
+        
+        // 渲染根目录链接（没有文件夹的链接）
+        const rootLinks = appState.links
+          .filter(link => !link.folderId && 
+            (link.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             link.url.toLowerCase().includes(searchTerm.toLowerCase())))
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        if (rootLinks.length > 0 || searchTerm !== '') {
+          const rootFolderCard = createFolderCard({
+            id: 'root',
+            name: '常用链接',
+            description: '未分类的链接',
+            icon: 'star'
+          }, rootLinks, true);
+          contentGrid.appendChild(rootFolderCard);
+        }
+        
+        // 渲染每个文件夹
+        filteredFolders
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .forEach(folder => {
+            const folderLinks = appState.links
+              .filter(link => link.folderId === folder.id)
+              .filter(link => 
+                searchTerm === '' || 
+                link.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                link.url.toLowerCase().includes(searchTerm.toLowerCase())
+              )
+              .sort((a, b) => (a.order || 0) - (b.order || 0));
+            
+            // 如果搜索时文件夹内没有匹配的链接，且文件夹本身也不匹配搜索词，则不显示
+            if (searchTerm !== '' && folderLinks.length === 0) return;
+            
+            const folderCard = createFolderCard(folder, folderLinks);
+            contentGrid.appendChild(folderCard);
+          });
+      }
+      
+      // 创建文件夹卡片
+      function createFolderCard(folder, links, isRoot = false) {
+        const folderCard = document.createElement('div');
+        folderCard.className = 'folder-card';
+        folderCard.dataset.id = folder.id;
+        
+        let iconHTML = '';
+        if (folder.icon) {
+          iconHTML = `<i class="fas fa-${folder.icon}"></i>`;
+        }
+        
+        const linksHTML = links.map(link => {
+          // 获取图标
+          let iconHTML = '<i class="fas fa-link"></i>';
+          if (link.icon) {
+            iconHTML = `<img src="${link.icon}" alt="${link.name}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-link\\'></i>'">`;
+          }
+          
+          return `
+            <a href="${link.url}" target="_blank" class="link-item" data-id="${link.id}">
+              <div class="link-icon">${iconHTML}</div>
+              <div class="link-info">
+                <div class="link-name">${link.name}</div>
+                <div class="link-url">${link.url}</div>
+              </div>
+              <div class="drag-handle">
+                <i class="fas fa-grip-vertical"></i>
+              </div>
+            </a>
+          `;
+        }).join('');
+        
+        folderCard.innerHTML = `
+          <div class="folder-header">
+            <div style="display: flex; align-items: center; gap: 15px;">
+              <div class="folder-icon">
+                ${iconHTML}
+              </div>
+              <div>
+                <div class="folder-title">${folder.name}</div>
+                <div class="folder-desc">${folder.description || ''}</div>
+              </div>
+            </div>
+            <div class="folder-actions">
+              <button class="btn btn-secondary add-link-to-folder" data-folder="${folder.id}" style="padding: 8px 12px;">
+                <i class="fas fa-plus"></i>
+              </button>
+              ${!isRoot ? `
+                <button class="btn btn-secondary edit-folder" data-id="${folder.id}" style="padding: 8px 12px;">
+                  <i class="fas fa-edit"></i>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+          <div class="link-list">
+            ${linksHTML || '<p style="color: var(--text-secondary); text-align: center; padding: 20px;">暂无链接</p>'}
+          </div>
+          ${!isRoot && links.length > 0 ? `
+            <div style="margin-top: 15px; text-align: center;">
+              <button class="btn btn-secondary" data-folder="${folder.id}" style="width: 100%;">
+                <i class="fas fa-plus"></i> 添加链接到此文件夹
+              </button>
+            </div>
+          ` : ''}
+        `;
+        
+        // 添加事件监听器
+        folderCard.querySelectorAll('.add-link-to-folder').forEach(btn => {
+          btn.addEventListener('click', function() {
+            openLinkModal(this.dataset.folder);
+          });
+        });
+        
+        folderCard.querySelectorAll('.edit-folder').forEach(btn => {
+          btn.addEventListener('click', function() {
+            openFolderModal(this.dataset.id);
+          });
+        });
+        
+        folderCard.querySelectorAll('.link-item').forEach(link => {
+          link.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showContextMenu(e, this.dataset.id, 'link');
+          });
+          
+          // 拖拽排序
+          const dragHandle = link.querySelector('.drag-handle');
+          dragHandle.addEventListener('mousedown', function(e) {
+            startDragging(e, link.dataset.id);
+          });
+        });
+        
+        return folderCard;
+      }
+      
+      // 打开文件夹模态框
+      function openFolderModal(folderId = null) {
+        const modal = document.getElementById('folderModal');
+        const title = document.getElementById('folderModalTitle');
+        const form = document.getElementById('folderForm');
+        const nameInput = document.getElementById('folderName');
+        const descInput = document.getElementById('folderDescription');
+        const iconInput = document.getElementById('folderIcon');
+        
+        // 重置表单
+        form.reset();
+        
+        if (folderId) {
+          // 编辑模式
+          appState.editingFolderId = folderId;
+          title.textContent = '编辑文件夹';
+          const folder = appState.folders.find(f => f.id === folderId);
+          
+          if (folder) {
+            nameInput.value = folder.name;
+            descInput.value = folder.description || '';
+            iconInput.value = folder.icon || 'folder';
+            
+            // 选择对应的图标
+            document.querySelectorAll('.folder-icon-option').forEach(option => {
+              if (option.dataset.icon === folder.icon) {
+                option.classList.add('selected');
+              } else {
+                option.classList.remove('selected');
+              }
+            });
+          }
+        } else {
+          // 新建模式
+          appState.editingFolderId = null;
+          title.textContent = '新建文件夹';
+          iconInput.value = 'folder';
+          
+          // 重置图标选择
+          document.querySelectorAll('.folder-icon-option').forEach(option => {
+            if (option.dataset.icon === 'folder') {
+              option.classList.add('selected');
+            } else {
+              option.classList.remove('selected');
+            }
+          });
+        }
+        
+        modal.classList.add('active');
+      }
+      
+      // 打开链接模态框
+      function openLinkModal(folderId = null) {
+        const modal = document.getElementById('linkModal');
+        const title = document.getElementById('linkModalTitle');
+        const form = document.getElementById('linkForm');
+        const nameInput = document.getElementById('linkName');
+        const urlInput = document.getElementById('linkUrl');
+        const folderSelect = document.getElementById('linkFolder');
+        const iconPreview = document.getElementById('linkIconPreview');
+        
+        // 重置表单
+        form.reset();
+        appState.editingLinkId = null;
+        title.textContent = '添加链接';
+        
+        // 填充文件夹选择
+        folderSelect.innerHTML = '<option value="">无 (显示在根目录)</option>';
+        appState.folders.forEach(folder => {
+          const option = document.createElement('option');
+          option.value = folder.id;
+          option.textContent = folder.name;
+          folderSelect.appendChild(option);
+        });
+        
+        // 如果指定了文件夹，则选中
+        if (folderId) {
+          folderSelect.value = folderId;
+        }
+        
+        // 重置图标预览
+        iconPreview.innerHTML = '<i class="fas fa-link"></i>';
+        
+        // URL输入时尝试获取图标
+        urlInput.addEventListener('input', async function() {
+          if (this.value && this.value.includes('.')) {
+            try {
+              const domain = new URL(this.value).hostname;
+              const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+              
+              // 测试图片是否能加载
+              const img = new Image();
+              img.onload = function() {
+                iconPreview.innerHTML = `<img src="${faviconUrl}" alt="网站图标">`;
+              };
+              img.onerror = function() {
+                iconPreview.innerHTML = '<i class="fas fa-link"></i>';
+              };
+              img.src = faviconUrl;
+            } catch (e) {
+              // URL无效，忽略
+            }
+          }
+        });
+        
+        modal.classList.add('active');
+      }
+      
+      // 显示通知
+      function showNotification(message, type = 'info') {
+        notification.textContent = message;
+        notification.className = `notification ${type}`;
+        notification.classList.add('show');
+        
+        setTimeout(() => {
+          notification.classList.remove('show');
+        }, 3000);
+      }
+      
+      // 显示右键菜单
+      function showContextMenu(e, id, type) {
+        const contextMenu = document.getElementById('contextMenu');
+        contextMenu.innerHTML = '';
+        
+        if (type === 'link') {
+          contextMenu.innerHTML = `
+            <div class="context-item" data-action="edit">
+              <i class="fas fa-edit"></i> 编辑链接
+            </div>
+            <div class="context-item" data-action="delete">
+              <i class="fas fa-trash"></i> 删除链接
+            </div>
+          `;
+        } else if (type === 'folder') {
+          contextMenu.innerHTML = `
+            <div class="context-item" data-action="edit">
+              <i class="fas fa-edit"></i> 编辑文件夹
+            </div>
+            <div class="context-item delete" data-action="delete">
+              <i class="fas fa-trash"></i> 删除文件夹
+            </div>
+          `;
+        }
+        
+        contextMenu.style.left = e.pageX + 'px';
+        contextMenu.style.top = e.pageY + 'px';
+        contextMenu.classList.add('active');
+        
+        // 添加菜单项点击事件
+        contextMenu.querySelectorAll('.context-item').forEach(item => {
+          item.addEventListener('click', function() {
+            const action = this.dataset.action;
+            
+            if (type === 'link') {
+              if (action === 'edit') {
+                editLink(id);
+              } else if (action === 'delete') {
+                deleteLink(id);
+              }
+            } else if (type === 'folder') {
+              if (action === 'edit') {
+                openFolderModal(id);
+              } else if (action === 'delete') {
+                deleteFolder(id);
+              }
+            }
+            
+            contextMenu.classList.remove('active');
+          });
+        });
+        
+        // 点击其他地方关闭菜单
+        document.addEventListener('click', function closeMenu() {
+          contextMenu.classList.remove('active');
+          document.removeEventListener('click', closeMenu);
+        });
+      }
+      
+      // 编辑链接
+      function editLink(linkId) {
+        const link = appState.links.find(l => l.id === linkId);
+        if (!link) return;
+        
+        const modal = document.getElementById('linkModal');
+        const title = document.getElementById('linkModalTitle');
+        const form = document.getElementById('linkForm');
+        const nameInput = document.getElementById('linkName');
+        const urlInput = document.getElementById('linkUrl');
+        const folderSelect = document.getElementById('linkFolder');
+        const iconPreview = document.getElementById('linkIconPreview');
+        
+        appState.editingLinkId = linkId;
+        title.textContent = '编辑链接';
+        
+        // 填充表单
+        nameInput.value = link.name;
+        urlInput.value = link.url;
+        
+        // 填充文件夹选择
+        folderSelect.innerHTML = '<option value="">无 (显示在根目录)</option>';
+        appState.folders.forEach(folder => {
+          const option = document.createElement('option');
+          option.value = folder.id;
+          option.textContent = folder.name;
+          if (folder.id === link.folderId) {
+            option.selected = true;
+          }
+          folderSelect.appendChild(option);
+        });
+        
+        // 显示图标
+        if (link.icon) {
+          iconPreview.innerHTML = `<img src="${link.icon}" alt="${link.name}">`;
+        } else {
+          iconPreview.innerHTML = '<i class="fas fa-link"></i>';
+        }
+        
+        modal.classList.add('active');
+      }
+      
+      // 删除链接
+      function deleteLink(linkId) {
+        if (confirm('确定要删除这个链接吗？')) {
+          appState.links = appState.links.filter(l => l.id !== linkId);
+          saveData();
+          renderContent();
+          showNotification('链接已删除', 'success');
+        }
+      }
+      
+      // 删除文件夹
+      function deleteFolder(folderId) {
+        // 检查文件夹中是否有链接
+        const folderLinks = appState.links.filter(l => l.folderId === folderId);
+        
+        if (folderLinks.length > 0) {
+          if (!confirm(`文件夹中包含 ${folderLinks.length} 个链接，删除文件夹将同时删除这些链接。确定要继续吗？`)) {
+            return;
+          }
+        }
+        
+        // 删除文件夹和其中的链接
+        appState.folders = appState.folders.filter(f => f.id !== folderId);
+        appState.links = appState.links.filter(l => l.folderId !== folderId);
+        
+        saveData();
+        renderContent();
+        showNotification('文件夹已删除', 'success');
+      }
+      
+      // 检查是否首次使用
+      function checkFirstTimeUser() {
+        const firstTime = !localStorage.getItem('navFolders');
+        if (firstTime) {
+          setTimeout(() => {
+            showNotification('欢迎使用个人导航页！点击右上角按钮开始添加内容。', 'success');
+          }, 1000);
+        }
+      }
+      
+      // 设置事件监听器
+      function setupEventListeners() {
+        // 添加文件夹按钮
+        document.getElementById('addFolderBtn').addEventListener('click', () => openFolderModal());
+        document.getElementById('firstFolderBtn').addEventListener('click', () => openFolderModal());
+        
+        // 添加链接按钮
+        document.getElementById('addLinkBtn').addEventListener('click', () => openLinkModal());
+        
+        // 设置按钮
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+          document.getElementById('settingsModal').classList.add('active');
+          
+          // 填充设置表单
+          document.getElementById('githubToken').value = appState.githubToken;
+          document.getElementById('gistId').value = appState.gistId;
+        });
+        
+        // 文件夹表单提交
+        document.getElementById('folderForm').addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          const name = document.getElementById('folderName').value;
+          const description = document.getElementById('folderDescription').value;
+          const icon = document.getElementById('folderIcon').value;
+          
+          if (appState.editingFolderId) {
+            // 更新现有文件夹
+            const folder = appState.folders.find(f => f.id === appState.editingFolderId);
+            if (folder) {
+              folder.name = name;
+              folder.description = description;
+              folder.icon = icon;
+            }
+          } else {
+            // 创建新文件夹
+            const newFolder = {
+              id: 'folder_' + Date.now(),
+              name,
+              description,
+              icon,
+              order: appState.folders.length + 1
+            };
+            
+            appState.folders.push(newFolder);
+          }
+          
+          saveData();
+          renderContent();
+          document.getElementById('folderModal').classList.remove('active');
+          
+          showNotification(appState.editingFolderId ? '文件夹已更新' : '文件夹已创建', 'success');
+        });
+        
+        // 链接表单提交
+        document.getElementById('linkForm').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          const name = document.getElementById('linkName').value;
+          const url = document.getElementById('linkUrl').value;
+          const folderId = document.getElementById('linkFolder').value;
+          
+          // 获取网站图标
+          let iconUrl = '';
+          try {
+            const domain = new URL(url).hostname;
+            iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+            
+            // 验证图标是否有效
+            const response = await fetch(iconUrl, { method: 'HEAD' });
+            if (!response.ok) {
+              iconUrl = '';
+            }
+          } catch (error) {
+            iconUrl = '';
+          }
+          
+          if (appState.editingLinkId) {
+            // 更新现有链接
+            const link = appState.links.find(l => l.id === appState.editingLinkId);
+            if (link) {
+              link.name = name;
+              link.url = url;
+              link.folderId = folderId;
+              link.icon = iconUrl || link.icon;
+            }
+          } else {
+            // 创建新链接
+            const newLink = {
+              id: 'link_' + Date.now(),
+              name,
+              url,
+              folderId,
+              icon: iconUrl,
+              order: appState.links.filter(l => l.folderId === folderId).length + 1
+            };
+            
+            appState.links.push(newLink);
+          }
+          
+          saveData();
+          renderContent();
+          document.getElementById('linkModal').classList.remove('active');
+          
+          showNotification(appState.editingLinkId ? '链接已更新' : '链接已添加', 'success');
+        });
+        
+        // 图标选择
+        document.querySelectorAll('.folder-icon-option').forEach(option => {
+          option.addEventListener('click', function() {
+            document.querySelectorAll('.folder-icon-option').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('folderIcon').value = this.dataset.icon;
+          });
+        });
+        
+        // 模态框关闭按钮
+        document.querySelectorAll('.modal-close').forEach(btn => {
+          btn.addEventListener('click', function() {
+            this.closest('.modal').classList.remove('active');
+          });
+        });
+        
+        document.getElementById('folderCancelBtn').addEventListener('click', () => {
+          document.getElementById('folderModal').classList.remove('active');
+        });
+        
+        document.getElementById('linkCancelBtn').addEventListener('click', () => {
+          document.getElementById('linkModal').classList.remove('active');
+        });
+        
+        document.getElementById('settingsModalClose').addEventListener('click', () => {
+          document.getElementById('settingsModal').classList.remove('active');
+        });
+        
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+              this.classList.remove('active');
+            }
+          });
+        });
+        
+        // 搜索功能
+        searchInput.addEventListener('input', function() {
+          renderContent(this.value);
+        });
+        
+        // 保存设置
+        document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+          const token = document.getElementById('githubToken').value;
+          const gistId = document.getElementById('gistId').value;
+          
+          if (!token) {
+            showNotification('请输入 GitHub 个人访问令牌', 'error');
+            return;
+          }
+          
+          appState.githubToken = token;
+          appState.gistId = gistId;
+          
+          localStorage.setItem('githubToken', token);
+          localStorage.setItem('gistId', gistId);
+          
+          // 尝试同步数据
+          syncWithGist('push');
+          document.getElementById('settingsModal').classList.remove('active');
+        });
+        
+        // 导出数据
+        document.getElementById('exportDataBtn').addEventListener('click', function() {
+          const data = {
+            folders: appState.folders,
+            links: appState.links,
+            exportedAt: new Date().toISOString()
+          };
+          
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `navigation-data-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          showNotification('数据已导出', 'success');
+        });
+        
+        // 导入数据
+        document.getElementById('importDataBtn').addEventListener('click', function() {
+          document.getElementById('importFileInput').click();
+        });
+        
+        document.getElementById('importFileInput').addEventListener('change', function(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            try {
+              const data = JSON.parse(event.target.result);
+              
+              if (confirm('导入数据将覆盖当前所有数据，确定要继续吗？')) {
+                appState.folders = data.folders || [];
+                appState.links = data.links || [];
+                saveData();
+                renderContent();
+                showNotification('数据已导入', 'success');
+              }
+            } catch (error) {
+              showNotification('导入失败：文件格式错误', 'error');
+            }
+            
+            // 重置文件输入
+            e.target.value = '';
+          };
+          
+          reader.readAsText(file);
+        });
+      }
+      
+      // 拖拽排序功能
+      let draggingElement = null;
+      
+      function startDragging(e, linkId) {
+        draggingElement = linkId;
+        document.addEventListener('mousemove', handleDrag);
+        document.addEventListener('mouseup', stopDragging);
+      }
+      
+      function handleDrag(e) {
+        // 这里可以添加拖拽时的视觉反馈
+      }
+      
+      function stopDragging() {
+        if (draggingElement) {
+          // 这里可以实现拖拽排序逻辑
+          draggingElement = null;
+        }
+        document.removeEventListener('mousemove', handleDrag);
+        document.removeEventListener('mouseup', stopDragging);
+      }
+    });
+  </script>
+</body>
+</html>
