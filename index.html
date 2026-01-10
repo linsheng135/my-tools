@@ -3,9 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的工具导航</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>GitHub工具导航 - linsheng135/my-tools</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔧</text></svg>">
     <style>
+        :root {
+            /* 浅色主题 */
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius: 12px;
+            --transition: all 0.2s ease;
+        }
+
+        [data-theme="dark"] {
+            /* 深色主题 */
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --primary-color: #60a5fa;
+            --primary-hover: #93c5fd;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,230 +44,303 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: var(--transition);
             min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            padding-bottom: 40px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
+        /* 头部样式 */
         header {
-            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 1px solid var(--border-color);
             margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .title-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         h1 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
+        .github-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1rem;
+            background: var(--card-bg);
+            padding: 5px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
         }
 
+        .github-link:hover {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* 搜索和操作栏 */
         .controls {
             display: flex;
-            gap: 15px;
-            margin: 25px 0;
             flex-wrap: wrap;
-            justify-content: center;
+            gap: 15px;
+            align-items: center;
         }
 
-        .search-box {
+        .search-container {
             flex: 1;
-            max-width: 500px;
+            min-width: 250px;
             position: relative;
         }
 
-        .search-box i {
+        .search-icon {
             position: absolute;
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #7f8c8d;
+            color: var(--text-secondary);
         }
 
-        .search-input {
+        #search {
             width: 100%;
-            padding: 15px 15px 15px 45px;
-            border: 2px solid #e0e6ed;
-            border-radius: 50px;
-            font-size: 16px;
-            transition: all 0.3s;
-            background: white;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: var(--transition);
         }
 
-        .search-input:focus {
+        #search:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
-        .scan-btn {
-            padding: 15px 30px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-            color: white;
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
             border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 16px;
+            border-radius: var(--radius);
             font-weight: 600;
-            transition: all 0.3s;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .scan-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
-            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
-        }
-
-        .scan-btn:active {
-            transform: translateY(0);
-        }
-
-        .tools-container {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .tools-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .tools-title {
-            font-size: 1.5rem;
-            color: #2c3e50;
-        }
-
-        .tools-count {
-            background: #3498db;
+        .btn-primary {
+            background-color: var(--primary-color);
             color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+        }
+
+        /* 工具卡片区域 */
+        .tools-container {
+            margin-bottom: 40px;
         }
 
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-
-        @media (min-width: 768px) {
-            .tools-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .tools-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .search-box {
-                max-width: 100%;
-            }
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
         }
 
         .tool-card {
-            background: white;
-            border-radius: 12px;
-            padding: 25px 20px;
-            text-align: center;
-            transition: all 0.3s;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid transparent;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid transparent;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 140px;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
         .tool-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-            border-color: #3498db;
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-color);
         }
 
         .tool-icon {
-            font-size: 28px;
-            color: #3498db;
+            font-size: 2.5rem;
             margin-bottom: 15px;
-            width: 60px;
-            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            color: var(--primary-color);
         }
 
         .tool-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 5px;
-            line-height: 1.3;
-            word-break: break-word;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-color);
         }
 
         .tool-folder {
-            font-size: 0.85rem;
-            color: #7f8c8d;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
             font-family: monospace;
-            background: #f8f9fa;
+            background-color: rgba(0, 0, 0, 0.05);
             padding: 3px 8px;
             border-radius: 4px;
-            margin-top: 5px;
+            display: inline-block;
         }
 
-        .no-tools {
-            grid-column: 1 / -1;
+        [data-theme="dark"] .tool-folder {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tool-link {
+            margin-top: auto;
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
             text-align: center;
-            padding: 40px;
-            color: #7f8c8d;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
+        .tool-link:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* 信息展示区 */
+        .info-panel {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .info-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .instructions {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .instructions h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .instructions ul {
+            padding-left: 20px;
+            color: var(--text-secondary);
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+        }
+
+        /* 加载和空状态 */
         .loading {
-            display: none;
             text-align: center;
-            padding: 30px;
-            color: #3498db;
-            grid-column: 1 / -1;
+            padding: 60px 20px;
+            color: var(--text-secondary);
         }
 
-        .loading i {
-            font-size: 2rem;
-            margin-bottom: 15px;
+        .loading-spinner {
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
         }
 
         @keyframes spin {
@@ -244,426 +348,786 @@
             100% { transform: rotate(360deg); }
         }
 
-        .instructions {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
         }
 
-        .instructions h2 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
         }
 
-        .instructions ul {
-            list-style-type: none;
-            padding-left: 0;
+        .error-message {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--error-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            color: var(--error-color);
         }
 
-        .instructions li {
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f0f0;
+        /* 主题切换按钮 */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            z-index: 100;
         }
 
-        .instructions li:last-child {
-            border-bottom: none;
+        .theme-toggle:hover {
+            transform: scale(1.1);
         }
 
-        .instructions i {
-            color: #3498db;
-            margin-right: 10px;
-            margin-top: 3px;
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
-        .error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            display: none;
-            text-align: center;
+        @media (max-width: 768px) {
+            .header-content {
+                gap: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-container {
+                min-width: auto;
+            }
+            
+            .buttons {
+                justify-content: center;
+            }
+            
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .tool-card {
+                padding: 20px;
+            }
         }
 
-        .success {
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            display: none;
-            text-align: center;
+        @media (max-width: 576px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 0 15px;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
         }
 
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            border-top: 1px solid #e0e6ed;
-        }
-
-        .tool-link {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            width: 100%;
-            height: 100%;
+        /* 工具卡片类型图标 */
+        .tool-type-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.2rem;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>我的工具导航</h1>
-            <p class="subtitle">快速访问和使用我开发的所有工具</p>
-            
-            <div class="controls">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" class="search-input" placeholder="搜索工具名称...">
+            <div class="header-content">
+                <div class="title-section">
+                    <h1>
+                        <span>🔧</span>
+                        我的工具导航
+                    </h1>
+                    <a href="https://github.com/linsheng135/my-tools" target="_blank" class="github-link">
+                        linsheng135/my-tools
+                    </a>
                 </div>
-                <button id="scanBtn" class="scan-btn">
-                    <i class="fas fa-sync-alt"></i>
-                    手动扫描工具
-                </button>
+                
+                <div class="controls">
+                    <div class="search-container">
+                        <div class="search-icon">🔍</div>
+                        <input type="text" id="search" placeholder="搜索工具名称..." aria-label="搜索工具">
+                    </div>
+                    
+                    <div class="buttons">
+                        <button id="scanBtn" class="btn btn-primary">
+                            <span>🔄</span>
+                            重新扫描
+                        </button>
+                        <button id="clearCacheBtn" class="btn btn-secondary">
+                            <span>🧹</span>
+                            清除缓存
+                        </button>
+                    </div>
+                </div>
             </div>
         </header>
-
-        <div class="error" id="errorMsg"></div>
-        <div class="success" id="successMsg"></div>
-
-        <div class="tools-container">
-            <div class="tools-header">
-                <h2 class="tools-title">工具列表</h2>
-                <div class="tools-count" id="toolsCount">0 个工具</div>
+        
+        <main>
+            <div class="tools-container">
+                <div id="toolsGrid" class="tools-grid">
+                    <!-- 工具卡片将动态插入这里 -->
+                </div>
+                
+                <div id="loading" class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>正在扫描工具库，请稍候...</p>
+                </div>
+                
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-icon">📂</div>
+                    <h3>未找到工具</h3>
+                    <p>未在仓库中发现工具文件夹，或扫描出现错误。</p>
+                </div>
+                
+                <div id="errorContainer" style="display: none;"></div>
             </div>
             
-            <div class="tools-grid" id="toolsGrid">
-                <div class="loading" id="loadingIndicator">
-                    <i class="fas fa-spinner"></i>
-                    <p>正在扫描工具仓库...</p>
+            <div class="info-panel">
+                <h2>📊 工具库信息</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="toolsCount">0</div>
+                        <div class="stat-label">工具总数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="lastScanTime">--</div>
+                        <div class="stat-label">最后扫描时间</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="cachedStatus">否</div>
+                        <div class="stat-label">缓存状态</div>
+                    </div>
                 </div>
-                <div class="no-tools" id="noToolsMessage" style="display: none;">
-                    <i class="fas fa-tools" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                    <h3>未找到工具</h3>
-                    <p>点击上方按钮扫描工具，或确保仓库中有可用的工具</p>
+                
+                <div class="instructions">
+                    <h3>📖 使用说明</h3>
+                    <ul>
+                        <li>页面加载时会自动扫描仓库中的工具文件夹</li>
+                        <li>点击工具卡片可直接使用对应工具</li>
+                        <li>使用搜索框可以快速查找工具</li>
+                        <li>点击"重新扫描"按钮可以更新工具列表</li>
+                        <li>清除缓存将强制从GitHub重新获取数据</li>
+                    </ul>
                 </div>
             </div>
-        </div>
-
-        <div class="instructions">
-            <h2><i class="fas fa-info-circle"></i> 使用说明</h2>
-            <ul>
-                <li><i class="fas fa-check-circle"></i> 页面加载时会自动扫描仓库中的工具</li>
-                <li><i class="fas fa-search"></i> 使用搜索框可以即时筛选工具</li>
-                <li><i class="fas fa-sync-alt"></i> 点击"手动扫描工具"按钮可重新扫描仓库</li>
-                <li><i class="fas fa-mouse-pointer"></i> 点击工具卡片可直接使用该工具（跳转到工具页面）</li>
-                <li><i class="fas fa-folder"></i> 工具名称会自动从文件夹名生成更友好的名称</li>
-                <li><i class="fas fa-filter"></i> 只显示你自己创建的文件夹和工具，不会显示不存在的工具</li>
-            </ul>
-        </div>
-
-        <footer>
-            <p>仓库地址: <a href="https://github.com/linsheng135/my-tools" target="_blank">github.com/linsheng135/my-tools</a></p>
-            <p>© 2023 我的工具导航 - 自动扫描并整理 GitHub 仓库中的工具</p>
-        </footer>
+        </main>
     </div>
+    
+    <button id="themeToggle" class="theme-toggle" aria-label="切换主题">
+        🌓
+    </button>
 
     <script>
-        // GitHub 仓库信息
-        const GITHUB_USERNAME = 'linsheng135';
-        const GITHUB_REPO = 'my-tools';
-        const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents`;
-        const GITHUB_PAGES_URL = `https://${GITHUB_USERNAME}.github.io/${GITHUB_REPO}`;
-        
-        // 状态变量
-        let allTools = [];
-        
-        // DOM 元素
-        const toolsGrid = document.getElementById('toolsGrid');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-        const noToolsMessage = document.getElementById('noToolsMessage');
-        const toolsCount = document.getElementById('toolsCount');
-        const searchInput = document.getElementById('searchInput');
-        const scanBtn = document.getElementById('scanBtn');
-        const errorMsg = document.getElementById('errorMsg');
-        const successMsg = document.getElementById('successMsg');
-        
-        // 图标映射 - 根据工具类型显示不同的图标
-        const iconMap = {
-            'calculator': 'fas fa-calculator',
-            'converter': 'fas fa-exchange-alt',
-            'generator': 'fas fa-cogs',
-            'editor': 'fas fa-edit',
-            'viewer': 'fas fa-eye',
-            'formatter': 'fas fa-code',
-            'validator': 'fas fa-check-circle',
-            'analyzer': 'fas fa-chart-line',
-            'extractor': 'fas fa-download',
-            'default': 'fas fa-toolbox'
+        // 配置
+        const CONFIG = {
+            GITHUB_USER: 'linsheng135',
+            REPO_NAME: 'my-tools',
+            API_BASE: 'https://api.github.com',
+            CACHE_KEY: 'github_tools_cache',
+            CACHE_EXPIRY: 60 * 60 * 1000, // 1小时
+            ENTRY_FILES: ['index.html', 'main.html', 'app.html', 'README.md']
         };
-        
+
+        // 状态管理
+        const state = {
+            tools: [],
+            filteredTools: [],
+            isScanning: false,
+            lastScanTime: null,
+            useCache: false,
+            theme: window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        };
+
+        // DOM元素
+        const dom = {
+            toolsGrid: document.getElementById('toolsGrid'),
+            loading: document.getElementById('loading'),
+            emptyState: document.getElementById('emptyState'),
+            errorContainer: document.getElementById('errorContainer'),
+            search: document.getElementById('search'),
+            scanBtn: document.getElementById('scanBtn'),
+            clearCacheBtn: document.getElementById('clearCacheBtn'),
+            themeToggle: document.getElementById('themeToggle'),
+            toolsCount: document.getElementById('toolsCount'),
+            lastScanTime: document.getElementById('lastScanTime'),
+            cachedStatus: document.getElementById('cachedStatus')
+        };
+
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
-            // 页面加载时自动扫描
-            scanTools();
+            // 设置主题
+            setTheme(state.theme);
             
-            // 绑定事件
-            scanBtn.addEventListener('click', scanTools);
-            searchInput.addEventListener('input', filterTools);
+            // 加载工具数据
+            loadTools();
+            
+            // 事件监听
+            setupEventListeners();
         });
-        
+
+        // 设置事件监听器
+        function setupEventListeners() {
+            // 搜索功能
+            dom.search.addEventListener('input', debounce(handleSearch, 300));
+            
+            // 重新扫描按钮
+            dom.scanBtn.addEventListener('click', () => {
+                scanTools(false); // 强制重新扫描
+            });
+            
+            // 清除缓存按钮
+            dom.clearCacheBtn.addEventListener('click', clearCache);
+            
+            // 主题切换按钮
+            dom.themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // 加载工具数据
+        async function loadTools() {
+            // 检查缓存
+            const cachedData = getCachedData();
+            
+            if (cachedData && cachedData.tools && cachedData.tools.length > 0) {
+                // 使用缓存数据
+                state.tools = cachedData.tools;
+                state.lastScanTime = cachedData.timestamp;
+                state.useCache = true;
+                
+                // 更新UI
+                updateUI();
+                
+                // 显示缓存状态
+                dom.cachedStatus.textContent = '是';
+                
+                // 后台静默更新
+                setTimeout(() => scanTools(true), 1000);
+            } else {
+                // 没有缓存，执行扫描
+                scanTools(false);
+            }
+        }
+
         // 扫描工具
-        async function scanTools() {
-            showLoading();
-            hideMessages();
+        async function scanTools(silent = false) {
+            if (state.isScanning) return;
+            
+            state.isScanning = true;
+            
+            if (!silent) {
+                showLoading();
+                clearErrors();
+            }
             
             try {
                 // 获取仓库内容
-                const response = await fetch(GITHUB_API_URL);
+                const repoContents = await fetchGitHubRepoContents();
                 
-                if (!response.ok) {
-                    throw new Error(`GitHub API 请求失败: ${response.status}`);
-                }
-                
-                const contents = await response.json();
-                
-                // 筛选文件夹（排除文件、特殊文件夹和隐藏文件夹）
-                const folders = contents.filter(item => 
+                // 过滤出文件夹
+                const folders = repoContents.filter(item => 
                     item.type === 'dir' && 
                     !item.name.startsWith('.') && 
-                    !['node_modules', 'dist', 'build', 'test', 'tests', 'docs', 'images', 'assets'].includes(item.name)
+                    !item.name.startsWith('_')
                 );
                 
-                if (folders.length === 0) {
-                    showNoTools();
-                    return;
+                // 获取每个文件夹的详细信息
+                const tools = await Promise.all(
+                    folders.map(async folder => {
+                        return await processToolFolder(folder.name);
+                    })
+                );
+                
+                // 过滤掉无效的工具
+                const validTools = tools.filter(tool => tool && tool.entryUrl);
+                
+                // 更新状态
+                state.tools = validTools;
+                state.filteredTools = [...validTools];
+                state.lastScanTime = new Date();
+                state.useCache = false;
+                
+                // 缓存结果
+                cacheTools(validTools);
+                
+                // 更新UI
+                updateUI();
+                
+                // 更新信息面板
+                updateInfoPanel();
+                
+                if (!silent) {
+                    hideLoading();
                 }
-                
-                // 为每个文件夹检查是否存在 index.html
-                const tools = [];
-                
-                for (const folder of folders) {
-                    try {
-                        // 检查文件夹中是否有 index.html
-                        const folderResponse = await fetch(`https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${folder.name}`);
-                        
-                        if (folderResponse.ok) {
-                            const folderContents = await folderResponse.json();
-                            
-                            // 检查是否有 index.html
-                            const hasIndexHtml = folderContents.some(item => 
-                                item.name === 'index.html' || 
-                                item.name === 'Index.html' || 
-                                item.name === 'INDEX.HTML'
-                            );
-                            
-                            if (hasIndexHtml) {
-                                // 生成友好名称
-                                const friendlyName = generateFriendlyName(folder.name);
-                                
-                                // 确定图标
-                                const icon = determineIcon(folder.name, friendlyName);
-                                
-                                tools.push({
-                                    name: friendlyName,
-                                    folder: folder.name,
-                                    url: `${GITHUB_PAGES_URL}/${folder.name}/`,
-                                    icon: icon
-                                });
-                            }
-                        }
-                    } catch (folderError) {
-                        console.warn(`无法检查文件夹 ${folder.name}:`, folderError);
-                    }
-                }
-                
-                if (tools.length === 0) {
-                    showNoTools();
-                    return;
-                }
-                
-                // 按名称排序
-                tools.sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'));
-                
-                // 保存所有工具
-                allTools = tools;
-                
-                // 显示工具
-                displayTools(tools);
-                
-                // 显示成功消息
-                showSuccess(`成功扫描到 ${tools.length} 个工具`);
                 
             } catch (error) {
                 console.error('扫描工具时出错:', error);
-                showError(`扫描失败: ${error.message}。请检查网络连接或稍后重试。`);
-                showNoTools();
-            }
-        }
-        
-        // 生成友好名称
-        function generateFriendlyName(folderName) {
-            // 移除常见的前缀和后缀
-            let name = folderName
-                .replace(/[-_]/g, ' ')  // 将下划线和连字符替换为空格
-                .replace(/\./g, ' ')     // 将点替换为空格
-                .replace(/\s+/g, ' ')    // 合并多个空格
-                .trim();
-            
-            // 处理驼峰命名
-            name = name.replace(/([a-z])([A-Z])/g, '$1 $2');
-            
-            // 首字母大写
-            name = name.split(' ')
-                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                .join(' ');
-            
-            // 处理一些常见缩写
-            name = name
-                .replace(/\bjson\b/gi, 'JSON')
-                .replace(/\bcsv\b/gi, 'CSV')
-                .replace(/\bhtml\b/gi, 'HTML')
-                .replace(/\bcss\b/gi, 'CSS')
-                .replace(/\bjs\b/gi, 'JavaScript')
-                .replace(/\bapi\b/gi, 'API')
-                .replace(/\butil\b/gi, '工具')
-                .replace(/\btool\b/gi, '工具')
-                .replace(/\bgen\b/gi, '生成器')
-                .replace(/\bconv\b/gi, '转换器');
-            
-            return name;
-        }
-        
-        // 根据名称确定图标
-        function determineIcon(folderName, friendlyName) {
-            const lowerFolder = folderName.toLowerCase();
-            const lowerName = friendlyName.toLowerCase();
-            
-            if (lowerFolder.includes('calc') || lowerName.includes('计算')) {
-                return iconMap.calculator;
-            } else if (lowerFolder.includes('conv') || lowerFolder.includes('convert') || lowerName.includes('转换')) {
-                return iconMap.converter;
-            } else if (lowerFolder.includes('gen') || lowerFolder.includes('generate') || lowerName.includes('生成')) {
-                return iconMap.generator;
-            } else if (lowerFolder.includes('edit') || lowerName.includes('编辑')) {
-                return iconMap.editor;
-            } else if (lowerFolder.includes('view') || lowerName.includes('查看') || lowerName.includes('预览')) {
-                return iconMap.viewer;
-            } else if (lowerFolder.includes('format') || lowerName.includes('格式化')) {
-                return iconMap.formatter;
-            } else if (lowerFolder.includes('valid') || lowerFolder.includes('check') || lowerName.includes('验证')) {
-                return iconMap.validator;
-            } else if (lowerFolder.includes('analy') || lowerFolder.includes('stat') || lowerName.includes('分析')) {
-                return iconMap.analyzer;
-            } else if (lowerFolder.includes('extract') || lowerFolder.includes('download') || lowerName.includes('提取')) {
-                return iconMap.extractor;
-            } else {
-                return iconMap.default;
-            }
-        }
-        
-        // 显示工具
-        function displayTools(tools) {
-            toolsGrid.innerHTML = '';
-            
-            tools.forEach(tool => {
-                const toolCard = document.createElement('div');
-                toolCard.className = 'tool-card';
-                toolCard.innerHTML = `
-                    <a href="${tool.url}" target="_blank" class="tool-link">
-                        <div class="tool-icon">
-                            <i class="${tool.icon}"></i>
-                        </div>
-                        <div class="tool-name">${tool.name}</div>
-                        <div class="tool-folder">${tool.folder}</div>
-                    </a>
-                `;
                 
-                toolsGrid.appendChild(toolCard);
+                if (!silent) {
+                    hideLoading();
+                    showError('扫描工具时出错: ' + error.message);
+                }
+            } finally {
+                state.isScanning = false;
+            }
+        }
+
+        // 处理工具文件夹
+        async function processToolFolder(folderName) {
+            try {
+                // 获取文件夹内容
+                const folderContents = await fetchGitHubFolderContents(folderName);
+                
+                // 查找入口文件
+                const entryFile = CONFIG.ENTRY_FILES.find(fileName => 
+                    folderContents.some(item => item.name === fileName)
+                );
+                
+                if (!entryFile) {
+                    console.log(`文件夹 ${folderName} 中没有找到入口文件`);
+                    return null;
+                }
+                
+                // 构建工具信息
+                const tool = {
+                    id: folderName,
+                    folderName: folderName,
+                    entryFile: entryFile,
+                    entryUrl: `https://${CONFIG.GITHUB_USER}.github.io/${CONFIG.REPO_NAME}/${folderName}/${entryFile}`,
+                    displayName: folderName,
+                    icon: getToolIcon(folderName),
+                    typeIcon: getToolTypeIcon(entryFile)
+                };
+                
+                // 尝试获取更好的显示名称
+                try {
+                    // 尝试从README.md获取中文名称
+                    const readmeFile = folderContents.find(item => item.name.toLowerCase() === 'readme.md');
+                    if (readmeFile) {
+                        const readmeContent = await fetchGitHubFileContent(folderName, 'README.md');
+                        const chineseName = extractChineseName(readmeContent);
+                        if (chineseName) {
+                            tool.displayName = chineseName;
+                            return tool;
+                        }
+                    }
+                    
+                    // 尝试从package.json获取名称
+                    const packageFile = folderContents.find(item => item.name.toLowerCase() === 'package.json');
+                    if (packageFile) {
+                        const packageContent = await fetchGitHubFileContent(folderName, 'package.json');
+                        const packageJson = JSON.parse(packageContent);
+                        if (packageJson.name) {
+                            tool.displayName = beautifyName(packageJson.name);
+                            return tool;
+                        }
+                    }
+                    
+                    // 美化文件夹名作为显示名称
+                    tool.displayName = beautifyName(folderName);
+                } catch (error) {
+                    console.warn(`处理工具 ${folderName} 名称时出错:`, error);
+                    tool.displayName = beautifyName(folderName);
+                }
+                
+                return tool;
+            } catch (error) {
+                console.error(`处理文件夹 ${folderName} 时出错:`, error);
+                return null;
+            }
+        }
+
+        // GitHub API 调用
+        async function fetchGitHubRepoContents() {
+            const url = `${CONFIG.API_BASE}/repos/${CONFIG.GITHUB_USER}/${CONFIG.REPO_NAME}/contents`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'User-Agent': 'GitHub-Tools-Navigation'
+                }
             });
             
-            // 更新工具计数
-            toolsCount.textContent = `${tools.length} 个工具`;
+            if (!response.ok) {
+                throw new Error(`GitHub API 错误: ${response.status} ${response.statusText}`);
+            }
             
-            // 隐藏加载指示器和无工具消息
-            loadingIndicator.style.display = 'none';
-            noToolsMessage.style.display = 'none';
+            return await response.json();
         }
-        
-        // 过滤工具
-        function filterTools() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
+
+        async function fetchGitHubFolderContents(folderName) {
+            const url = `${CONFIG.API_BASE}/repos/${CONFIG.GITHUB_USER}/${CONFIG.REPO_NAME}/contents/${folderName}`;
             
-            if (!searchTerm) {
-                displayTools(allTools);
+            const response = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3+json',
+                    'User-Agent': 'GitHub-Tools-Navigation'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`获取文件夹 ${folderName} 内容失败: ${response.status}`);
+            }
+            
+            return await response.json();
+        }
+
+        async function fetchGitHubFileContent(folderName, fileName) {
+            const url = `${CONFIG.API_BASE}/repos/${CONFIG.GITHUB_USER}/${CONFIG.REPO_NAME}/contents/${folderName}/${fileName}`;
+            
+            const response = await fetch(url, {
+                headers: {
+                    'Accept': 'application/vnd.github.v3.raw',
+                    'User-Agent': 'GitHub-Tools-Navigation'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`获取文件 ${fileName} 失败: ${response.status}`);
+            }
+            
+            return await response.text();
+        }
+
+        // 工具名称处理函数
+        function extractChineseName(text) {
+            // 尝试从README中提取中文名称
+            const chineseRegex = /#\s*([\u4e00-\u9fa5][\u4e00-\u9fa5\s\-·]+)/;
+            const match = text.match(chineseRegex);
+            return match ? match[1].trim() : null;
+        }
+
+        function beautifyName(name) {
+            // 美化英文名称
+            const nameMap = {
+                'image-processor': '图片处理器',
+                'pdf-tools': 'PDF工具集',
+                'video-converter': '视频转换器',
+                'text-utils': '文本工具',
+                'data-visualizer': '数据可视化',
+                'chart-generator': '图表生成器',
+                'color-picker': '颜色选择器',
+                'qr-generator': '二维码生成器',
+                'markdown-editor': 'Markdown编辑器',
+                'image-compressor': '图片压缩器',
+                'json-formatter': 'JSON格式化',
+                'css-generator': 'CSS生成器',
+                'base64-converter': 'Base64转换器',
+                'url-shortener': 'URL缩短器',
+                'password-generator': '密码生成器'
+            };
+            
+            // 检查是否有预定义的中文名称
+            if (nameMap[name.toLowerCase()]) {
+                return nameMap[name.toLowerCase()];
+            }
+            
+            // 将连字符、下划线转换为空格，并首字母大写
+            const words = name.replace(/[-_]/g, ' ').split(' ');
+            const beautified = words.map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+            ).join(' ');
+            
+            return beautified;
+        }
+
+        // 图标选择函数
+        function getToolIcon(folderName) {
+            const iconMap = {
+                'image': '🖼️',
+                'pdf': '📄',
+                'video': '🎬',
+                'text': '📝',
+                'data': '📊',
+                'chart': '📈',
+                'color': '🎨',
+                'qr': '🔲',
+                'markdown': '📘',
+                'json': '🔤',
+                'css': '🎀',
+                'base64': '🔢',
+                'url': '🔗',
+                'password': '🔒',
+                'calculator': '🧮',
+                'converter': '🔄',
+                'editor': '✏️',
+                'generator': '⚙️',
+                'processor': '🔧'
+            };
+            
+            const name = folderName.toLowerCase();
+            for (const [key, icon] of Object.entries(iconMap)) {
+                if (name.includes(key)) {
+                    return icon;
+                }
+            }
+            
+            // 默认图标
+            const defaultIcons = ['🔧', '🛠️', '📦', '📁', '🗂️', '📂'];
+            return defaultIcons[Math.floor(Math.random() * defaultIcons.length)];
+        }
+
+        function getToolTypeIcon(entryFile) {
+            const iconMap = {
+                'index.html': '🌐',
+                'main.html': '📱',
+                'app.html': '🚀',
+                'README.md': '📖'
+            };
+            
+            return iconMap[entryFile] || '📄';
+        }
+
+        // 缓存管理
+        function getCachedData() {
+            try {
+                const cached = localStorage.getItem(CONFIG.CACHE_KEY);
+                if (!cached) return null;
+                
+                const data = JSON.parse(cached);
+                const now = new Date().getTime();
+                
+                // 检查缓存是否过期
+                if (now - data.timestamp > CONFIG.CACHE_EXPIRY) {
+                    localStorage.removeItem(CONFIG.CACHE_KEY);
+                    return null;
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('读取缓存失败:', error);
+                return null;
+            }
+        }
+
+        function cacheTools(tools) {
+            try {
+                const data = {
+                    tools: tools,
+                    timestamp: new Date().getTime()
+                };
+                
+                localStorage.setItem(CONFIG.CACHE_KEY, JSON.stringify(data));
+            } catch (error) {
+                console.error('缓存工具失败:', error);
+            }
+        }
+
+        function clearCache() {
+            localStorage.removeItem(CONFIG.CACHE_KEY);
+            state.useCache = false;
+            dom.cachedStatus.textContent = '否';
+            showMessage('缓存已清除', 'success');
+        }
+
+        // UI更新函数
+        function updateUI() {
+            // 更新工具卡片
+            renderTools();
+            
+            // 更新信息面板
+            updateInfoPanel();
+        }
+
+        function renderTools() {
+            if (state.filteredTools.length === 0) {
+                dom.toolsGrid.innerHTML = '';
+                dom.emptyState.style.display = 'block';
                 return;
             }
             
-            const filteredTools = allTools.filter(tool => 
-                tool.name.toLowerCase().includes(searchTerm) || 
-                tool.folder.toLowerCase().includes(searchTerm)
-            );
+            dom.emptyState.style.display = 'none';
             
-            if (filteredTools.length === 0) {
-                toolsGrid.innerHTML = '';
-                noToolsMessage.style.display = 'block';
-                loadingIndicator.style.display = 'none';
-                toolsCount.textContent = '0 个工具';
-            } else {
-                displayTools(filteredTools);
+            const toolsHTML = state.filteredTools.map(tool => `
+                <div class="tool-card" data-tool-id="${tool.id}">
+                    <div class="tool-type-icon" title="入口文件: ${tool.entryFile}">
+                        ${tool.typeIcon}
+                    </div>
+                    <div class="tool-icon">${tool.icon}</div>
+                    <h3 class="tool-name">${tool.displayName}</h3>
+                    <div class="tool-folder">${tool.folderName}</div>
+                    <a href="${tool.entryUrl}" target="_blank" class="tool-link">
+                        使用工具 <span>→</span>
+                    </a>
+                </div>
+            `).join('');
+            
+            dom.toolsGrid.innerHTML = toolsHTML;
+        }
+
+        function updateInfoPanel() {
+            dom.toolsCount.textContent = state.tools.length;
+            
+            if (state.lastScanTime) {
+                const timeStr = state.lastScanTime instanceof Date ? 
+                    state.lastScanTime.toLocaleTimeString('zh-CN') : 
+                    new Date(state.lastScanTime).toLocaleTimeString('zh-CN');
+                dom.lastScanTime.textContent = timeStr;
             }
         }
-        
-        // 显示加载指示器
+
+        // 搜索处理
+        function handleSearch() {
+            const searchTerm = dom.search.value.trim().toLowerCase();
+            
+            if (!searchTerm) {
+                state.filteredTools = [...state.tools];
+                renderTools();
+                return;
+            }
+            
+            state.filteredTools = state.tools.filter(tool => {
+                const toolName = tool.displayName.toLowerCase();
+                const folderName = tool.folderName.toLowerCase();
+                return toolName.includes(searchTerm) || folderName.includes(searchTerm);
+            });
+            
+            renderTools();
+        }
+
+        // 主题管理
+        function setTheme(theme) {
+            state.theme = theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            
+            // 更新主题按钮图标
+            dom.themeToggle.textContent = theme === 'dark' ? '🌙' : '🌞';
+            
+            // 保存主题偏好
+            localStorage.setItem('preferred-theme', theme);
+        }
+
+        function toggleTheme() {
+            const newTheme = state.theme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        // 辅助函数
         function showLoading() {
-            toolsGrid.innerHTML = '';
-            toolsGrid.appendChild(loadingIndicator);
-            loadingIndicator.style.display = 'block';
-            noToolsMessage.style.display = 'none';
+            dom.loading.style.display = 'block';
+            dom.toolsGrid.style.display = 'none';
+            dom.emptyState.style.display = 'none';
         }
-        
-        // 显示无工具消息
-        function showNoTools() {
-            toolsGrid.innerHTML = '';
-            noToolsMessage.style.display = 'block';
-            loadingIndicator.style.display = 'none';
-            toolsCount.textContent = '0 个工具';
+
+        function hideLoading() {
+            dom.loading.style.display = 'none';
+            dom.toolsGrid.style.display = 'grid';
         }
-        
-        // 显示错误消息
+
         function showError(message) {
-            errorMsg.textContent = message;
-            errorMsg.style.display = 'block';
+            const errorHTML = `
+                <div class="error-message">
+                    <strong>错误:</strong> ${message}
+                    <br>
+                    <button onclick="location.reload()" style="margin-top: 10px; padding: 8px 16px; background: var(--primary-color); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        重试
+                    </button>
+                </div>
+            `;
             
-            // 3秒后自动隐藏
-            setTimeout(() => {
-                errorMsg.style.display = 'none';
-            }, 5000);
+            dom.errorContainer.innerHTML = errorHTML;
+            dom.errorContainer.style.display = 'block';
         }
-        
-        // 显示成功消息
-        function showSuccess(message) {
-            successMsg.textContent = message;
-            successMsg.style.display = 'block';
+
+        function clearErrors() {
+            dom.errorContainer.style.display = 'none';
+            dom.errorContainer.innerHTML = '';
+        }
+
+        function showMessage(message, type = 'info') {
+            // 创建临时消息提示
+            const messageEl = document.createElement('div');
+            messageEl.textContent = message;
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: var(--radius);
+                background-color: ${type === 'success' ? 'var(--success-color)' : 'var(--warning-color)'};
+                color: white;
+                font-weight: 600;
+                box-shadow: var(--shadow);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
             
-            // 3秒后自动隐藏
+            document.body.appendChild(messageEl);
+            
+            // 3秒后自动移除
             setTimeout(() => {
-                successMsg.style.display = 'none';
+                messageEl.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    if (messageEl.parentNode) {
+                        messageEl.parentNode.removeChild(messageEl);
+                    }
+                }, 300);
             }, 3000);
+            
+            // 添加动画样式
+            if (!document.querySelector('#message-animations')) {
+                const style = document.createElement('style');
+                style.id = 'message-animations';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
         }
-        
-        // 隐藏所有消息
-        function hideMessages() {
-            errorMsg.style.display = 'none';
-            successMsg.style.display = 'none';
+
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
+
+        // 检查系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('preferred-theme')) {
+                setTheme(e.matches ? 'dark' : 'light');
+            }
+        });
     </script>
 </body>
 </html>
