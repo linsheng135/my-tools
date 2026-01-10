@@ -184,7 +184,6 @@
         .tool-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -192,6 +191,31 @@
             margin-bottom: 15px;
             color: white;
             font-size: 24px;
+        }
+        
+        .html-icon {
+            background: linear-gradient(135deg, #e34c26 0%, #f06529 100%);
+        }
+        
+        .js-icon {
+            background: linear-gradient(135deg, #f0db4f 0%, #d1b91e 100%);
+            color: #333 !important;
+        }
+        
+        .python-icon {
+            background: linear-gradient(135deg, #306998 0%, #4B8BBE 100%);
+        }
+        
+        .notebook-icon {
+            background: linear-gradient(135deg, #F37626 0%, #F7B73E 100%);
+        }
+        
+        .markdown-icon {
+            background: linear-gradient(135deg, #083fa1 0%, #0d53d6 100%);
+        }
+        
+        .default-icon {
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
         }
         
         .tool-name {
@@ -208,6 +232,13 @@
             flex-grow: 1;
         }
         
+        .tool-actions {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+        
         .tool-link {
             display: inline-block;
             background: #f8f9fa;
@@ -218,12 +249,25 @@
             font-weight: 500;
             transition: all 0.3s;
             border: 2px solid #e9ecef;
+            flex: 1;
+            text-align: center;
         }
         
         .tool-link:hover {
             background: #3498db;
             color: white;
             border-color: #3498db;
+        }
+        
+        .tool-link.run {
+            background: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+        
+        .tool-link.run:hover {
+            background: #27ae60;
+            border-color: #27ae60;
         }
         
         .no-tools {
@@ -319,12 +363,56 @@
         
         .tool-type {
             display: inline-block;
-            background: #e8f4fc;
-            color: #3498db;
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 12px;
             margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .html-type {
+            background: #ffe8e0;
+            color: #e34c26;
+        }
+        
+        .js-type {
+            background: #fff9d6;
+            color: #d1b91e;
+        }
+        
+        .python-type {
+            background: #e0f0ff;
+            color: #306998;
+        }
+        
+        .notebook-type {
+            background: #fff0e0;
+            color: #F37626;
+        }
+        
+        .markdown-type {
+            background: #e0e8ff;
+            color: #083fa1;
+        }
+        
+        .default-type {
+            background: #e8f4fc;
+            color: #3498db;
+        }
+        
+        .auto-scan-notice {
+            background: #e8f6f3;
+            border-left: 4px solid #1abc9c;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .auto-scan-notice i {
+            color: #1abc9c;
         }
     </style>
 </head>
@@ -332,7 +420,12 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-tools"></i> My Tools 导航页</h1>
-            <p class="subtitle">点击下方按钮扫描GitHub仓库中的所有工具</p>
+            <p class="subtitle">自动扫描GitHub仓库中的工具，点击即可直接使用</p>
+            
+            <div class="auto-scan-notice">
+                <i class="fas fa-sync-alt fa-spin"></i>
+                <span>页面加载中，正在自动扫描您的仓库...</span>
+            </div>
             
             <div class="controls">
                 <div class="search-box">
@@ -340,7 +433,7 @@
                     <input type="text" id="searchInput" placeholder="搜索工具名称或描述...">
                 </div>
                 <button id="scanBtn" class="scan-btn">
-                    <i class="fas fa-sync-alt"></i> 扫描仓库工具
+                    <i class="fas fa-sync-alt"></i> 重新扫描仓库
                 </button>
             </div>
             
@@ -355,8 +448,8 @@
                     <!-- 工具卡片将在这里动态生成 -->
                     <div class="no-tools">
                         <i class="fas fa-search"></i>
-                        <h3>未找到工具</h3>
-                        <p>点击上方按钮扫描您的GitHub仓库</p>
+                        <h3>正在加载工具...</h3>
+                        <p>请稍等，正在扫描您的GitHub仓库</p>
                     </div>
                 </div>
             </div>
@@ -364,8 +457,8 @@
             <div class="info-section">
                 <h2><i class="fas fa-info-circle"></i> 使用说明</h2>
                 <p>此页面会自动扫描您的GitHub仓库 (<a href="https://github.com/linsheng135/my-tools" target="_blank">linsheng135/my-tools</a>) 并列出所有找到的工具。</p>
-                <p>扫描功能会查找仓库中的HTML、JavaScript、Python等文件，并自动识别为工具。您可以使用上方的搜索框按名称或描述过滤工具。</p>
-                <p>扫描是手动触发的，不会自动更新。当您添加新工具到仓库后，点击"扫描仓库工具"按钮即可更新列表。</p>
+                <p>扫描功能会查找仓库中的HTML、JavaScript、Python等文件，并自动识别为工具。点击"运行工具"按钮可以直接使用该工具。</p>
+                <p>页面加载时会自动扫描一次。当您添加新工具到仓库后，可以点击"重新扫描仓库"按钮更新列表。</p>
                 
                 <div class="stats">
                     <div class="stat-item">
@@ -373,7 +466,7 @@
                         <span class="stat-label">找到的工具</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" id="lastScan">未扫描</span>
+                        <span class="stat-number" id="lastScan">正在扫描...</span>
                         <span class="stat-label">最后扫描时间</span>
                     </div>
                     <div class="stat-item">
@@ -396,8 +489,12 @@
             GITHUB_USER: 'linsheng135',
             GITHUB_REPO: 'my-tools',
             GITHUB_API_BASE: 'https://api.github.com',
+            // 支持的工具文件类型
             TOOL_FILE_TYPES: ['.html', '.htm', '.js', '.py', '.ipynb', '.md', '.php', '.rb', '.java', '.cpp', '.c', '.go', '.rs', '.sh', '.bat'],
-            IGNORE_PATHS: ['.git', '.github', 'node_modules', 'vendor', '__pycache__', 'dist', 'build']
+            // 需要忽略的路径
+            IGNORE_PATHS: ['.git', '.github', 'node_modules', 'vendor', '__pycache__', 'dist', 'build', 'test', 'tests', 'example', 'examples', 'docs', 'documentation'],
+            // 可以直接运行的文件类型（无需服务器支持）
+            DIRECT_RUN_TYPES: ['.html', '.htm', '.md']
         };
         
         // 工具数据存储
@@ -413,44 +510,49 @@
         const lastScanEl = document.getElementById('lastScan');
         const repoSizeEl = document.getElementById('repoSize');
         
-        // 图标映射
-        const iconMap = {
-            '.html': 'fas fa-code',
-            '.htm': 'fas fa-code',
-            '.js': 'fab fa-js-square',
-            '.py': 'fab fa-python',
-            '.ipynb': 'fas fa-book',
-            '.md': 'fas fa-file-alt',
-            '.php': 'fab fa-php',
-            '.rb': 'fas fa-gem',
-            '.java': 'fab fa-java',
-            '.cpp': 'fas fa-file-code',
-            '.c': 'fas fa-file-code',
-            '.go': 'fas fa-code',
-            '.rs': 'fas fa-cog',
-            '.sh': 'fas fa-terminal',
-            '.bat': 'fas fa-terminal',
-            'default': 'fas fa-toolbox'
+        // 图标和样式映射
+        const fileTypeConfig = {
+            '.html': { icon: 'fab fa-html5', type: 'HTML工具', typeClass: 'html-type', iconClass: 'html-icon' },
+            '.htm': { icon: 'fab fa-html5', type: 'HTML工具', typeClass: 'html-type', iconClass: 'html-icon' },
+            '.js': { icon: 'fab fa-js-square', type: 'JavaScript工具', typeClass: 'js-type', iconClass: 'js-icon' },
+            '.py': { icon: 'fab fa-python', type: 'Python工具', typeClass: 'python-type', iconClass: 'python-icon' },
+            '.ipynb': { icon: 'fas fa-book', type: 'Jupyter Notebook', typeClass: 'notebook-type', iconClass: 'notebook-icon' },
+            '.md': { icon: 'fas fa-file-alt', type: 'Markdown文档', typeClass: 'markdown-type', iconClass: 'markdown-icon' },
+            '.php': { icon: 'fab fa-php', type: 'PHP工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.rb': { icon: 'fas fa-gem', type: 'Ruby工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.java': { icon: 'fab fa-java', type: 'Java工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.cpp': { icon: 'fas fa-file-code', type: 'C++工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.c': { icon: 'fas fa-file-code', type: 'C工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.go': { icon: 'fas fa-code', type: 'Go工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.rs': { icon: 'fas fa-cog', type: 'Rust工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.sh': { icon: 'fas fa-terminal', type: 'Shell脚本', typeClass: 'default-type', iconClass: 'default-icon' },
+            '.bat': { icon: 'fas fa-terminal', type: '批处理工具', typeClass: 'default-type', iconClass: 'default-icon' },
+            'default': { icon: 'fas fa-toolbox', type: '工具', typeClass: 'default-type', iconClass: 'default-icon' }
         };
         
-        // 获取文件类型图标
-        function getFileIcon(filePath) {
-            for (const [ext, icon] of Object.entries(iconMap)) {
+        // 获取文件配置
+        function getFileConfig(filePath) {
+            for (const [ext, config] of Object.entries(fileTypeConfig)) {
                 if (filePath.endsWith(ext)) {
-                    return icon;
+                    return config;
                 }
             }
-            return iconMap.default;
+            return fileTypeConfig.default;
         }
         
-        // 获取文件类型名称
-        function getFileType(filePath) {
-            for (const ext of CONFIG.TOOL_FILE_TYPES) {
-                if (filePath.endsWith(ext)) {
-                    return ext.substring(1).toUpperCase() + ' 文件';
-                }
+        // 判断是否可以直接运行
+        function canRunDirectly(filePath) {
+            return CONFIG.DIRECT_RUN_TYPES.some(ext => filePath.endsWith(ext));
+        }
+        
+        // 生成工具运行URL
+        function generateToolUrl(tool) {
+            // 如果是可以直接运行的文件类型，使用GitHub Pages的原始文件链接
+            if (canRunDirectly(tool.path)) {
+                return `https://${CONFIG.GITHUB_USER}.github.io/${CONFIG.GITHUB_REPO}/${tool.path}`;
             }
-            return '工具';
+            // 否则使用GitHub的查看页面
+            return tool.url;
         }
         
         // 格式化文件大小
@@ -473,7 +575,7 @@
         function hideLoading() {
             loading.style.display = 'none';
             scanBtn.disabled = false;
-            scanBtn.innerHTML = '<i class="fas fa-sync-alt"></i> 扫描仓库工具';
+            scanBtn.innerHTML = '<i class="fas fa-sync-alt"></i> 重新扫描仓库';
         }
         
         // 从GitHub API获取仓库内容
@@ -498,8 +600,10 @@
             
             for (const item of contents) {
                 // 跳过忽略的路径
-                if (CONFIG.IGNORE_PATHS.some(ignorePath => 
-                    item.path.includes(ignorePath) || item.name.includes(ignorePath))) {
+                const shouldIgnore = CONFIG.IGNORE_PATHS.some(ignorePath => 
+                    item.path.includes(ignorePath) || item.name.includes(ignorePath));
+                
+                if (shouldIgnore) {
                     continue;
                 }
                 
@@ -507,21 +611,32 @@
                 if (item.type === 'file' && 
                     CONFIG.TOOL_FILE_TYPES.some(ext => item.name.endsWith(ext))) {
                     
-                    // 跳过README等非工具文件
-                    if (item.name.toLowerCase().includes('readme') || 
-                        item.name.toLowerCase().includes('license')) {
+                    // 跳过README、LICENSE等非工具文件
+                    const lowerName = item.name.toLowerCase();
+                    if (lowerName.includes('readme') || 
+                        lowerName.includes('license') ||
+                        lowerName.includes('contributing') ||
+                        lowerName.includes('changelog') ||
+                        lowerName.includes('todo')) {
                         continue;
                     }
                     
+                    const config = getFileConfig(item.name);
+                    const canRun = canRunDirectly(item.name);
+                    
                     tools.push({
                         name: item.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' '),
-                        description: `工具文件: ${item.name}`,
+                        description: `${config.type}: ${item.name}`,
                         path: item.path,
                         url: item.html_url,
                         download_url: item.download_url,
-                        type: getFileType(item.name),
-                        icon: getFileIcon(item.name),
-                        size: formatFileSize(item.size)
+                        type: config.type,
+                        typeClass: config.typeClass,
+                        icon: config.icon,
+                        iconClass: config.iconClass,
+                        size: formatFileSize(item.size),
+                        canRun: canRun,
+                        runUrl: canRun ? generateToolUrl({path: item.path}) : item.html_url
                     });
                 }
                 
@@ -550,73 +665,46 @@
             }
         }
         
-        // 获取README内容
-        async function getReadmeContent() {
+        // 从文件内容提取描述信息
+        async function extractDescriptionFromFile(tool) {
+            if (!tool.download_url) return tool.description;
+            
             try {
-                const readmeData = await fetchRepoContents('README.md');
-                if (readmeData && readmeData.download_url) {
-                    const response = await fetch(readmeData.download_url);
-                    return await response.text();
-                }
-            } catch (error) {
-                console.log('未找到README文件或读取失败');
-            }
-            return null;
-        }
-        
-        // 从README提取工具描述
-        function extractToolDescriptions(readmeText) {
-            const descriptions = {};
-            if (!readmeText) return descriptions;
-            
-            // 尝试查找工具列表部分
-            const lines = readmeText.split('\n');
-            let inToolsSection = false;
-            
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
+                const response = await fetch(tool.download_url);
+                if (!response.ok) return tool.description;
                 
-                // 检测工具相关标题
-                if (line.match(/^#+.*[Tt]ools?/) || line.match(/^#+.*[Pp]rojects?/)) {
-                    inToolsSection = true;
-                    continue;
-                }
+                const content = await response.text();
                 
-                // 如果不在工具部分，跳过
-                if (!inToolsSection) continue;
-                
-                // 检测另一个主标题时结束
-                if (line.match(/^#+ /) && !line.match(/[Tt]ools?/) && !line.match(/[Pp]rojects?/)) {
-                    inToolsSection = false;
-                    continue;
-                }
-                
-                // 尝试从列表项中提取工具名称和描述
-                if (line.startsWith('- ') || line.startsWith('* ') || line.match(/^\d+\./)) {
-                    const match = line.match(/(?:[-*]|\d+\.)\s+(.*?)(?:\s*[-:|]|\s+-\s+)(.*)/);
-                    if (match) {
-                        const toolName = match[1].replace(/`/g, '').trim().toLowerCase();
-                        descriptions[toolName] = match[2].trim();
+                // 尝试从HTML文件中提取标题或描述
+                if (tool.path.endsWith('.html') || tool.path.endsWith('.htm')) {
+                    const titleMatch = content.match(/<title>([^<]+)<\/title>/i);
+                    if (titleMatch && titleMatch[1].trim()) {
+                        return titleMatch[1].trim();
+                    }
+                    
+                    const h1Match = content.match(/<h1[^>]*>([^<]+)<\/h1>/i);
+                    if (h1Match && h1Match[1].trim()) {
+                        return h1Match[1].trim();
                     }
                 }
                 
-                // 尝试从链接中提取
-                const linkMatch = line.match(/\[([^\]]+)\]\(([^)]+)\)/g);
-                if (linkMatch) {
-                    linkMatch.forEach(link => {
-                        const match = link.match(/\[([^\]]+)\]\(([^)]+)\)/);
-                        if (match) {
-                            const toolName = match[1].replace(/`/g, '').trim().toLowerCase();
-                            const url = match[2];
-                            if (url.includes('.') && !url.startsWith('http')) {
-                                descriptions[toolName] = `链接到: ${match[1]}`;
-                            }
-                        }
-                    });
+                // 尝试从文件开头提取注释
+                const lines = content.split('\n').slice(0, 10);
+                for (const line of lines) {
+                    // 提取JS/Python等注释
+                    const commentMatch = line.match(/^\s*[#\/\*]+\s*(.+)/);
+                    if (commentMatch && commentMatch[1].trim() && 
+                        !commentMatch[1].includes('Copyright') && 
+                        !commentMatch[1].includes('License')) {
+                        return commentMatch[1].trim();
+                    }
                 }
+                
+                return tool.description;
+            } catch (error) {
+                console.log(`无法提取文件描述: ${tool.path}`);
+                return tool.description;
             }
-            
-            return descriptions;
         }
         
         // 扫描仓库
@@ -624,32 +712,24 @@
             showLoading();
             
             try {
-                // 获取仓库信息和README
-                const [repoData, readmeText] = await Promise.all([
-                    fetchRepoInfo(),
-                    getReadmeContent()
-                ]);
-                
-                repoInfo = repoData;
+                // 获取仓库信息
+                repoInfo = await fetchRepoInfo();
                 
                 // 更新仓库信息
                 if (repoInfo) {
-                    repoSizeEl.textContent = formatFileSize(repoInfo.size * 1024); // GitHub API返回的大小单位是KB
+                    repoSizeEl.textContent = formatFileSize(repoInfo.size * 1024);
                 }
-                
-                // 从README提取工具描述
-                const toolDescriptions = extractToolDescriptions(readmeText);
                 
                 // 扫描工具
                 allTools = await scanRepository();
                 
-                // 应用从README提取的描述
-                allTools.forEach(tool => {
-                    const toolNameLower = tool.name.toLowerCase();
-                    if (toolDescriptions[toolNameLower]) {
-                        tool.description = toolDescriptions[toolNameLower];
-                    }
+                // 为每个工具提取更好的描述
+                const descriptionPromises = allTools.map(async (tool) => {
+                    const betterDescription = await extractDescriptionFromFile(tool);
+                    return { ...tool, description: betterDescription };
                 });
+                
+                allTools = await Promise.all(descriptionPromises);
                 
                 // 更新最后扫描时间
                 const now = new Date();
@@ -663,10 +743,22 @@
                 displayTools(allTools);
                 
             } catch (error) {
+                console.error('扫描失败:', error);
                 alert('扫描失败: ' + error.message);
-                console.error(error);
+                
+                // 显示错误状态
+                toolsGrid.innerHTML = `
+                    <div class="no-tools">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>扫描失败</h3>
+                        <p>${error.message}</p>
+                        <p>请检查网络连接后重试</p>
+                    </div>
+                `;
             } finally {
                 hideLoading();
+                // 隐藏自动扫描通知
+                document.querySelector('.auto-scan-notice').style.display = 'none';
             }
         }
         
@@ -678,6 +770,7 @@
                         <i class="fas fa-search"></i>
                         <h3>未找到工具</h3>
                         <p>未在仓库中找到符合要求的工具文件</p>
+                        <p>请确保仓库中有HTML、JS、Python等工具文件</p>
                     </div>
                 `;
                 return;
@@ -685,16 +778,23 @@
             
             toolsGrid.innerHTML = tools.map(tool => `
                 <div class="tool-card">
-                    <div class="tool-type">${tool.type}</div>
-                    <div class="tool-icon">
+                    <div class="tool-type ${tool.typeClass}">${tool.type}</div>
+                    <div class="tool-icon ${tool.iconClass}">
                         <i class="${tool.icon}"></i>
                     </div>
                     <h3 class="tool-name">${tool.name}</h3>
                     <p class="tool-desc">${tool.description}</p>
                     <p class="tool-path">${tool.path}</p>
-                    <a href="${tool.url}" target="_blank" class="tool-link">
-                        <i class="fas fa-external-link-alt"></i> 查看工具
-                    </a>
+                    <div class="tool-actions">
+                        ${tool.canRun ? `
+                            <a href="${tool.runUrl}" target="_blank" class="tool-link run">
+                                <i class="fas fa-play"></i> 运行工具
+                            </a>
+                        ` : ''}
+                        <a href="${tool.url}" target="_blank" class="tool-link">
+                            <i class="fas fa-code"></i> 查看代码
+                        </a>
+                    </div>
                 </div>
             `).join('');
         }
@@ -722,10 +822,13 @@
         scanBtn.addEventListener('click', scanRepo);
         searchInput.addEventListener('input', searchTools);
         
-        // 页面加载时显示初始状态
+        // 页面加载时自动扫描
         document.addEventListener('DOMContentLoaded', () => {
             totalToolsEl.textContent = '0';
-            lastScanEl.textContent = '未扫描';
+            lastScanEl.textContent = '正在扫描...';
+            
+            // 延迟1秒后开始扫描，让页面先加载完成
+            setTimeout(scanRepo, 1000);
         });
         
         // 添加键盘快捷键支持
@@ -741,6 +844,19 @@
                 e.preventDefault();
                 scanBtn.click();
             }
+            
+            // ESC 清空搜索框
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                searchTools();
+            }
+        });
+        
+        // 搜索框防抖
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(searchTools, 300);
         });
     </script>
 </body>
