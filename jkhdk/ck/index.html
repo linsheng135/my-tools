@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的AI工具集</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .tool-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: #667eea;
+            background: white;
+        }
+        
+        .tool-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .tool-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .tool-features {
+            text-align: left;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .feature i {
+            color: #667eea;
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .tool-link {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .tool-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            color: #777;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        .qr-code {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .qr-code img {
+            max-width: 150px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tools"></i> 我的AI工具集</h1>
+            <p class="subtitle">由DeepSeek AI助我创建，持续更新实用工具，全部免费使用</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="toolCount">2</span>
+                    <span class="stat-label">个工具</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="updateCount">今天</span>
+                    <span class="stat-label">最近更新</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">免费使用</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="tools-grid">
+            <!-- 小说标题工具 -->
+            <a href="novel-titles/" class="tool-card">
+                <div class="tool-icon">📖</div>
+                <h2 class="tool-title">小说标题工具</h2>
+                <p class="tool-description">
+                    专为小说创作者设计，可编辑、复制、导出小说标题到Excel，支持手机端操作。
+                </p>
+                
+                <div class="tool-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>实时编辑标题内容</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>一键复制到剪贴板</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>导出为Excel格式</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>手机端优化界面</span>
+                    </div>
+                </div>
+                
+                <div class="tool-link">立即使用</div>
+            </a>
+            
+            <!-- 手机工具（待添加） -->
+            <a href="mobile-tool/" class="tool-card">
+                <div class="tool-icon">📱</div>
+                <h2 class="tool-title">手机实用工具</h2>
+                <p class="tool-description">
+                    专为手机优化的实用工具集合，包括计算器、记事本、单位转换等常用功能。
+                </p>
+                
+                <div class="tool-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>移动端优化界面</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>离线可用</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>轻量快速</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>无广告</span>
+                    </div>
+                </div>
+                
+                <div class="tool-link">立即使用</div>
+            </a>
+            
+            <!-- 更多工具占位 -->
+            <div class="tool-card" style="opacity: 0.7; cursor: not-allowed;">
+                <div class="tool-icon">📊</div>
+                <h2 class="tool-title">Excel数据处理</h2>
+                <p class="tool-description">
+                    多种Excel数据格式转换和清洗工具，批量处理数据更高效。
+                </p>
+                <div style="margin-top: 20px; color: #999;">
+                    <i class="fas fa-clock"></i> 开发中...
+                </div>
+            </div>
+            
+            <div class="tool-card" style="opacity: 0.7; cursor: not-allowed;">
+                <div class="tool-icon">🖼️</div>
+                <h2 class="tool-title">图片处理工具</h2>
+                <p class="tool-description">
+                    图片格式转换、压缩、批量重命名，满足日常图片处理需求。
+                </p>
+                <div style="margin-top: 20px; color: #999;">
+                    <i class="fas fa-clock"></i> 开发中...
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><i class="fas fa-info-circle"></i> 所有工具均基于GitHub Pages托管，完全免费，无需安装</p>
+            <p>📱 建议将常用工具添加到手机主屏幕，像App一样使用</p>
+            <p>🔧 有新的工具需求？联系DeepSeek AI为您定制</p>
+            
+            <div class="qr-code">
+                <p>手机扫码访问：</p>
+                <!-- 这里可以放二维码，如果需要的话 -->
+                <div style="width: 150px; height: 150px; margin: 10px auto; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                    <div style="text-align: center; color: #666;">
+                        <div style="font-size: 3rem;">📱</div>
+                        <div style="font-size: 0.8rem; margin-top: 5px;">手机访问</div>
+                        <div style="font-size: 0.7rem; margin-top: 2px;">linsheng135.github.io/my-tools/</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
+                © 2024 我的AI工具集 | 由 DeepSeek AI 提供技术支持
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // 更新工具数量统计
+        document.getElementById('toolCount').textContent = '2';
+        
+        // 更新最近更新时间
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('updateCount').textContent = today.toLocaleDateString('zh-CN', options);
+        
+        // 添加点击统计
+        document.querySelectorAll('.tool-card').forEach(card => {
+            if (card.style.cursor !== 'not-allowed') {
+                card.addEventListener('click', function() {
+                    const toolName = this.querySelector('.tool-title').textContent;
+                    console.log(`工具被点击: ${toolName}`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
