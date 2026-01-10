@@ -3,812 +3,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小说标题复制工具 - 可编辑版</title>
+    <title>我的AI工具集</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
-        body { background-color: #f5f7fa; color: #333; line-height: 1.6; padding: 20px; max-width: 1200px; margin: 0 auto; }
-        .container { display: flex; flex-direction: column; gap: 30px; }
-        header { text-align: center; padding: 25px 0; background: linear-gradient(135deg, #9C27B0 0%, #673AB7 100%); border-radius: 15px; color: white; box-shadow: 0 10px 20px rgba(156, 39, 176, 0.15); }
-        h1 { font-size: 2.5rem; margin-bottom: 10px; font-weight: 700; }
-        .subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 800px; margin: 0 auto; }
-        .main-content { display: flex; flex-wrap: wrap; gap: 30px; }
-        .titles-section, .custom-section { background-color: white; border-radius: 15px; padding: 30px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05); }
-        .titles-section { flex: 3; min-width: 300px; }
-        .custom-section { flex: 2; min-width: 300px; }
-        .section-title { font-size: 1.8rem; margin-bottom: 20px; color: #2c3e50; border-bottom: 3px solid #9C27B0; padding-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .section-title i { color: #9C27B0; }
-        .title-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin-bottom: 15px; background-color: #f8f9fa; border-radius: 10px; border-left: 5px solid #9C27B0; transition: all 0.3s ease; }
-        .title-item:hover { transform: translateY(-3px); box-shadow: 0 5px 10px rgba(0, 0, 0, 0.08); }
-        .title-item.edited { border-left-color: #FF9800; background-color: #FFF8E1; }
-        .title-content { flex: 1; padding-right: 15px; }
-        .title-text { font-size: 1.1rem; color: #2c3e50; margin-bottom: 8px; display: block; }
-        .title-input { width: 100%; padding: 10px; border: 2px solid #E0E0E0; border-radius: 6px; font-size: 1rem; margin-bottom: 8px; display: none; }
-        .title-input:focus { outline: none; border-color: #9C27B0; }
-        .title-actions { display: flex; gap: 10px; align-items: center; }
-        .copy-btn { background: linear-gradient(to right, #9C27B0, #673AB7); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; }
-        .copy-btn:hover { background: linear-gradient(to right, #8A1CA0, #5C2FA7); transform: scale(1.05); }
-        .copy-btn.copied { background: linear-gradient(to right, #2ecc71, #27ae60); }
-        .edit-btn { background-color: #FF9800; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; }
-        .edit-btn:hover { background-color: #F57C00; }
-        .save-btn { background-color: #4CAF50; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; display: none; }
-        .save-btn:hover { background-color: #388E3C; }
-        .cancel-btn { background-color: #F44336; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; white-space: nowrap; display: none; }
-        .cancel-btn:hover { background-color: #D32F2F; }
-        .edit-indicator { font-size: 0.8rem; color: #FF9800; display: flex; align-items: center; gap: 5px; display: none; }
-        .custom-textarea { width: 100%; height: 300px; padding: 20px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 1rem; resize: vertical; margin-bottom: 20px; transition: border-color 0.3s; }
-        .custom-textarea:focus { outline: none; border-color: #9C27B0; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 25px; }
-        .action-btn { padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .primary-btn { background: linear-gradient(to right, #9C27B0, #673AB7); color: white; }
-        .secondary-btn { background-color: #f8f9fa; color: #2c3e50; border: 2px solid #e0e0e0; }
-        .excel-btn { background: linear-gradient(to right, #217346, #1e7e34); color: white; }
-        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); }
-        .instructions { background-color: #e8f4fc; border-radius: 10px; padding: 25px; margin-top: 30px; border-left: 5px solid #673AB7; }
-        .instructions h3 { color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .instructions ol { padding-left: 20px; }
-        .instructions li { margin-bottom: 10px; }
-        .notification { position: fixed; bottom: 20px; right: 20px; background-color: #2ecc71; color: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); transform: translateY(100px); opacity: 0; transition: all 0.5s ease; z-index: 1000; }
-        .notification.show { transform: translateY(0); opacity: 1; }
-        .notification.error { background-color: #e74c3c; }
-        footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #e0e0e0; color: #7f8c8d; font-size: 0.9rem; }
-        @media (max-width: 768px) { .main-content { flex-direction: column; } h1 { font-size: 2rem; } .title-item { flex-direction: column; align-items: flex-start; } .title-content { width: 100%; margin-bottom: 10px; } .title-actions { width: 100%; justify-content: space-between; } }
-        .title-count { font-size: 1rem; color: #7f8c8d; margin-left: auto; }
-        .excel-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
-        .excel-tip { background-color: #e8f6f3; border-radius: 8px; padding: 15px; margin-top: 15px; border-left: 4px solid #2ecc71; }
-        .excel-tip h4 { color: #27ae60; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .excel-tip p { margin-bottom: 5px; color: #2c3e50; }
-        .csv-info { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; padding: 10px; background-color: #f9f9f9; border-radius: 8px; }
-        .csv-info i { color: #9C27B0; font-size: 1.2rem; }
-        .quick-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
-        .quick-action-btn { padding: 8px 15px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
-        .quick-action-btn:hover { background-color: #e0e0e0; }
-        .edited-count { color: #FF9800; font-weight: 600; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+        
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .tool-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: #667eea;
+            background: white;
+        }
+        
+        .tool-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .tool-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .tool-features {
+            text-align: left;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .feature i {
+            color: #667eea;
+            margin-right: 10px;
+            width: 20px;
+        }
+        
+        .tool-link {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        
+        .tool-link:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            color: #777;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                border-radius: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+        
+        .qr-code {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .qr-code img {
+            max-width: 150px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-edit"></i> 小说标题复制工具 - 可编辑版</h1>
-            <p class="subtitle">可直接编辑标题，复制修改后的版本，导出纯净CSV到Excel</p>
+            <h1><i class="fas fa-tools"></i> 我的AI工具集</h1>
+            <p class="subtitle">由DeepSeek AI助我创建，持续更新实用工具，全部免费使用</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="toolCount">2</span>
+                    <span class="stat-label">个工具</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="updateCount">今天</span>
+                    <span class="stat-label">最近更新</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">免费使用</span>
+                </div>
+            </div>
         </header>
         
-        <div class="main-content">
-            <section class="titles-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 class="section-title">
-                        <i class="fas fa-book"></i> 可编辑标题列表
-                    </h2>
-                    <div>
-                        <span class="title-count" id="titleCount">5个标题</span>
-                        <span id="editedCount" class="edited-count" style="display: none;"></span>
+        <div class="tools-grid">
+            <!-- 小说标题工具 -->
+            <a href="novel-titles/" class="tool-card">
+                <div class="tool-icon">📖</div>
+                <h2 class="tool-title">小说标题工具</h2>
+                <p class="tool-description">
+                    专为小说创作者设计，可编辑、复制、导出小说标题到Excel，支持手机端操作。
+                </p>
+                
+                <div class="tool-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>实时编辑标题内容</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>一键复制到剪贴板</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>导出为Excel格式</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>手机端优化界面</span>
                     </div>
                 </div>
                 
-                <div class="quick-actions">
-                    <button class="quick-action-btn" id="selectAllBtn"><i class="fas fa-check-square"></i> 全选</button>
-                    <button class="quick-action-btn" id="deselectAllBtn"><i class="fas fa-square"></i> 取消全选</button>
-                    <button class="quick-action-btn" id="copySelectedBtn"><i class="fas fa-copy"></i> 复制选中</button>
-                    <button class="quick-action-btn" id="saveAllEditsBtn"><i class="fas fa-save"></i> 保存所有编辑</button>
-                    <button class="quick-action-btn" id="discardAllEditsBtn"><i class="fas fa-undo"></i> 撤销所有编辑</button>
-                </div>
-                
-                <div id="titlesContainer">
-                    <!-- 标题会通过JavaScript动态添加 -->
-                </div>
-                
-                <div class="excel-section">
-                    <h3><i class="fas fa-file-excel"></i> Excel导出工具</h3>
-                    
-                    <div class="csv-info">
-                        <i class="fas fa-info-circle"></i>
-                        <div>
-                            <strong>导出说明：</strong> CSV文件只包含编辑后的标题列，可直接粘贴到Excel的A列
-                        </div>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button class="action-btn excel-btn" id="copyAllBtn">
-                            <i class="fas fa-copy"></i> 复制全部标题（一列）
-                        </button>
-                        <button class="action-btn excel-btn" id="exportCSVBtn">
-                            <i class="fas fa-file-export"></i> 导出为CSV文件
-                        </button>
-                        <button class="action-btn secondary-btn" id="exportOriginalCSVBtn">
-                            <i class="fas fa-file-export"></i> 导出原始标题
-                        </button>
-                    </div>
-                    
-                    <div class="excel-tip">
-                        <h4><i class="fas fa-lightbulb"></i> Excel列宽优化技巧</h4>
-                        <p><strong>自动调整列宽：</strong> 在Excel中，双击A列右侧的边界线即可自动调整列宽</p>
-                        <p><strong>快捷键：</strong> 选中A列后按 <kbd>Alt</kbd> + <kbd>H</kbd> + <kbd>O</kbd> + <kbd>I</kbd> 快速调整列宽</p>
-                    </div>
-                </div>
-            </section>
+                <div class="tool-link">立即使用</div>
+            </a>
             
-            <section class="custom-section">
-                <h2 class="section-title"><i class="fas fa-edit"></i> 自定义标题</h2>
-                <p style="margin-bottom: 15px; color: #555;">每行输入一个标题，点击"更新标题列表"按钮即可替换现有标题</p>
+            <!-- 手机工具（待添加） -->
+            <a href="mobile-tool/" class="tool-card">
+                <div class="tool-icon">📱</div>
+                <h2 class="tool-title">手机实用工具</h2>
+                <p class="tool-description">
+                    专为手机优化的实用工具集合，包括计算器、记事本、单位转换等常用功能。
+                </p>
                 
-                <textarea class="custom-textarea" id="customTitles" placeholder="请输入您的标题，每行一个...">禁欲总裁解开领带将我压在办公桌上
-病娇竹马强行标记我的颈窝低喘
-清冷校草湿了眼睛哭着求我抱紧
-轮椅世子夜里失控把我困在床上
-偏执男主锁住我的腰肢夜夜索欢</textarea>
-                
-                <div class="btn-group">
-                    <button class="action-btn primary-btn" id="updateTitlesBtn">
-                        <i class="fas fa-sync-alt"></i> 更新标题列表
-                    </button>
-                    <button class="action-btn secondary-btn" id="resetTitlesBtn">
-                        <i class="fas fa-undo"></i> 恢复默认标题
-                    </button>
-                    <button class="action-btn secondary-btn" id="clearTitlesBtn">
-                        <i class="fas fa-trash-alt"></i> 清空标题列表
-                    </button>
+                <div class="tool-features">
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>移动端优化界面</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>离线可用</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>轻量快速</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check-circle"></i>
+                        <span>无广告</span>
+                    </div>
                 </div>
                 
-                <div style="margin-top: 20px; padding: 15px; background-color: #F3E5F5; border-radius: 8px; border-left: 4px solid #9C27B0;">
-                    <h4 style="color: #7B1FA2; margin-bottom: 10px;"><i class="fas fa-pen"></i> 编辑功能说明</h4>
-                    <ul style="padding-left: 20px; color: #5D4037;">
-                        <li>点击标题旁边的"编辑"按钮可修改标题</li>
-                        <li>修改后点击"保存"按钮保存修改，或"取消"按钮放弃修改</li>
-                        <li>复制按钮会复制当前显示（已编辑）的标题</li>
-                        <li>编辑后的标题会以橙色边框标记</li>
-                        <li>使用"保存所有编辑"按钮可以一次性保存所有编辑</li>
-                        <li>使用"撤销所有编辑"可以恢复所有标题到原始状态</li>
-                    </ul>
+                <div class="tool-link">立即使用</div>
+            </a>
+            
+            <!-- 更多工具占位 -->
+            <div class="tool-card" style="opacity: 0.7; cursor: not-allowed;">
+                <div class="tool-icon">📊</div>
+                <h2 class="tool-title">Excel数据处理</h2>
+                <p class="tool-description">
+                    多种Excel数据格式转换和清洗工具，批量处理数据更高效。
+                </p>
+                <div style="margin-top: 20px; color: #999;">
+                    <i class="fas fa-clock"></i> 开发中...
                 </div>
-            </section>
+            </div>
+            
+            <div class="tool-card" style="opacity: 0.7; cursor: not-allowed;">
+                <div class="tool-icon">🖼️</div>
+                <h2 class="tool-title">图片处理工具</h2>
+                <p class="tool-description">
+                    图片格式转换、压缩、批量重命名，满足日常图片处理需求。
+                </p>
+                <div style="margin-top: 20px; color: #999;">
+                    <i class="fas fa-clock"></i> 开发中...
+                </div>
+            </div>
         </div>
         
-        <div class="instructions">
-            <h3><i class="fas fa-info-circle"></i> 使用指南</h3>
-            <ol>
-                <li><strong>编辑标题：</strong> 点击标题旁边的"编辑"按钮，修改标题内容，然后点击"保存"</li>
-                <li><strong>复制编辑后的标题：</strong> 编辑后，"复制"按钮会复制修改后的标题</li>
-                <li><strong>批量复制：</strong> 勾选需要复制的标题，点击"复制选中"按钮</li>
-                <li><strong>导出到Excel：</strong> 点击"导出为CSV文件"按钮，用Excel打开后，双击A列右侧边界线自动调整列宽</li>
-                <li><strong>批量编辑：</strong> 在右侧文本框编辑标题列表，每行一个，点击"更新标题列表"</li>
-            </ol>
+        <div class="footer">
+            <p><i class="fas fa-info-circle"></i> 所有工具均基于GitHub Pages托管，完全免费，无需安装</p>
+            <p>📱 建议将常用工具添加到手机主屏幕，像App一样使用</p>
+            <p>🔧 有新的工具需求？联系DeepSeek AI为您定制</p>
+            
+            <div class="qr-code">
+                <p>手机扫码访问：</p>
+                <!-- 这里可以放二维码，如果需要的话 -->
+                <div style="width: 150px; height: 150px; margin: 10px auto; background: #f5f5f5; display: flex; align-items: center; justify-content: center; border-radius: 10px;">
+                    <div style="text-align: center; color: #666;">
+                        <div style="font-size: 3rem;">📱</div>
+                        <div style="font-size: 0.8rem; margin-top: 5px;">手机访问</div>
+                        <div style="font-size: 0.7rem; margin-top: 2px;">linsheng135.github.io/my-tools/</div>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px; font-size: 0.9rem; color: #aaa;">
+                © 2024 我的AI工具集 | 由 DeepSeek AI 提供技术支持
+            </p>
         </div>
-        
-        <footer>
-            <p>小说标题复制工具 &copy; 2023 | 可编辑版 v1.2 | 专为小说创作者和编辑设计</p>
-        </footer>
     </div>
     
-    <div class="notification" id="notification">标题已复制到剪贴板！</div>
-    
     <script>
-        // 默认标题列表
-        const defaultTitles = [
-            "禁欲总裁解开领带将我压在办公桌上",
-            "病娇竹马强行标记我的颈窝低喘",
-            "清冷校草湿了眼睛哭着求我抱紧",
-            "轮椅世子夜里失控把我困在床上",
-            "偏执男主锁住我的腰肢夜夜索欢"
-        ];
+        // 更新工具数量统计
+        document.getElementById('toolCount').textContent = '2';
         
-        // 当前显示的标题列表（包含编辑后的标题）
-        let currentTitles = [...defaultTitles];
+        // 更新最近更新时间
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('updateCount').textContent = today.toLocaleDateString('zh-CN', options);
         
-        // 原始标题列表（未编辑的版本）
-        let originalTitles = [...defaultTitles];
-        
-        // 编辑状态跟踪
-        let editedTitles = new Set();
-        
-        // 选中的标题索引
-        let selectedTitles = new Set();
-        
-        // 初始化显示标题
-        document.addEventListener('DOMContentLoaded', function() {
-            renderTitles();
-            
-            // 更新标题列表按钮事件
-            document.getElementById('updateTitlesBtn').addEventListener('click', updateTitles);
-            
-            // 恢复默认标题按钮事件
-            document.getElementById('resetTitlesBtn').addEventListener('click', resetTitles);
-            
-            // 清空标题列表按钮事件
-            document.getElementById('clearTitlesBtn').addEventListener('click', clearTitles);
-            
-            // 复制全部标题按钮事件
-            document.getElementById('copyAllBtn').addEventListener('click', copyAllTitles);
-            
-            // 导出CSV按钮事件（导出编辑后的标题）
-            document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV);
-            
-            // 导出原始标题CSV按钮事件
-            document.getElementById('exportOriginalCSVBtn').addEventListener('click', exportOriginalToCSV);
-            
-            // 全选按钮事件
-            document.getElementById('selectAllBtn').addEventListener('click', selectAllTitles);
-            
-            // 取消全选按钮事件
-            document.getElementById('deselectAllBtn').addEventListener('click', deselectAllTitles);
-            
-            // 复制选中按钮事件
-            document.getElementById('copySelectedBtn').addEventListener('click', copySelectedTitles);
-            
-            // 保存所有编辑按钮事件
-            document.getElementById('saveAllEditsBtn').addEventListener('click', saveAllEdits);
-            
-            // 撤销所有编辑按钮事件
-            document.getElementById('discardAllEditsBtn').addEventListener('click', discardAllEdits);
-            
-            // 显示标题数量
-            updateTitleCount();
-            updateEditedCount();
+        // 添加点击统计
+        document.querySelectorAll('.tool-card').forEach(card => {
+            if (card.style.cursor !== 'not-allowed') {
+                card.addEventListener('click', function() {
+                    const toolName = this.querySelector('.tool-title').textContent;
+                    console.log(`工具被点击: ${toolName}`);
+                });
+            }
         });
-        
-        // 渲染标题列表
-        function renderTitles() {
-            const container = document.getElementById('titlesContainer');
-            container.innerHTML = '';
-            
-            currentTitles.forEach((title, index) => {
-                const isEdited = editedTitles.has(index);
-                const originalTitle = originalTitles[index];
-                
-                const titleElement = document.createElement('div');
-                titleElement.className = `title-item ${isEdited ? 'edited' : ''}`;
-                titleElement.dataset.index = index;
-                
-                // 设置选中状态
-                if (selectedTitles.has(index)) {
-                    titleElement.style.backgroundColor = isEdited ? '#FFECB3' : '#e6f7ff';
-                }
-                
-                titleElement.innerHTML = `
-                    <div class="title-content">
-                        <span class="title-text" id="titleText-${index}">${title}</span>
-                        <input type="text" class="title-input" id="titleInput-${index}" value="${title}" data-original="${originalTitle}">
-                        <span class="edit-indicator" id="editIndicator-${index}">
-                            <i class="fas fa-pen"></i> 已编辑
-                        </span>
-                    </div>
-                    <div class="title-actions">
-                        <button class="edit-btn" id="editBtn-${index}" data-index="${index}">
-                            <i class="fas fa-edit"></i> 编辑
-                        </button>
-                        <button class="save-btn" id="saveBtn-${index}" data-index="${index}">
-                            <i class="fas fa-check"></i> 保存
-                        </button>
-                        <button class="cancel-btn" id="cancelBtn-${index}" data-index="${index}">
-                            <i class="fas fa-times"></i> 取消
-                        </button>
-                        <input type="checkbox" class="title-checkbox" id="checkbox-${index}" data-index="${index}" ${selectedTitles.has(index) ? 'checked' : ''}>
-                        <button class="copy-btn" id="copyBtn-${index}" data-index="${index}">
-                            <i class="fas fa-copy"></i> 复制
-                        </button>
-                    </div>
-                `;
-                
-                container.appendChild(titleElement);
-                
-                // 如果已编辑，显示编辑指示器
-                if (isEdited) {
-                    document.getElementById(`editIndicator-${index}`).style.display = 'flex';
-                }
-            });
-            
-            // 为所有按钮添加事件
-            setupEventListeners();
-            
-            // 更新标题计数
-            updateTitleCount();
-            updateEditedCount();
-        }
-        
-        // 设置事件监听器
-        function setupEventListeners() {
-            // 为所有编辑按钮添加事件
-            document.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    enterEditMode(index);
-                });
-            });
-            
-            // 为所有保存按钮添加事件
-            document.querySelectorAll('.save-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    saveEdit(index);
-                });
-            });
-            
-            // 为所有取消按钮添加事件
-            document.querySelectorAll('.cancel-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    cancelEdit(index);
-                });
-            });
-            
-            // 为所有复制按钮添加事件
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    copyTitle(index, this);
-                });
-            });
-            
-            // 为所有复选框添加事件
-            document.querySelectorAll('.title-checkbox').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    const index = parseInt(this.getAttribute('data-index'));
-                    const titleItem = this.closest('.title-item');
-                    
-                    if (this.checked) {
-                        selectedTitles.add(index);
-                        if (editedTitles.has(index)) {
-                            titleItem.style.backgroundColor = '#FFECB3';
-                        } else {
-                            titleItem.style.backgroundColor = '#e6f7ff';
-                        }
-                    } else {
-                        selectedTitles.delete(index);
-                        if (editedTitles.has(index)) {
-                            titleItem.style.backgroundColor = '#FFF8E1';
-                        } else {
-                            titleItem.style.backgroundColor = '';
-                        }
-                    }
-                    updateTitleCount();
-                });
-            });
-            
-            // 为所有输入框添加回车键保存功能
-            document.querySelectorAll('.title-input').forEach(input => {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        const index = parseInt(this.id.replace('titleInput-', ''));
-                        saveEdit(index);
-                    } else if (e.key === 'Escape') {
-                        const index = parseInt(this.id.replace('titleInput-', ''));
-                        cancelEdit(index);
-                    }
-                });
-            });
-        }
-        
-        // 进入编辑模式
-        function enterEditMode(index) {
-            // 显示输入框，隐藏文本
-            document.getElementById(`titleText-${index}`).style.display = 'none';
-            document.getElementById(`titleInput-${index}`).style.display = 'block';
-            
-            // 显示保存和取消按钮，隐藏编辑按钮
-            document.getElementById(`editBtn-${index}`).style.display = 'none';
-            document.getElementById(`saveBtn-${index}`).style.display = 'inline-block';
-            document.getElementById(`cancelBtn-${index}`).style.display = 'inline-block';
-            
-            // 聚焦到输入框
-            document.getElementById(`titleInput-${index}`).focus();
-            document.getElementById(`titleInput-${index}`).select();
-        }
-        
-        // 保存编辑
-        function saveEdit(index) {
-            const inputElement = document.getElementById(`titleInput-${index}`);
-            const newTitle = inputElement.value.trim();
-            const originalTitle = inputElement.getAttribute('data-original');
-            
-            if (newTitle === '') {
-                showNotification('标题不能为空', true);
-                return;
-            }
-            
-            // 更新当前标题
-            currentTitles[index] = newTitle;
-            
-            // 更新显示文本
-            document.getElementById(`titleText-${index}`).textContent = newTitle;
-            
-            // 如果标题与原始标题不同，标记为已编辑
-            if (newTitle !== originalTitle) {
-                editedTitles.add(index);
-                document.getElementById(`editIndicator-${index}`).style.display = 'flex';
-                document.querySelector(`.title-item[data-index="${index}"]`).classList.add('edited');
-                
-                // 如果已选中，更新背景色
-                if (selectedTitles.has(index)) {
-                    document.querySelector(`.title-item[data-index="${index}"]`).style.backgroundColor = '#FFECB3';
-                }
-            } else {
-                editedTitles.delete(index);
-                document.getElementById(`editIndicator-${index}`).style.display = 'none';
-                document.querySelector(`.title-item[data-index="${index}"]`).classList.remove('edited');
-                
-                // 如果已选中，更新背景色
-                if (selectedTitles.has(index)) {
-                    document.querySelector(`.title-item[data-index="${index}"]`).style.backgroundColor = '#e6f7ff';
-                } else {
-                    document.querySelector(`.title-item[data-index="${index}"]`).style.backgroundColor = '';
-                }
-            }
-            
-            // 退出编辑模式
-            exitEditMode(index);
-            
-            // 更新编辑计数
-            updateEditedCount();
-            
-            showNotification(`标题 #${index + 1} 已保存`);
-        }
-        
-        // 取消编辑
-        function cancelEdit(index) {
-            // 恢复原始值
-            const inputElement = document.getElementById(`titleInput-${index}`);
-            const originalTitle = inputElement.getAttribute('data-original');
-            
-            // 退出编辑模式
-            exitEditMode(index);
-            
-            // 如果输入框的值已经改变，重置为原始值
-            if (inputElement.value !== originalTitle) {
-                inputElement.value = originalTitle;
-                document.getElementById(`titleText-${index}`).textContent = originalTitle;
-                currentTitles[index] = originalTitle;
-                
-                // 如果之前被标记为已编辑，现在取消编辑标记
-                editedTitles.delete(index);
-                document.getElementById(`editIndicator-${index}`).style.display = 'none';
-                document.querySelector(`.title-item[data-index="${index}"]`).classList.remove('edited');
-                
-                // 更新背景色
-                if (selectedTitles.has(index)) {
-                    document.querySelector(`.title-item[data-index="${index}"]`).style.backgroundColor = '#e6f7ff';
-                } else {
-                    document.querySelector(`.title-item[data-index="${index}"]`).style.backgroundColor = '';
-                }
-                
-                // 更新编辑计数
-                updateEditedCount();
-                
-                showNotification(`标题 #${index + 1} 的编辑已取消`);
-            }
-        }
-        
-        // 退出编辑模式
-        function exitEditMode(index) {
-            // 隐藏输入框，显示文本
-            document.getElementById(`titleText-${index}`).style.display = 'block';
-            document.getElementById(`titleInput-${index}`).style.display = 'none';
-            
-            // 显示编辑按钮，隐藏保存和取消按钮
-            document.getElementById(`editBtn-${index}`).style.display = 'inline-block';
-            document.getElementById(`saveBtn-${index}`).style.display = 'none';
-            document.getElementById(`cancelBtn-${index}`).style.display = 'none';
-        }
-        
-        // 复制单个标题
-        function copyTitle(index, buttonElement = null) {
-            const title = currentTitles[index];
-            copyToClipboard(title, buttonElement);
-            showNotification(`"${title.substring(0, 25)}${title.length > 25 ? '...' : ''}" 已复制到剪贴板！`);
-        }
-        
-        // 复制文本到剪贴板
-        function copyToClipboard(text, buttonElement = null) {
-            navigator.clipboard.writeText(text).then(() => {
-                // 改变按钮状态
-                if (buttonElement) {
-                    const originalText = buttonElement.innerHTML;
-                    buttonElement.innerHTML = '<i class="fas fa-check"></i> 已复制';
-                    buttonElement.classList.add('copied');
-                    
-                    // 2秒后恢复按钮状态
-                    setTimeout(() => {
-                        buttonElement.innerHTML = originalText;
-                        buttonElement.classList.remove('copied');
-                    }, 2000);
-                }
-            }).catch(err => {
-                console.error('复制失败: ', err);
-                fallbackCopyTextToClipboard(text);
-            });
-        }
-        
-        // 备用复制方法
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.position = "fixed";
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showNotification(`"${text.substring(0, 20)}..." 已复制到剪贴板！`);
-                } else {
-                    showNotification('复制失败，请手动选择文本复制', true);
-                }
-            } catch (err) {
-                console.error('备用复制方法失败: ', err);
-                showNotification('复制失败，请手动选择文本复制', true);
-            }
-            
-            document.body.removeChild(textArea);
-        }
-        
-        // 复制所有标题（用于Excel一列粘贴）
-        function copyAllTitles() {
-            if (currentTitles.length === 0) {
-                showNotification('标题列表为空，请先添加标题', true);
-                return;
-            }
-            
-            const allTitles = currentTitles.join('\n');
-            copyToClipboard(allTitles);
-            showNotification(`已复制全部${currentTitles.length}个标题到剪贴板，可在Excel中粘贴到A列`);
-        }
-        
-        // 复制选中标题
-        function copySelectedTitles() {
-            if (selectedTitles.size === 0) {
-                showNotification('请先选择要复制的标题', true);
-                return;
-            }
-            
-            const selected = Array.from(selectedTitles)
-                .sort((a, b) => a - b)
-                .map(index => currentTitles[index])
-                .join('\n');
-            
-            copyToClipboard(selected);
-            showNotification(`已复制${selectedTitles.size}个选中标题到剪贴板`);
-        }
-        
-        // 导出为CSV文件（导出编辑后的标题）
-        function exportToCSV() {
-            if (currentTitles.length === 0) {
-                showNotification('标题列表为空，请先添加标题', true);
-                return;
-            }
-            
-            // 创建CSV内容，只包含标题列，每行一个标题
-            let csvContent = '';
-            currentTitles.forEach(title => {
-                // 处理标题中的特殊字符
-                const needsQuotes = title.includes(',') || title.includes('"') || title.includes('\n');
-                let escapedTitle = title;
-                
-                // 转义引号
-                if (title.includes('"')) {
-                    escapedTitle = title.replace(/"/g, '""');
-                }
-                
-                // 添加引号如果必要
-                if (needsQuotes) {
-                    csvContent += `"${escapedTitle}"\n`;
-                } else {
-                    csvContent += `${escapedTitle}\n`;
-                }
-            });
-            
-            // 创建Blob对象并下载
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute('href', url);
-            const dateStr = new Date().toISOString().split('T')[0];
-            const editedCount = editedTitles.size;
-            const fileName = editedCount > 0 
-                ? `小说标题_已编辑${editedCount}个_${dateStr}.csv` 
-                : `小说标题_${dateStr}.csv`;
-            
-            link.setAttribute('download', fileName);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification(`已导出${currentTitles.length}个标题到CSV文件。<br>其中${editedTitles.size}个标题已被编辑。<br>在Excel中打开后，双击A列右侧边界线自动调整列宽。`);
-        }
-        
-        // 导出原始标题为CSV文件
-        function exportOriginalToCSV() {
-            if (originalTitles.length === 0) {
-                showNotification('标题列表为空，请先添加标题', true);
-                return;
-            }
-            
-            // 创建CSV内容，只包含标题列，每行一个标题
-            let csvContent = '';
-            originalTitles.forEach(title => {
-                // 处理标题中的特殊字符
-                const needsQuotes = title.includes(',') || title.includes('"') || title.includes('\n');
-                let escapedTitle = title;
-                
-                // 转义引号
-                if (title.includes('"')) {
-                    escapedTitle = title.replace(/"/g, '""');
-                }
-                
-                // 添加引号如果必要
-                if (needsQuotes) {
-                    csvContent += `"${escapedTitle}"\n`;
-                } else {
-                    csvContent += `${escapedTitle}\n`;
-                }
-            });
-            
-            // 创建Blob对象并下载
-            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            
-            link.setAttribute('href', url);
-            const dateStr = new Date().toISOString().split('T')[0];
-            link.setAttribute('download', `小说标题_原始版本_${dateStr}.csv`);
-            link.style.visibility = 'hidden';
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showNotification(`已导出${originalTitles.length}个原始标题到CSV文件。`);
-        }
-        
-        // 保存所有编辑
-        function saveAllEdits() {
-            // 退出所有编辑模式
-            currentTitles.forEach((_, index) => {
-                const inputElement = document.getElementById(`titleInput-${index}`);
-                if (inputElement && inputElement.style.display === 'block') {
-                    saveEdit(index);
-                }
-            });
-            
-            showNotification(`已保存所有编辑，共${editedTitles.size}个标题被修改`);
-        }
-        
-        // 撤销所有编辑
-        function discardAllEdits() {
-            if (editedTitles.size === 0) {
-                showNotification('没有需要撤销的编辑', true);
-                return;
-            }
-            
-            if (confirm(`确定要撤销所有编辑吗？这将恢复${editedTitles.size}个标题到原始状态。`)) {
-                // 恢复所有标题到原始状态
-                currentTitles = [...originalTitles];
-                editedTitles.clear();
-                renderTitles();
-                showNotification(`已撤销所有编辑，恢复${originalTitles.length}个标题到原始状态`);
-            }
-        }
-        
-        // 全选标题
-        function selectAllTitles() {
-            selectedTitles.clear();
-            for (let i = 0; i < currentTitles.length; i++) {
-                selectedTitles.add(i);
-            }
-            renderTitles();
-            showNotification(`已选中全部${currentTitles.length}个标题`);
-        }
-        
-        // 取消全选标题
-        function deselectAllTitles() {
-            selectedTitles.clear();
-            renderTitles();
-            showNotification('已取消所有选中标题');
-        }
-        
-        // 显示通知
-        function showNotification(message, isError = false) {
-            const notification = document.getElementById('notification');
-            notification.innerHTML = message;
-            
-            if (isError) {
-                notification.style.backgroundColor = '#e74c3c';
-                notification.classList.add('error');
-            } else {
-                notification.style.backgroundColor = '#2ecc71';
-                notification.classList.remove('error');
-            }
-            
-            notification.classList.add('show');
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 4000);
-        }
-        
-        // 更新标题列表
-        function updateTitles() {
-            const customTextarea = document.getElementById('customTitles');
-            const newTitles = customTextarea.value
-                .split('\n')
-                .map(title => title.trim())
-                .filter(title => title.length > 0);
-            
-            if (newTitles.length === 0) {
-                showNotification('请输入至少一个标题', true);
-                return;
-            }
-            
-            if (newTitles.length > 50) {
-                showNotification(`标题数量过多，最多支持50个标题，当前有${newTitles.length}个`, true);
-                return;
-            }
-            
-            currentTitles = [...newTitles];
-            originalTitles = [...newTitles];
-            editedTitles.clear();
-            selectedTitles.clear();
-            renderTitles();
-            showNotification(`标题列表已更新，共${newTitles.length}个标题`);
-        }
-        
-        // 恢复默认标题
-        function resetTitles() {
-            currentTitles = [...defaultTitles];
-            originalTitles = [...defaultTitles];
-            editedTitles.clear();
-            selectedTitles.clear();
-            const customTextarea = document.getElementById('customTitles');
-            customTextarea.value = defaultTitles.join('\n');
-            renderTitles();
-            showNotification('已恢复默认标题列表');
-        }
-        
-        // 清空标题列表
-        function clearTitles() {
-            if (confirm('确定要清空标题列表吗？')) {
-                currentTitles = [];
-                originalTitles = [];
-                editedTitles.clear();
-                selectedTitles.clear();
-                renderTitles();
-                document.getElementById('customTitles').value = '';
-                showNotification('标题列表已清空');
-            }
-        }
-        
-        // 更新标题计数
-        function updateTitleCount() {
-            const countElement = document.getElementById('titleCount');
-            const selectedCount = selectedTitles.size;
-            
-            if (selectedCount > 0) {
-                countElement.textContent = `${currentTitles.length}个标题 (已选${selectedCount}个)`;
-            } else {
-                countElement.textContent = `${currentTitles.length}个标题`;
-            }
-        }
-        
-        // 更新编辑计数
-        function updateEditedCount() {
-            const editedCountElement = document.getElementById('editedCount');
-            
-            if (editedTitles.size > 0) {
-                editedCountElement.textContent = `已编辑${editedTitles.size}个`;
-                editedCountElement.style.display = 'inline';
-                document.getElementById('saveAllEditsBtn').style.display = 'inline-block';
-                document.getElementById('discardAllEditsBtn').style.display = 'inline-block';
-            } else {
-                editedCountElement.style.display = 'none';
-                document.getElementById('saveAllEditsBtn').style.display = 'none';
-                document.getElementById('discardAllEditsBtn').style.display = 'none';
-            }
-        }
     </script>
 </body>
 </html>
