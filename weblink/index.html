@@ -27,6 +27,7 @@
       --success-color: #10b981;
       --warning-color: #f59e0b;
       --danger-color: #ef4444;
+      --export-color: #0ea5e9;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --radius: 12px;
     }
@@ -39,6 +40,7 @@
       --text-color: #f1f5f9;
       --text-secondary: #94a3b8;
       --border-color: #334155;
+      --export-color: #38bdf8;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
     }
 
@@ -128,6 +130,17 @@
 
     body.dark-mode .btn-secondary:hover {
       background: #334155;
+    }
+
+    .btn-export {
+      background: var(--export-color);
+      color: white;
+    }
+
+    .btn-export:hover {
+      background: #0284c7;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
     }
 
     .btn-danger {
@@ -893,13 +906,24 @@
       }
     }
 
-    /* 新添加：导出HTML链接样式 */
-    .export-html-btn {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    /* 导出选项样式 */
+    .export-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
     }
 
-    .export-html-btn:hover {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    .export-section {
+      margin-bottom: 30px;
+    }
+
+    .export-section h3 {
+      margin-bottom: 15px;
+      color: var(--text-color);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
   </style>
 </head>
@@ -921,7 +945,7 @@
           <i class="fas fa-plus"></i>
           <span class="desktop-only">添加链接</span>
         </button>
-        <button class="btn export-html-btn" id="exportAllLinksBtn">
+        <button class="btn btn-export" id="exportAllBtn">
           <i class="fas fa-file-export"></i>
           <span class="desktop-only">导出所有链接</span>
         </button>
@@ -1124,6 +1148,60 @@
     </div>
   </div>
 
+  <!-- 模态框：导出所有链接 -->
+  <div class="modal" id="exportModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fas fa-file-export"></i> 导出所有链接</h3>
+        <button class="modal-close" id="exportModalClose">&times;</button>
+      </div>
+      
+      <div class="export-section">
+        <h3><i class="fas fa-file-html"></i> 导出为HTML文件</h3>
+        <p style="margin-bottom: 15px; color: var(--text-secondary);">
+          导出一个完整的HTML文件，包含所有链接和文件夹结构。可以直接在浏览器中打开使用。
+        </p>
+        <button class="btn btn-export" id="exportHtmlBtn" style="width: 100%;">
+          <i class="fas fa-download"></i> 导出HTML文件
+        </button>
+      </div>
+
+      <div class="export-section">
+        <h3><i class="fas fa-file-code"></i> 导出为JSON文件</h3>
+        <p style="margin-bottom: 15px; color: var(--text-secondary);">
+          导出原始数据文件，可用于备份或导入到其他支持JSON的应用。
+        </p>
+        <button class="btn btn-secondary" id="exportJsonBtn" style="width: 100%;">
+          <i class="fas fa-download"></i> 导出JSON文件
+        </button>
+      </div>
+
+      <div class="export-section">
+        <h3><i class="fas fa-file-alt"></i> 导出为纯文本</h3>
+        <p style="margin-bottom: 15px; color: var(--text-secondary);">
+          导出为简单的文本格式，便于复制粘贴到其他应用。
+        </p>
+        <button class="btn btn-secondary" id="exportTextBtn" style="width: 100%;">
+          <i class="fas fa-copy"></i> 复制到剪贴板
+        </button>
+      </div>
+
+      <div class="export-section">
+        <h3><i class="fas fa-file-csv"></i> 导出为CSV文件</h3>
+        <p style="margin-bottom: 15px; color: var(--text-secondary);">
+          导出为表格格式，可以用Excel或其他电子表格软件打开。
+        </p>
+        <button class="btn btn-secondary" id="exportCsvBtn" style="width: 100%;">
+          <i class="fas fa-download"></i> 导出CSV文件
+        </button>
+      </div>
+
+      <div class="form-actions" style="margin-top: 30px;">
+        <button type="button" class="btn btn-secondary" id="exportCancelBtn">取消</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 模态框：设置 -->
   <div class="modal" id="settingsModal">
     <div class="modal-content">
@@ -1168,8 +1246,8 @@
           <button class="btn btn-secondary" id="exportDataBtn" style="flex: 1;">
             <i class="fas fa-download"></i> 导出数据(JSON)
           </button>
-          <button class="btn btn-secondary" id="exportAllAsHtmlBtn" style="flex: 1;">
-            <i class="fas fa-file-export"></i> 导出为HTML
+          <button class="btn btn-export" id="openExportModalBtn" style="flex: 1;">
+            <i class="fas fa-file-export"></i> 导出所有链接
           </button>
           <button class="btn btn-secondary" id="importDataBtn" style="flex: 1;">
             <i class="fas fa-upload"></i> 导入数据
@@ -1202,7 +1280,7 @@
       <div>
         <h4 style="margin-bottom: 15px; font-size: 18px;">关于</h4>
         <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
-          个人导航页 v2.1 | 支持文件夹嵌套、链接备注、移动端优化、HTML导出
+          个人导航页 v2.1 | 支持文件夹嵌套、链接备注、移动端优化、多种格式导出
         </p>
       </div>
     </div>
@@ -1440,16 +1518,26 @@
         subfolderCount.textContent = subfolders;
       }
 
-      // 新增：导出所有链接为HTML文件
-      function exportAllLinksAsHtml() {
+      // ===================== 导出功能 =====================
+
+      // 打开导出模态框
+      function openExportModal() {
+        document.getElementById('exportModal').classList.add('active');
+      }
+
+      // 导出为HTML文件
+      function exportAsHtml() {
         const timestamp = new Date().toISOString().split('T')[0];
         const fileName = `我的导航链接-${timestamp}.html`;
 
         // 构建文件夹树
         const folderTree = buildFolderTreeForExport();
+        const rootLinks = appState.links
+          .filter(link => !link.folderId)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
 
         // 生成HTML内容
-        const htmlContent = generateHtmlExport(folderTree);
+        const htmlContent = generateHtmlExport(folderTree, rootLinks);
 
         // 创建Blob并下载
         const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
@@ -1463,9 +1551,139 @@
         URL.revokeObjectURL(url);
 
         showNotification(`已导出${appState.links.length}个链接到HTML文件`, 'success');
+        document.getElementById('exportModal').classList.remove('active');
       }
 
-      // 新增：为导出构建文件夹树
+      // 导出为JSON文件
+      function exportAsJson() {
+        const data = {
+          folders: appState.folders,
+          links: appState.links,
+          exportedAt: new Date().toISOString(),
+          appVersion: '2.1'
+        };
+
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `navigation-data-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showNotification('数据已导出为JSON', 'success');
+        document.getElementById('exportModal').classList.remove('active');
+      }
+
+      // 导出为纯文本
+      function exportAsText() {
+        let textContent = `个人导航链接导出\n导出时间：${new Date().toLocaleString('zh-CN')}\n\n`;
+        textContent += `总链接数：${appState.links.length}\n总文件夹数：${appState.folders.length}\n\n`;
+
+        // 构建文件夹树
+        const folderTree = buildFolderTreeForExport();
+        const rootLinks = appState.links
+          .filter(link => !link.folderId)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+
+        // 添加根目录链接
+        if (rootLinks.length > 0) {
+          textContent += "=== 根目录链接 ===\n\n";
+          rootLinks.forEach(link => {
+            textContent += `- ${link.name}\n  网址：${link.url}\n`;
+            if (link.notes) textContent += `  备注：${link.notes}\n`;
+            textContent += '\n';
+          });
+        }
+
+        // 递归添加文件夹内容
+        function addFolderToText(folder, level = 0) {
+          const indent = '  '.repeat(level);
+          textContent += `${indent}=== ${folder.name} ===\n`;
+          if (folder.description) textContent += `${indent}描述：${folder.description}\n\n`;
+
+          // 添加当前文件夹的链接
+          if (folder.links && folder.links.length > 0) {
+            folder.links.forEach(link => {
+              textContent += `${indent}- ${link.name}\n${indent}  网址：${link.url}\n`;
+              if (link.notes) textContent += `${indent}  备注：${link.notes}\n`;
+              textContent += '\n';
+            });
+          }
+
+          // 递归处理子文件夹
+          if (folder.children && folder.children.length > 0) {
+            folder.children.forEach(child => {
+              addFolderToText(child, level + 1);
+            });
+          }
+        }
+
+        folderTree.forEach(folder => {
+          addFolderToText(folder);
+        });
+
+        // 复制到剪贴板
+        navigator.clipboard.writeText(textContent).then(() => {
+          showNotification('链接列表已复制到剪贴板', 'success');
+        }).catch(err => {
+          console.error('复制失败:', err);
+          showNotification('复制失败，请手动复制', 'error');
+        });
+
+        document.getElementById('exportModal').classList.remove('active');
+      }
+
+      // 导出为CSV文件
+      function exportAsCsv() {
+        const timestamp = new Date().toISOString().split('T')[0];
+        const fileName = `导航链接-${timestamp}.csv`;
+
+        // CSV标题行
+        let csvContent = "文件夹,链接名称,URL,备注\n";
+
+        // 处理根目录链接
+        appState.links
+          .filter(link => !link.folderId)
+          .forEach(link => {
+            const folderName = "根目录";
+            const name = `"${link.name.replace(/"/g, '""')}"`;
+            const url = `"${link.url}"`;
+            const notes = link.notes ? `"${link.notes.replace(/"/g, '""')}"` : '';
+            csvContent += `${folderName},${name},${url},${notes}\n`;
+          });
+
+        // 处理文件夹中的链接
+        appState.folders.forEach(folder => {
+          const folderName = `"${folder.name.replace(/"/g, '""')}"`;
+          appState.links
+            .filter(link => link.folderId === folder.id)
+            .forEach(link => {
+              const name = `"${link.name.replace(/"/g, '""')}"`;
+              const url = `"${link.url}"`;
+              const notes = link.notes ? `"${link.notes.replace(/"/g, '""')}"` : '';
+              csvContent += `${folderName},${name},${url},${notes}\n`;
+            });
+        });
+
+        // 创建Blob并下载
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showNotification('数据已导出为CSV文件', 'success');
+        document.getElementById('exportModal').classList.remove('active');
+      }
+
+      // 为导出构建文件夹树
       function buildFolderTreeForExport(parentId = '') {
         const folders = appState.folders.filter(f => f.parentId === parentId);
         const tree = [];
@@ -1486,12 +1704,8 @@
         return tree;
       }
 
-      // 新增：生成HTML导出内容
-      function generateHtmlExport(folderTree) {
-        const rootLinks = appState.links
-          .filter(link => !link.folderId)
-          .sort((a, b) => (a.order || 0) - (b.order || 0));
-
+      // 生成HTML导出内容
+      function generateHtmlExport(folderTree, rootLinks) {
         const totalLinks = appState.links.length;
         const totalFolders = appState.folders.length;
         const exportDate = new Date().toLocaleString('zh-CN');
@@ -1528,7 +1742,7 @@
         }
         
         .header h1 {
-            color: #6366f1;
+            color: #0ea5e9;
             margin-bottom: 10px;
         }
         
@@ -1552,7 +1766,7 @@
         .stat-value {
             font-size: 24px;
             font-weight: bold;
-            color: #6366f1;
+            color: #0ea5e9;
         }
         
         .stat-label {
@@ -1565,7 +1779,7 @@
         }
         
         .folder-header {
-            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
             color: white;
             padding: 15px 20px;
             border-radius: 10px 10px 0 0;
@@ -1603,7 +1817,7 @@
         .link-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: #6366f1;
+            border-color: #0ea5e9;
         }
         
         .link-header {
@@ -1622,7 +1836,7 @@
             align-items: center;
             justify-content: center;
             font-size: 14px;
-            color: #6366f1;
+            color: #0ea5e9;
             border: 1px solid #e2e8f0;
             flex-shrink: 0;
         }
@@ -1652,15 +1866,15 @@
             line-height: 1.5;
             margin-top: 10px;
             padding: 10px;
-            background: rgba(99, 102, 241, 0.05);
+            background: rgba(14, 165, 233, 0.05);
             border-radius: 6px;
-            border-left: 3px solid #6366f1;
+            border-left: 3px solid #0ea5e9;
         }
         
         .subfolder {
             margin-left: 20px;
             margin-top: 20px;
-            border-left: 3px solid #a5b4fc;
+            border-left: 3px solid #7dd3fc;
             padding-left: 20px;
         }
         
@@ -1700,7 +1914,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #6366f1;
+            background: #0ea5e9;
             color: white;
             width: 50px;
             height: 50px;
@@ -1715,7 +1929,7 @@
         }
         
         .back-to-top:hover {
-            background: #8b5cf6;
+            background: #38bdf8;
             transform: translateY(-2px);
         }
     </style>
@@ -1737,7 +1951,7 @@
         </div>
         
         <div class="export-info">
-            <p><i class="fas fa-info-circle"></i> 此文件由个人导航页生成，包含所有已保存的链接。双击链接即可在新标签页中打开。</p>
+            <p><i class="fas fa-info-circle"></i> 此文件由个人导航页生成，包含所有已保存的链接。点击链接即可在新标签页中打开。</p>
         </div>
     </div>
     
@@ -1800,7 +2014,7 @@
 </html>`;
       }
 
-      // 新增：生成HTML文件夹树
+      // 生成HTML文件夹树
       function generateHtmlFolderTree(folderTree, rootLinks = [], level = 0) {
         let html = '';
 
@@ -1891,6 +2105,8 @@
 
         return html;
       }
+
+      // ===================== 其他功能 =====================
 
       async function syncWithGist(action) {
         if (!appState.githubToken) {
@@ -2917,8 +3133,31 @@
         // 添加链接按钮
         document.getElementById('addLinkBtn').addEventListener('click', () => openLinkModal(appState.currentFolderId));
 
-        // 新增：导出所有链接按钮
-        document.getElementById('exportAllLinksBtn').addEventListener('click', exportAllLinksAsHtml);
+        // 导出所有链接按钮（顶部导航栏）
+        document.getElementById('exportAllBtn').addEventListener('click', openExportModal);
+
+        // 在设置面板中打开导出模态框的按钮
+        document.getElementById('openExportModalBtn').addEventListener('click', function() {
+          document.getElementById('settingsModal').classList.remove('active');
+          setTimeout(() => openExportModal(), 300);
+        });
+
+        // 导出HTML按钮
+        document.getElementById('exportHtmlBtn').addEventListener('click', exportAsHtml);
+
+        // 导出JSON按钮
+        document.getElementById('exportJsonBtn').addEventListener('click', exportAsJson);
+
+        // 导出文本按钮
+        document.getElementById('exportTextBtn').addEventListener('click', exportAsText);
+
+        // 导出CSV按钮
+        document.getElementById('exportCsvBtn').addEventListener('click', exportAsCsv);
+
+        // 导出取消按钮
+        document.getElementById('exportCancelBtn').addEventListener('click', function() {
+          document.getElementById('exportModal').classList.remove('active');
+        });
 
         // 添加到当前文件夹按钮
         document.getElementById('addLinkToCurrentBtn').addEventListener('click', () => {
@@ -3150,30 +3389,7 @@
 
         // 导出数据为JSON
         document.getElementById('exportDataBtn').addEventListener('click', function () {
-          const data = {
-            folders: appState.folders,
-            links: appState.links,
-            exportedAt: new Date().toISOString(),
-            appVersion: '2.1'
-          };
-
-          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `navigation-data-${new Date().toISOString().split('T')[0]}.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-
-          showNotification('数据已导出为JSON', 'success');
-        });
-
-        // 新增：在设置中导出为HTML
-        document.getElementById('exportAllAsHtmlBtn').addEventListener('click', function () {
-          exportAllLinksAsHtml();
-          // 关闭设置模态框
+          exportAsJson();
           document.getElementById('settingsModal').classList.remove('active');
         });
 
@@ -3261,6 +3477,10 @@
         document.getElementById('linkCancelBtn').addEventListener('click', () => {
           document.getElementById('linkModal').classList.remove('active');
           appState.editingLinkId = null;
+        });
+
+        document.getElementById('exportModalClose').addEventListener('click', () => {
+          document.getElementById('exportModal').classList.remove('active');
         });
 
         document.getElementById('settingsModalClose').addEventListener('click', () => {
