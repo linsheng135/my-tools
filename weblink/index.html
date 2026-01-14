@@ -26,6 +26,7 @@
       --warning-color: #f59e0b;
       --danger-color: #ef4444;
       --export-color: #0ea5e9;
+      --select-color: #10b981;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --radius: 12px;
     }
@@ -39,6 +40,7 @@
       --text-secondary: #94a3b8;
       --border-color: #334155;
       --export-color: #38bdf8;
+      --select-color: #34d399;
       --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
     }
 
@@ -134,6 +136,15 @@
 
     .btn-export:hover {
       background: #0284c7;
+    }
+
+    .btn-select {
+      background: var(--select-color);
+      color: white;
+    }
+
+    .btn-select:hover {
+      background: #059669;
     }
 
     .btn-danger {
@@ -296,6 +307,56 @@
       gap: 10px;
     }
 
+    /* 批量操作栏样式 */
+    .bulk-actions-bar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 15px 20px;
+      background: var(--card-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 2px solid var(--select-color);
+      flex-wrap: wrap;
+      gap: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .bulk-actions-bar.active {
+      display: flex;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .bulk-selection-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .selected-count {
+      font-weight: 600;
+      color: var(--select-color);
+      font-size: 16px;
+    }
+
+    .bulk-actions-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .links-list {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -305,6 +366,16 @@
     @media (max-width: 768px) {
       .links-list {
         grid-template-columns: 1fr;
+      }
+      
+      .bulk-actions-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .bulk-actions-buttons {
+        width: 100%;
+        justify-content: space-between;
       }
     }
 
@@ -316,6 +387,7 @@
       border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     .link-card:hover {
@@ -323,6 +395,27 @@
       border-color: var(--primary-color);
       transform: translateY(-3px);
       box-shadow: var(--shadow);
+    }
+
+    .link-card.selected {
+      border-color: var(--select-color);
+      border-width: 2px;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .dark-mode .link-card.selected {
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .link-checkbox {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: var(--select-color);
+      z-index: 2;
     }
 
     .link-header {
@@ -356,6 +449,7 @@
     .link-title-container {
       flex: 1;
       min-width: 0;
+      margin-right: 25px; /* 为复选框留出空间 */
     }
 
     .link-title {
@@ -881,6 +975,27 @@
       <div class="breadcrumb-item active" data-id="">根目录</div>
     </div>
 
+    <!-- 批量操作栏 -->
+    <div class="bulk-actions-bar" id="bulkActionsBar">
+      <div class="bulk-selection-info">
+        <span class="selected-count" id="selectedCount">已选择 0 个链接</span>
+      </div>
+      <div class="bulk-actions-buttons">
+        <button class="btn btn-select btn-small" id="selectAllBtn">
+          <i class="fas fa-check-square"></i> 全选
+        </button>
+        <button class="btn btn-secondary btn-small" id="invertSelectionBtn">
+          <i class="fas fa-exchange-alt"></i> 反选
+        </button>
+        <button class="btn btn-select btn-small" id="openSelectedBtn">
+          <i class="fas fa-external-link-alt"></i> 访问选中链接
+        </button>
+        <button class="btn btn-secondary btn-small" id="clearSelectionBtn">
+          <i class="fas fa-times"></i> 清空选择
+        </button>
+      </div>
+    </div>
+
     <!-- 主要内容区域 -->
     <div class="content-grid" id="contentGrid">
       <!-- 内容将通过JavaScript动态加载 -->
@@ -901,6 +1016,10 @@
           <button class="btn" id="addSubfolderBtn">
             <i class="fas fa-folder-plus"></i>
             <span class="desktop-only">子文件夹</span>
+          </button>
+          <button class="btn btn-select" id="bulkSelectBtn">
+            <i class="fas fa-check-circle"></i>
+            <span class="desktop-only">批量选择</span>
           </button>
         </div>
       </div>
@@ -1069,7 +1188,7 @@
       <div>
         <h4 style="margin-bottom: 15px; font-size: 18px;">关于</h4>
         <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
-          个人导航页 v2.0 | 支持文件夹嵌套、链接备注、移动端优化
+          个人导航页 v2.1 | 支持文件夹嵌套、链接备注、批量选择、移动端优化
         </p>
       </div>
     </div>
@@ -1107,7 +1226,9 @@
         githubToken: localStorage.getItem('githubToken') || '',
         gistId: localStorage.getItem('gistId') || '',
         lastSync: localStorage.getItem('lastSync') || null,
-        theme: localStorage.getItem('theme') || 'light'
+        theme: localStorage.getItem('theme') || 'light',
+        selectedLinks: new Set(), // 存储选中的链接ID
+        bulkSelectMode: false // 批量选择模式
       };
 
       // DOM元素
@@ -1127,6 +1248,15 @@
       const linkCount = document.getElementById('linkCount');
       const subfolderCount = document.getElementById('subfolderCount');
       const quickActions = document.getElementById('quickActions');
+      
+      // 批量选择相关DOM元素
+      const bulkActionsBar = document.getElementById('bulkActionsBar');
+      const selectedCount = document.getElementById('selectedCount');
+      const selectAllBtn = document.getElementById('selectAllBtn');
+      const invertSelectionBtn = document.getElementById('invertSelectionBtn');
+      const openSelectedBtn = document.getElementById('openSelectedBtn');
+      const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+      const bulkSelectBtn = document.getElementById('bulkSelectBtn');
       
       // 初始化应用
       initApp();
@@ -1223,6 +1353,26 @@
               notes: '搜索引擎，查找信息和资料',
               order: 2,
               createdAt: Date.now()
+            },
+            {
+              id: 'link3',
+              name: 'Stack Overflow',
+              url: 'https://stackoverflow.com',
+              folderId: 'folder2',
+              icon: '',
+              notes: '程序员问答社区',
+              order: 3,
+              createdAt: Date.now()
+            },
+            {
+              id: 'link4',
+              name: 'MDN Web Docs',
+              url: 'https://developer.mozilla.org',
+              folderId: 'folder2',
+              icon: '',
+              notes: 'Web开发技术文档',
+              order: 4,
+              createdAt: Date.now()
             }
           ];
         }
@@ -1260,6 +1410,161 @@
         subfolderCount.textContent = subfolders;
       }
       
+      // ===================== 批量选择功能 =====================
+      
+      // 切换批量选择模式
+      function toggleBulkSelectMode() {
+        appState.bulkSelectMode = !appState.bulkSelectMode;
+        
+        if (appState.bulkSelectMode) {
+          // 进入批量选择模式
+          bulkSelectBtn.innerHTML = '<i class="fas fa-times"></i><span class="desktop-only">取消选择</span>';
+          bulkSelectBtn.style.background = 'var(--danger-color)';
+          bulkActionsBar.classList.add('active');
+          showNotification('已进入批量选择模式', 'success');
+        } else {
+          // 退出批量选择模式
+          bulkSelectBtn.innerHTML = '<i class="fas fa-check-circle"></i><span class="desktop-only">批量选择</span>';
+          bulkSelectBtn.style.background = 'var(--select-color)';
+          bulkActionsBar.classList.remove('active');
+          clearSelection();
+          showNotification('已退出批量选择模式', 'info');
+        }
+        
+        // 重新渲染当前视图以显示/隐藏复选框
+        renderCurrentView();
+      }
+      
+      // 选择/取消选择链接
+      function toggleLinkSelection(linkId) {
+        if (appState.selectedLinks.has(linkId)) {
+          appState.selectedLinks.delete(linkId);
+        } else {
+          appState.selectedLinks.add(linkId);
+        }
+        
+        updateSelectionDisplay();
+        
+        // 更新链接卡片的选中状态
+        const linkCard = document.querySelector(`.link-card[data-id="${linkId}"]`);
+        if (linkCard) {
+          const checkbox = linkCard.querySelector('.link-checkbox');
+          if (checkbox) {
+            checkbox.checked = appState.selectedLinks.has(linkId);
+            if (appState.selectedLinks.has(linkId)) {
+              linkCard.classList.add('selected');
+            } else {
+              linkCard.classList.remove('selected');
+            }
+          }
+        }
+      }
+      
+      // 全选当前文件夹中的所有链接
+      function selectAllLinks() {
+        const currentFolderId = appState.currentFolderId;
+        const currentLinks = appState.links.filter(link => link.folderId === currentFolderId);
+        
+        currentLinks.forEach(link => {
+          appState.selectedLinks.add(link.id);
+        });
+        
+        updateSelectionDisplay();
+        updateLinkCardsSelection();
+        showNotification(`已选择全部 ${currentLinks.length} 个链接`, 'success');
+      }
+      
+      // 反选当前文件夹中的链接
+      function invertSelection() {
+        const currentFolderId = appState.currentFolderId;
+        const currentLinks = appState.links.filter(link => link.folderId === currentFolderId);
+        
+        currentLinks.forEach(link => {
+          if (appState.selectedLinks.has(link.id)) {
+            appState.selectedLinks.delete(link.id);
+          } else {
+            appState.selectedLinks.add(link.id);
+          }
+        });
+        
+        updateSelectionDisplay();
+        updateLinkCardsSelection();
+        showNotification('已反选链接', 'success');
+      }
+      
+      // 清空选择
+      function clearSelection() {
+        appState.selectedLinks.clear();
+        updateSelectionDisplay();
+        updateLinkCardsSelection();
+      }
+      
+      // 访问选中的链接
+      function openSelectedLinks() {
+        if (appState.selectedLinks.size === 0) {
+          showNotification('请先选择要访问的链接', 'warning');
+          return;
+        }
+        
+        const selectedLinks = Array.from(appState.selectedLinks);
+        let openedCount = 0;
+        let failedCount = 0;
+        
+        selectedLinks.forEach(linkId => {
+          const link = appState.links.find(l => l.id === linkId);
+          if (link && link.url) {
+            try {
+              window.open(link.url, '_blank');
+              openedCount++;
+            } catch (e) {
+              console.error('无法打开链接:', link.url, e);
+              failedCount++;
+            }
+          } else {
+            failedCount++;
+          }
+        });
+        
+        let message = `已在新标签页中打开 ${openedCount} 个链接`;
+        if (failedCount > 0) {
+          message += `，${failedCount} 个链接打开失败`;
+        }
+        
+        showNotification(message, openedCount > 0 ? 'success' : 'warning');
+        
+        // 清空选择
+        clearSelection();
+      }
+      
+      // 更新选择显示
+      function updateSelectionDisplay() {
+        selectedCount.textContent = `已选择 ${appState.selectedLinks.size} 个链接`;
+        
+        // 如果当前是批量选择模式但没有选中任何链接，显示提示
+        if (appState.bulkSelectMode && appState.selectedLinks.size === 0) {
+          selectedCount.textContent = '请选择链接';
+        }
+      }
+      
+      // 更新链接卡片的选中状态显示
+      function updateLinkCardsSelection() {
+        document.querySelectorAll('.link-card').forEach(linkCard => {
+          const linkId = linkCard.dataset.id;
+          const checkbox = linkCard.querySelector('.link-checkbox');
+          
+          if (checkbox) {
+            checkbox.checked = appState.selectedLinks.has(linkId);
+            if (appState.selectedLinks.has(linkId)) {
+              linkCard.classList.add('selected');
+            } else {
+              linkCard.classList.remove('selected');
+            }
+          }
+        });
+      }
+      
+      // ===================== 其他功能 =====================
+      
       async function syncWithGist(action) {
         if (!appState.githubToken) {
           if (action === 'pull') return;
@@ -1275,7 +1580,7 @@
             folders: appState.folders,
             links: appState.links,
             updatedAt: new Date().toISOString(),
-            appVersion: '2.0'
+            appVersion: '2.1'
           };
           
           if (action === 'push') {
@@ -1430,6 +1735,9 @@
           renderFolderDetails(appState.currentFolderId);
           backBtn.style.display = 'block';
         }
+        
+        // 更新选择显示
+        updateSelectionDisplay();
       }
       
       function renderFolderView(parentId) {
@@ -1442,6 +1750,7 @@
         if (parentId === '') {
           contentGrid.style.display = 'grid';
           linksContainer.style.display = 'none';
+          bulkActionsBar.classList.remove('active');
         } else {
           contentGrid.style.display = 'none';
           linksContainer.style.display = 'block';
@@ -1527,7 +1836,7 @@
           `;
         } else {
           folderLinks.forEach(link => {
-            const linkCard = createLinkCard(link, false);
+            const linkCard = createLinkCard(link, false, true);
             linksList.appendChild(linkCard);
           });
         }
@@ -1565,6 +1874,7 @@
         linksContainer.style.display = 'none';
         backBtn.style.display = 'none';
         contentGrid.style.display = 'grid';
+        bulkActionsBar.classList.remove('active');
         
         if (resultCount === 0) {
           contentGrid.innerHTML = `
@@ -1649,6 +1959,7 @@
       function createLinkCard(item, isFolder = false, isSearchResult = false) {
         const card = document.createElement('div');
         card.className = 'link-card';
+        card.dataset.id = item.id;
         
         if (isFolder) {
           // 创建文件夹卡片（在链接列表中）
@@ -1702,7 +2013,12 @@
           const folder = appState.folders.find(f => f.id === link.folderId);
           const folderName = folder ? folder.name : '根目录';
           
+          // 只在批量选择模式下显示复选框
+          const showCheckbox = appState.bulkSelectMode && !isSearchResult;
+          const isSelected = appState.selectedLinks.has(link.id);
+          
           card.innerHTML = `
+          ${showCheckbox ? `<input type="checkbox" class="link-checkbox" ${isSelected ? 'checked' : ''}>` : ''}
           <div class="link-header">
             <div class="link-icon-container" id="linkIcon-${link.id}">
               <i class="fas fa-link"></i>
@@ -1729,6 +2045,11 @@
           </div>
           `;
           
+          // 设置选中状态
+          if (isSelected) {
+            card.classList.add('selected');
+          }
+          
           // 加载链接图标
           loadLinkIcon(link);
           
@@ -1736,9 +2057,18 @@
           if (isSearchResult) {
             card.style.cursor = 'pointer';
             card.addEventListener('click', function(e) {
-              if (!e.target.closest('.link-actions')) {
+              if (!e.target.closest('.link-actions') && !e.target.classList.contains('link-checkbox')) {
                 window.open(link.url, '_blank');
               }
+            });
+          }
+          
+          // 添加复选框点击事件
+          if (showCheckbox) {
+            const checkbox = card.querySelector('.link-checkbox');
+            checkbox.addEventListener('click', function(e) {
+              e.stopPropagation();
+              toggleLinkSelection(link.id);
             });
           }
           
@@ -1942,6 +2272,15 @@
       }
       
       function navigateToFolder(folderId) {
+        // 退出批量选择模式
+        if (appState.bulkSelectMode) {
+          appState.bulkSelectMode = false;
+          bulkSelectBtn.innerHTML = '<i class="fas fa-check-circle"></i><span class="desktop-only">批量选择</span>';
+          bulkSelectBtn.style.background = 'var(--select-color)';
+          bulkActionsBar.classList.remove('active');
+          clearSelection();
+        }
+        
         appState.currentFolderId = folderId;
         renderCurrentView();
       }
@@ -2411,6 +2750,21 @@
         // 导出所有链接按钮
         document.getElementById('exportAllBtn').addEventListener('click', exportAllLinks);
         
+        // 批量选择按钮
+        bulkSelectBtn.addEventListener('click', toggleBulkSelectMode);
+        
+        // 全选按钮
+        selectAllBtn.addEventListener('click', selectAllLinks);
+        
+        // 反选按钮
+        invertSelectionBtn.addEventListener('click', invertSelection);
+        
+        // 访问选中链接按钮
+        openSelectedBtn.addEventListener('click', openSelectedLinks);
+        
+        // 清空选择按钮
+        clearSelectionBtn.addEventListener('click', clearSelection);
+        
         // 添加到当前文件夹按钮
         document.getElementById('addLinkToCurrentBtn').addEventListener('click', () => {
           openLinkModal(appState.currentFolderId);
@@ -2618,7 +2972,7 @@
             folders: appState.folders,
             links: appState.links,
             exportedAt: new Date().toISOString(),
-            appVersion: '2.0'
+            appVersion: '2.1'
           };
           
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2669,6 +3023,7 @@
           if (confirm('确定要清空所有数据吗？此操作不可恢复！')) {
             appState.folders = [];
             appState.links = [];
+            appState.selectedLinks.clear();
             saveData();
             renderCurrentView();
             showNotification('所有数据已清空', 'success');
