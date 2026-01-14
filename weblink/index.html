@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>个人导航页 | 专业高效的链接管理器</title>
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
+  <title>个人导航页 | 链接管理器</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔗</text></svg>">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  
   <style>
     * {
       margin: 0;
@@ -17,8 +15,8 @@
     }
 
     :root {
-      --primary-color: #6366f1;
-      --secondary-color: #8b5cf6;
+      --primary-color: #4f46e5;
+      --secondary-color: #7c3aed;
       --background-color: #f8fafc;
       --card-color: #ffffff;
       --text-color: #1e293b;
@@ -33,8 +31,8 @@
     }
 
     .dark-mode {
-      --primary-color: #818cf8;
-      --secondary-color: #a78bfa;
+      --primary-color: #6366f1;
+      --secondary-color: #8b5cf6;
       --background-color: #0f172a;
       --card-color: #1e293b;
       --text-color: #f1f5f9;
@@ -55,12 +53,8 @@
       overflow-x: hidden;
     }
 
-    body.dark-mode {
-      background: var(--background-color);
-    }
-
     .container {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -80,13 +74,13 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--primary-color);
     }
 
     .logo i {
-      font-size: 28px;
+      font-size: 24px;
     }
 
     .header-actions {
@@ -97,7 +91,7 @@
     }
 
     .btn {
-      padding: 10px 18px;
+      padding: 10px 16px;
       border-radius: var(--radius);
       border: none;
       background: var(--primary-color);
@@ -108,7 +102,8 @@
       align-items: center;
       gap: 8px;
       transition: all 0.3s ease;
-      font-size: 15px;
+      font-size: 14px;
+      white-space: nowrap;
     }
 
     .btn:hover {
@@ -128,7 +123,7 @@
       border-color: var(--primary-color);
     }
 
-    body.dark-mode .btn-secondary:hover {
+    .dark-mode .btn-secondary:hover {
       background: #334155;
     }
 
@@ -139,8 +134,6 @@
 
     .btn-export:hover {
       background: #0284c7;
-      transform: translateY(-2px);
-      box-shadow: var(--shadow);
     }
 
     .btn-danger {
@@ -150,63 +143,30 @@
 
     .btn-danger:hover {
       background: #dc2626;
-      transform: translateY(-2px);
     }
 
     .btn-small {
       padding: 6px 12px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
-    /* 面包屑导航 */
-    .breadcrumb {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      padding: 12px 16px;
-      background: var(--card-color);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border-color);
+    .btn-icon {
+      padding: 10px;
+      width: 40px;
+      height: 40px;
+      justify-content: center;
     }
 
-    .breadcrumb-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: color 0.3s ease;
-      font-size: 14px;
-    }
-
-    .breadcrumb-item:hover {
-      color: var(--primary-color);
-    }
-
-    .breadcrumb-item.active {
-      color: var(--text-color);
-      font-weight: 500;
-      cursor: default;
-    }
-
-    .breadcrumb-separator {
-      color: var(--text-secondary);
-    }
-
-    /* 内容网格 */
     .content-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
       margin-bottom: 30px;
     }
 
     @media (max-width: 768px) {
       .content-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 15px;
       }
     }
@@ -218,7 +178,6 @@
       }
     }
 
-    /* 文件夹卡片 */
     .folder-card {
       background: var(--card-color);
       border-radius: var(--radius);
@@ -226,11 +185,10 @@
       box-shadow: var(--shadow);
       transition: all 0.3s ease;
       border: 1px solid var(--border-color);
-      position: relative;
       cursor: pointer;
       display: flex;
       flex-direction: column;
-      min-height: 160px;
+      min-height: 150px;
     }
 
     .folder-card:hover {
@@ -250,7 +208,7 @@
     .folder-info {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 12px;
       flex: 1;
       min-width: 0;
     }
@@ -259,7 +217,7 @@
       width: 44px;
       height: 44px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #a5b4fc 0%, #818cf8 100%);
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -311,7 +269,6 @@
       flex-shrink: 0;
     }
 
-    /* 链接页面 */
     .links-container {
       background: var(--card-color);
       border-radius: var(--radius);
@@ -319,6 +276,7 @@
       box-shadow: var(--shadow);
       border: 1px solid var(--border-color);
       margin-bottom: 30px;
+      display: none;
     }
 
     .links-header {
@@ -331,16 +289,16 @@
     }
 
     .links-header h2 {
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .links-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 15px;
     }
 
@@ -358,7 +316,6 @@
       border: 1px solid var(--border-color);
       display: flex;
       flex-direction: column;
-      height: 100%;
     }
 
     .link-card:hover {
@@ -456,7 +413,6 @@
       color: var(--text-color);
     }
 
-    /* 模态框 */
     .modal {
       position: fixed;
       top: 0;
@@ -638,23 +594,6 @@
       transform: rotate(30deg);
     }
 
-    .confirm-modal .modal-content {
-      max-width: 400px;
-    }
-
-    .confirm-text {
-      margin-bottom: 18px;
-      line-height: 1.6;
-    }
-
-    .confirm-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      margin-top: 25px;
-    }
-
-    /* 统计数据样式 */
     .stats-footer {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -693,7 +632,6 @@
       margin-top: 20px;
     }
 
-    /* 返回按钮 */
     .back-btn {
       background: var(--card-color);
       border: 1px solid var(--border-color);
@@ -716,11 +654,10 @@
       border-color: var(--primary-color);
     }
 
-    body.dark-mode .back-btn:hover {
+    .dark-mode .back-btn:hover {
       background: #334155;
     }
 
-    /* 搜索框 */
     .search-container {
       margin-bottom: 20px;
       position: relative;
@@ -754,7 +691,6 @@
       font-size: 16px;
     }
 
-    /* 快速操作栏 */
     .quick-actions {
       display: flex;
       gap: 10px;
@@ -762,7 +698,6 @@
       flex-wrap: wrap;
     }
 
-    /* 响应式调整 */
     @media (max-width: 768px) {
       .container {
         padding: 15px;
@@ -799,10 +734,6 @@
         font-size: 15px;
       }
 
-      .folder-desc {
-        font-size: 12px;
-      }
-
       .links-container {
         padding: 16px;
       }
@@ -814,7 +745,7 @@
       }
 
       .links-header h2 {
-        font-size: 20px;
+        font-size: 18px;
       }
 
       .stats-footer {
@@ -879,7 +810,6 @@
       }
     }
 
-    /* 触摸设备优化 */
     @media (hover: none) and (pointer: coarse) {
       .folder-card:hover {
         transform: none;
@@ -905,29 +835,8 @@
         transform: scale(0.98);
       }
     }
-
-    /* 导出选项样式 */
-    .export-options {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .export-section {
-      margin-bottom: 30px;
-    }
-
-    .export-section h3 {
-      margin-bottom: 15px;
-      color: var(--text-color);
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
   </style>
 </head>
-
 <body>
   <div class="container">
     <!-- 顶部导航栏 -->
@@ -947,12 +856,12 @@
         </button>
         <button class="btn btn-export" id="exportAllBtn">
           <i class="fas fa-file-export"></i>
-          <span class="desktop-only">导出所有链接</span>
+          <span class="desktop-only">导出链接</span>
         </button>
         <div class="theme-toggle" id="themeToggle">
           <i class="fas fa-moon" id="themeIcon"></i>
         </div>
-        <button class="btn btn-secondary" id="settingsBtn">
+        <button class="btn btn-icon" id="settingsBtn">
           <i class="fas fa-cog"></i>
         </button>
       </div>
@@ -965,22 +874,20 @@
     </div>
 
     <!-- 快速操作栏 -->
-    <div class="quick-actions" id="quickActions">
-      <!-- 操作按钮将通过JavaScript动态加载 -->
-    </div>
+    <div class="quick-actions" id="quickActions"></div>
 
     <!-- 面包屑导航 -->
     <div class="breadcrumb" id="breadcrumb">
       <div class="breadcrumb-item active" data-id="">根目录</div>
     </div>
 
-    <!-- 主要内容区域 - 文件夹视图 -->
+    <!-- 主要内容区域 -->
     <div class="content-grid" id="contentGrid">
       <!-- 内容将通过JavaScript动态加载 -->
     </div>
 
-    <!-- 链接列表区域 - 文件夹详情页 -->
-    <div class="links-container" id="linksContainer" style="display: none;">
+    <!-- 链接列表区域 -->
+    <div class="links-container" id="linksContainer">
       <div class="links-header">
         <h2 id="currentFolderTitle">
           <i class="fas fa-folder" id="currentFolderIcon"></i>
@@ -1002,12 +909,12 @@
       </div>
     </div>
 
-    <!-- 返回按钮（在文件夹详情页显示） -->
+    <!-- 返回按钮 -->
     <button class="back-btn" id="backBtn" style="display: none;">
       <i class="fas fa-arrow-left"></i> 返回上级
     </button>
 
-    <!-- 统计数据底部 -->
+    <!-- 统计数据 -->
     <div class="stats-footer" id="statsFooter">
       <div class="stat-item">
         <div class="stat-value" id="folderCount">0</div>
@@ -1023,7 +930,7 @@
       </div>
     </div>
 
-    <!-- 同步状态指示器 -->
+    <!-- 同步状态 -->
     <div class="sync-status" id="syncStatus" style="display: none;">
       <i class="fas fa-sync-alt fa-spin"></i>
       <span id="syncStatusText">正在同步...</span>
@@ -1034,8 +941,7 @@
       <p>个人导航页 &copy; 2024 | 数据存储于您的浏览器和GitHub Gist</p>
       <p style="margin-top: 10px; font-size: 13px;">
         最后同步时间: <span id="lastSyncTime">从未同步</span>
-        <button class="btn btn-small" id="manualSyncBtn"
-          style="margin-left: 10px; padding: 4px 10px;">
+        <button class="btn btn-small" id="manualSyncBtn" style="margin-left: 10px; padding: 4px 10px;">
           <i class="fas fa-sync-alt"></i> 手动同步
         </button>
       </p>
@@ -1063,36 +969,6 @@
           <select class="form-input" id="parentFolder">
             <option value="">无 (根目录)</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="folderIcon">图标</label>
-          <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px;">
-            <div class="folder-icon-option selected" data-icon="folder">
-              <i class="fas fa-folder"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="briefcase">
-              <i class="fas fa-briefcase"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="code">
-              <i class="fas fa-code"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="heart">
-              <i class="fas fa-heart"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="gamepad">
-              <i class="fas fa-gamepad"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="music">
-              <i class="fas fa-music"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="star">
-              <i class="fas fa-star"></i>
-            </div>
-            <div class="folder-icon-option" data-icon="book">
-              <i class="fas fa-book"></i>
-            </div>
-          </div>
-          <input type="hidden" id="folderIcon" value="folder">
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="folderCancelBtn">取消</button>
@@ -1126,79 +1002,13 @@
         </div>
         <div class="form-group">
           <label class="form-label" for="linkNotes">备注 (可选)</label>
-          <textarea class="form-textarea" id="linkNotes"
-            placeholder="这个网站的主要功能、用途、注意事项等..."></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">图标</label>
-          <div style="display: flex; align-items: center; gap: 15px;">
-            <div class="link-icon-container" id="linkIconPreview" style="margin: 0;">
-              <i class="fas fa-link"></i>
-            </div>
-            <div>
-              <p style="font-size: 14px; color: var(--text-secondary);">将自动从网站获取图标</p>
-            </div>
-          </div>
+          <textarea class="form-textarea" id="linkNotes" placeholder="这个网站的主要功能、用途、注意事项等..."></textarea>
         </div>
         <div class="form-actions">
           <button type="button" class="btn btn-secondary" id="linkCancelBtn">取消</button>
           <button type="submit" class="btn" id="linkSubmitBtn">保存</button>
         </div>
       </form>
-    </div>
-  </div>
-
-  <!-- 模态框：导出所有链接 -->
-  <div class="modal" id="exportModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title"><i class="fas fa-file-export"></i> 导出所有链接</h3>
-        <button class="modal-close" id="exportModalClose">&times;</button>
-      </div>
-      
-      <div class="export-section">
-        <h3><i class="fas fa-file-html"></i> 导出为HTML文件</h3>
-        <p style="margin-bottom: 15px; color: var(--text-secondary);">
-          导出一个完整的HTML文件，包含所有链接和文件夹结构。可以直接在浏览器中打开使用。
-        </p>
-        <button class="btn btn-export" id="exportHtmlBtn" style="width: 100%;">
-          <i class="fas fa-download"></i> 导出HTML文件
-        </button>
-      </div>
-
-      <div class="export-section">
-        <h3><i class="fas fa-file-code"></i> 导出为JSON文件</h3>
-        <p style="margin-bottom: 15px; color: var(--text-secondary);">
-          导出原始数据文件，可用于备份或导入到其他支持JSON的应用。
-        </p>
-        <button class="btn btn-secondary" id="exportJsonBtn" style="width: 100%;">
-          <i class="fas fa-download"></i> 导出JSON文件
-        </button>
-      </div>
-
-      <div class="export-section">
-        <h3><i class="fas fa-file-alt"></i> 导出为纯文本</h3>
-        <p style="margin-bottom: 15px; color: var(--text-secondary);">
-          导出为简单的文本格式，便于复制粘贴到其他应用。
-        </p>
-        <button class="btn btn-secondary" id="exportTextBtn" style="width: 100%;">
-          <i class="fas fa-copy"></i> 复制到剪贴板
-        </button>
-      </div>
-
-      <div class="export-section">
-        <h3><i class="fas fa-file-csv"></i> 导出为CSV文件</h3>
-        <p style="margin-bottom: 15px; color: var(--text-secondary);">
-          导出为表格格式，可以用Excel或其他电子表格软件打开。
-        </p>
-        <button class="btn btn-secondary" id="exportCsvBtn" style="width: 100%;">
-          <i class="fas fa-download"></i> 导出CSV文件
-        </button>
-      </div>
-
-      <div class="form-actions" style="margin-top: 30px;">
-        <button type="button" class="btn btn-secondary" id="exportCancelBtn">取消</button>
-      </div>
     </div>
   </div>
 
@@ -1214,8 +1024,7 @@
         <div class="form-group">
           <label class="form-label" for="githubToken">GitHub个人访问令牌</label>
           <div style="display: flex; gap: 10px;">
-            <input type="password" class="form-input" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-              style="flex: 1;">
+            <input type="password" class="form-input" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" style="flex: 1;">
             <button type="button" class="btn btn-secondary" id="toggleTokenVisibility">
               <i class="fas fa-eye"></i>
             </button>
@@ -1244,10 +1053,7 @@
         <h4 style="margin-bottom: 15px; font-size: 18px;">数据管理</h4>
         <div style="display: flex; gap: 12px; flex-wrap: wrap;">
           <button class="btn btn-secondary" id="exportDataBtn" style="flex: 1;">
-            <i class="fas fa-download"></i> 导出数据(JSON)
-          </button>
-          <button class="btn btn-export" id="openExportModalBtn" style="flex: 1;">
-            <i class="fas fa-file-export"></i> 导出所有链接
+            <i class="fas fa-download"></i> 导出JSON
           </button>
           <button class="btn btn-secondary" id="importDataBtn" style="flex: 1;">
             <i class="fas fa-upload"></i> 导入数据
@@ -1260,27 +1066,10 @@
           </button>
         </div>
       </div>
-      <div style="margin-bottom: 30px;">
-        <h4 style="margin-bottom: 15px; font-size: 18px;">外观设置</h4>
-        <div style="display: flex; align-items: center; gap: 15px;">
-          <span>主题:</span>
-          <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary theme-selector active" data-theme="light">
-              <i class="fas fa-sun"></i> 浅色
-            </button>
-            <button class="btn btn-secondary theme-selector" data-theme="dark">
-              <i class="fas fa-moon"></i> 深色
-            </button>
-            <button class="btn btn-secondary theme-selector" data-theme="auto">
-              <i class="fas fa-adjust"></i> 自动
-            </button>
-          </div>
-        </div>
-      </div>
       <div>
         <h4 style="margin-bottom: 15px; font-size: 18px;">关于</h4>
         <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.6;">
-          个人导航页 v2.1 | 支持文件夹嵌套、链接备注、移动端优化、多种格式导出
+          个人导航页 v2.0 | 支持文件夹嵌套、链接备注、移动端优化
         </p>
       </div>
     </div>
@@ -1307,30 +1096,25 @@
   <div class="notification" id="notification"></div>
 
   <script>
-    // 主应用代码
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
       // 应用状态
       const appState = {
         folders: [],
         links: [],
         editingFolderId: null,
         editingLinkId: null,
-        currentFolderId: '', // 当前查看的文件夹ID（空字符串表示根目录）
+        currentFolderId: '',
         githubToken: localStorage.getItem('githubToken') || '',
         gistId: localStorage.getItem('gistId') || '',
         lastSync: localStorage.getItem('lastSync') || null,
         theme: localStorage.getItem('theme') || 'light'
       };
 
-      // 当前导航路径
-      let currentPath = [];
-
       // DOM元素
       const contentGrid = document.getElementById('contentGrid');
       const breadcrumb = document.getElementById('breadcrumb');
       const linksContainer = document.getElementById('linksContainer');
       const linksList = document.getElementById('linksList');
-      const currentFolderTitle = document.getElementById('currentFolderTitle');
       const currentFolderName = document.getElementById('currentFolderName');
       const currentFolderIcon = document.getElementById('currentFolderIcon');
       const backBtn = document.getElementById('backBtn');
@@ -1343,43 +1127,39 @@
       const linkCount = document.getElementById('linkCount');
       const subfolderCount = document.getElementById('subfolderCount');
       const quickActions = document.getElementById('quickActions');
-
-      // 修复：为链接表单和文件夹表单添加变量
-      const folderForm = document.getElementById('folderForm');
-      const linkForm = document.getElementById('linkForm');
-
-      // 初始化
+      
+      // 初始化应用
       initApp();
-
+      
       function initApp() {
         // 设置主题
         setTheme(appState.theme);
-
+        
         // 加载数据
         loadData();
-
+        
         // 更新统计信息
         updateStats();
-
+        
         // 更新最后同步时间显示
         updateLastSyncDisplay();
-
+        
         // 设置事件监听器
         setupEventListeners();
-
+        
         // 渲染内容
         renderCurrentView();
-
+        
         // 如果有GitHub令牌，尝试从Gist同步
         if (appState.githubToken && appState.gistId) {
           setTimeout(() => syncWithGist('pull'), 1000);
         }
       }
-
+      
       function loadData() {
         const savedFolders = localStorage.getItem('navFolders');
         const savedLinks = localStorage.getItem('navLinks');
-
+        
         if (savedFolders) {
           try {
             appState.folders = JSON.parse(savedFolders);
@@ -1388,7 +1168,7 @@
             appState.folders = [];
           }
         }
-
+        
         if (savedLinks) {
           try {
             appState.links = JSON.parse(savedLinks);
@@ -1397,7 +1177,7 @@
             appState.links = [];
           }
         }
-
+        
         // 如果没有数据，添加示例数据
         if (appState.folders.length === 0) {
           appState.folders = [
@@ -1418,28 +1198,10 @@
               parentId: '',
               order: 2,
               createdAt: Date.now()
-            },
-            {
-              id: 'folder3',
-              name: '设计资源',
-              description: 'UI/UX设计工具和素材',
-              icon: 'palette',
-              parentId: 'folder2',
-              order: 1,
-              createdAt: Date.now()
-            },
-            {
-              id: 'folder4',
-              name: '前端开发',
-              description: '前端框架和工具',
-              icon: 'code',
-              parentId: 'folder2',
-              order: 2,
-              createdAt: Date.now()
             }
           ];
         }
-
+        
         if (appState.links.length === 0) {
           appState.links = [
             {
@@ -1461,671 +1223,61 @@
               notes: '搜索引擎，查找信息和资料',
               order: 2,
               createdAt: Date.now()
-            },
-            {
-              id: 'link3',
-              name: 'Figma',
-              url: 'https://figma.com',
-              folderId: 'folder3',
-              icon: '',
-              notes: '在线UI设计工具，支持团队协作',
-              order: 1,
-              createdAt: Date.now()
-            },
-            {
-              id: 'link4',
-              name: 'React',
-              url: 'https://reactjs.org',
-              folderId: 'folder4',
-              icon: '',
-              notes: '用于构建用户界面的JavaScript库',
-              order: 1,
-              createdAt: Date.now()
             }
           ];
         }
-
+        
         // 保存初始数据到本地存储
         saveDataToLocalStorage();
       }
-
+      
       function saveDataToLocalStorage() {
         localStorage.setItem('navFolders', JSON.stringify(appState.folders));
         localStorage.setItem('navLinks', JSON.stringify(appState.links));
       }
-
+      
       function saveData() {
         saveDataToLocalStorage();
-
+        
         // 自动同步到GitHub
         if (appState.githubToken) {
           syncWithGist('push');
         } else {
           showNotification('数据已保存到本地', 'success');
         }
-
+        
         // 更新统计信息
         updateStats();
       }
-
+      
       function updateStats() {
         const totalFolders = appState.folders.length;
         const totalLinks = appState.links.length;
         const subfolders = appState.folders.filter(f => f.parentId !== '').length;
-
+        
         folderCount.textContent = totalFolders;
         linkCount.textContent = totalLinks;
         subfolderCount.textContent = subfolders;
       }
-
-      // ===================== 导出功能 =====================
-
-      // 打开导出模态框
-      function openExportModal() {
-        document.getElementById('exportModal').classList.add('active');
-      }
-
-      // 导出为HTML文件
-      function exportAsHtml() {
-        const timestamp = new Date().toISOString().split('T')[0];
-        const fileName = `我的导航链接-${timestamp}.html`;
-
-        // 构建文件夹树
-        const folderTree = buildFolderTreeForExport();
-        const rootLinks = appState.links
-          .filter(link => !link.folderId)
-          .sort((a, b) => (a.order || 0) - (b.order || 0));
-
-        // 生成HTML内容
-        const htmlContent = generateHtmlExport(folderTree, rootLinks);
-
-        // 创建Blob并下载
-        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        showNotification(`已导出${appState.links.length}个链接到HTML文件`, 'success');
-        document.getElementById('exportModal').classList.remove('active');
-      }
-
-      // 导出为JSON文件
-      function exportAsJson() {
-        const data = {
-          folders: appState.folders,
-          links: appState.links,
-          exportedAt: new Date().toISOString(),
-          appVersion: '2.1'
-        };
-
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `navigation-data-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        showNotification('数据已导出为JSON', 'success');
-        document.getElementById('exportModal').classList.remove('active');
-      }
-
-      // 导出为纯文本
-      function exportAsText() {
-        let textContent = `个人导航链接导出\n导出时间：${new Date().toLocaleString('zh-CN')}\n\n`;
-        textContent += `总链接数：${appState.links.length}\n总文件夹数：${appState.folders.length}\n\n`;
-
-        // 构建文件夹树
-        const folderTree = buildFolderTreeForExport();
-        const rootLinks = appState.links
-          .filter(link => !link.folderId)
-          .sort((a, b) => (a.order || 0) - (b.order || 0));
-
-        // 添加根目录链接
-        if (rootLinks.length > 0) {
-          textContent += "=== 根目录链接 ===\n\n";
-          rootLinks.forEach(link => {
-            textContent += `- ${link.name}\n  网址：${link.url}\n`;
-            if (link.notes) textContent += `  备注：${link.notes}\n`;
-            textContent += '\n';
-          });
-        }
-
-        // 递归添加文件夹内容
-        function addFolderToText(folder, level = 0) {
-          const indent = '  '.repeat(level);
-          textContent += `${indent}=== ${folder.name} ===\n`;
-          if (folder.description) textContent += `${indent}描述：${folder.description}\n\n`;
-
-          // 添加当前文件夹的链接
-          if (folder.links && folder.links.length > 0) {
-            folder.links.forEach(link => {
-              textContent += `${indent}- ${link.name}\n${indent}  网址：${link.url}\n`;
-              if (link.notes) textContent += `${indent}  备注：${link.notes}\n`;
-              textContent += '\n';
-            });
-          }
-
-          // 递归处理子文件夹
-          if (folder.children && folder.children.length > 0) {
-            folder.children.forEach(child => {
-              addFolderToText(child, level + 1);
-            });
-          }
-        }
-
-        folderTree.forEach(folder => {
-          addFolderToText(folder);
-        });
-
-        // 复制到剪贴板
-        navigator.clipboard.writeText(textContent).then(() => {
-          showNotification('链接列表已复制到剪贴板', 'success');
-        }).catch(err => {
-          console.error('复制失败:', err);
-          showNotification('复制失败，请手动复制', 'error');
-        });
-
-        document.getElementById('exportModal').classList.remove('active');
-      }
-
-      // 导出为CSV文件
-      function exportAsCsv() {
-        const timestamp = new Date().toISOString().split('T')[0];
-        const fileName = `导航链接-${timestamp}.csv`;
-
-        // CSV标题行
-        let csvContent = "文件夹,链接名称,URL,备注\n";
-
-        // 处理根目录链接
-        appState.links
-          .filter(link => !link.folderId)
-          .forEach(link => {
-            const folderName = "根目录";
-            const name = `"${link.name.replace(/"/g, '""')}"`;
-            const url = `"${link.url}"`;
-            const notes = link.notes ? `"${link.notes.replace(/"/g, '""')}"` : '';
-            csvContent += `${folderName},${name},${url},${notes}\n`;
-          });
-
-        // 处理文件夹中的链接
-        appState.folders.forEach(folder => {
-          const folderName = `"${folder.name.replace(/"/g, '""')}"`;
-          appState.links
-            .filter(link => link.folderId === folder.id)
-            .forEach(link => {
-              const name = `"${link.name.replace(/"/g, '""')}"`;
-              const url = `"${link.url}"`;
-              const notes = link.notes ? `"${link.notes.replace(/"/g, '""')}"` : '';
-              csvContent += `${folderName},${name},${url},${notes}\n`;
-            });
-        });
-
-        // 创建Blob并下载
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        showNotification('数据已导出为CSV文件', 'success');
-        document.getElementById('exportModal').classList.remove('active');
-      }
-
-      // 为导出构建文件夹树
-      function buildFolderTreeForExport(parentId = '') {
-        const folders = appState.folders.filter(f => f.parentId === parentId);
-        const tree = [];
-
-        folders.forEach(folder => {
-          const children = buildFolderTreeForExport(folder.id);
-          const folderLinks = appState.links
-            .filter(link => link.folderId === folder.id)
-            .sort((a, b) => (a.order || 0) - (b.order || 0));
-
-          tree.push({
-            ...folder,
-            children,
-            links: folderLinks
-          });
-        });
-
-        return tree;
-      }
-
-      // 生成HTML导出内容
-      function generateHtmlExport(folderTree, rootLinks) {
-        const totalLinks = appState.links.length;
-        const totalFolders = appState.folders.length;
-        const exportDate = new Date().toLocaleString('zh-CN');
-
-        return `<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的导航链接 - ${exportDate}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: #f8fafc;
-            color: #1e293b;
-            line-height: 1.5;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .header h1 {
-            color: #0ea5e9;
-            margin-bottom: 10px;
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        
-        .stat-item {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            min-width: 120px;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #0ea5e9;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            color: #64748b;
-        }
-        
-        .folder-section {
-            margin-bottom: 40px;
-        }
-        
-        .folder-header {
-            background: linear-gradient(135deg, #0ea5e9 0%, #38bdf8 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px 10px 0 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 0;
-        }
-        
-        .folder-header i {
-            font-size: 20px;
-        }
-        
-        .folder-content {
-            background: white;
-            border-radius: 0 0 10px 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-        
-        .link-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-        }
-        
-        .link-item {
-            background: #f8fafc;
-            border-radius: 8px;
-            padding: 15px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        
-        .link-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-            border-color: #0ea5e9;
-        }
-        
-        .link-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        
-        .link-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            color: #0ea5e9;
-            border: 1px solid #e2e8f0;
-            flex-shrink: 0;
-        }
-        
-        .link-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-        
-        .link-title {
-            font-weight: 600;
-            font-size: 16px;
-            color: #1e293b;
-            margin-bottom: 4px;
-        }
-        
-        .link-url {
-            font-size: 12px;
-            color: #64748b;
-            word-break: break-all;
-        }
-        
-        .link-notes {
-            font-size: 13px;
-            color: #475569;
-            line-height: 1.5;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(14, 165, 233, 0.05);
-            border-radius: 6px;
-            border-left: 3px solid #0ea5e9;
-        }
-        
-        .subfolder {
-            margin-left: 20px;
-            margin-top: 20px;
-            border-left: 3px solid #7dd3fc;
-            padding-left: 20px;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            color: #64748b;
-            font-size: 14px;
-        }
-        
-        @media (max-width: 768px) {
-            .link-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats {
-                gap: 15px;
-            }
-            
-            .stat-item {
-                min-width: 100px;
-            }
-        }
-        
-        .export-info {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        
-        .back-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #0ea5e9;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            font-size: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .back-to-top:hover {
-            background: #38bdf8;
-            transform: translateY(-2px);
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1><i class="fas fa-compass"></i> 我的导航链接</h1>
-        <p>导出时间：${exportDate}</p>
-        
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-value">${totalLinks}</div>
-                <div class="stat-label">个链接</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value">${totalFolders}</div>
-                <div class="stat-label">个文件夹</div>
-            </div>
-        </div>
-        
-        <div class="export-info">
-            <p><i class="fas fa-info-circle"></i> 此文件由个人导航页生成，包含所有已保存的链接。点击链接即可在新标签页中打开。</p>
-        </div>
-    </div>
-    
-    ${generateHtmlFolderTree(folderTree, rootLinks)}
-    
-    <div class="footer">
-        <p>个人导航页 &copy; ${new Date().getFullYear()} | 生成时间：${exportDate}</p>
-        <p>总链接数：${totalLinks} | 总文件夹数：${totalFolders}</p>
-    </div>
-    
-    <a href="#" class="back-to-top" id="backToTop">
-        <i class="fas fa-arrow-up"></i>
-    </a>
-    
-    <script>
-        // 返回顶部功能
-        document.getElementById('backToTop').addEventListener('click', function(e) {
-            e.preventDefault();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        
-        // 显示/隐藏返回顶部按钮
-        window.addEventListener('scroll', function() {
-            const backToTop = document.getElementById('backToTop');
-            if (window.scrollY > 300) {
-                backToTop.style.display = 'flex';
-            } else {
-                backToTop.style.display = 'none';
-            }
-        });
-        
-        // 初始化
-        window.addEventListener('load', function() {
-            const backToTop = document.getElementById('backToTop');
-            backToTop.style.display = 'none';
-        });
-        
-        // 自动加载网站图标
-        document.querySelectorAll('.link-icon').forEach(icon => {
-            const url = icon.dataset.url;
-            if (url) {
-                try {
-                    const domain = new URL(url).hostname;
-                    const faviconUrl = \`https://www.google.com/s2/favicons?domain=\${domain}&sz=64\`;
-                    const img = new Image();
-                    img.onload = function() {
-                        icon.innerHTML = \`<img src="\${faviconUrl}" alt="图标">\`;
-                    };
-                    img.onerror = function() {
-                        // 保持默认图标
-                    };
-                    img.src = faviconUrl;
-                } catch (e) {
-                    // URL无效，忽略
-                }
-            }
-        });
-    </script>
-</body>
-</html>`;
-      }
-
-      // 生成HTML文件夹树
-      function generateHtmlFolderTree(folderTree, rootLinks = [], level = 0) {
-        let html = '';
-
-        // 渲染根目录链接
-        if (rootLinks.length > 0 && level === 0) {
-          html += `
-          <div class="folder-section">
-            <div class="folder-header">
-              <i class="fas fa-home"></i>
-              <h2>根目录链接</h2>
-            </div>
-            <div class="folder-content">
-              <div class="link-grid">
-          `;
-
-          rootLinks.forEach(link => {
-            html += `
-                <div class="link-item">
-                  <div class="link-header">
-                    <div class="link-icon" data-url="${link.url}">
-                      <i class="fas fa-link"></i>
-                    </div>
-                    <div>
-                      <div class="link-title">${link.name}</div>
-                      <div class="link-url">${link.url}</div>
-                    </div>
-                  </div>
-                  ${link.notes ? `<div class="link-notes">${link.notes}</div>` : ''}
-                </div>
-            `;
-          });
-
-          html += `
-              </div>
-            </div>
-          </div>
-          `;
-        }
-
-        // 渲染文件夹树
-        folderTree.forEach(folder => {
-          const indentClass = level > 0 ? ' subfolder' : '';
-          
-          html += `
-          <div class="folder-section${indentClass}">
-            <div class="folder-header">
-              <i class="fas fa-${folder.icon || 'folder'}"></i>
-              <h2>${folder.name}${folder.description ? ` - ${folder.description}` : ''}</h2>
-            </div>
-            <div class="folder-content">
-          `;
-
-          if (folder.links.length > 0) {
-            html += '<div class="link-grid">';
-            
-            folder.links.forEach(link => {
-              html += `
-                <div class="link-item">
-                  <div class="link-header">
-                    <div class="link-icon" data-url="${link.url}">
-                      <i class="fas fa-link"></i>
-                    </div>
-                    <div>
-                      <div class="link-title">${link.name}</div>
-                      <div class="link-url">${link.url}</div>
-                    </div>
-                  </div>
-                  ${link.notes ? `<div class="link-notes">${link.notes}</div>` : ''}
-                </div>
-              `;
-            });
-            
-            html += '</div>';
-          } else {
-            html += '<p style="color: #64748b; text-align: center; padding: 20px;">此文件夹暂无链接</p>';
-          }
-
-          // 递归渲染子文件夹
-          if (folder.children.length > 0) {
-            html += generateHtmlFolderTree(folder.children, [], level + 1);
-          }
-
-          html += `
-            </div>
-          </div>
-          `;
-        });
-
-        return html;
-      }
-
-      // ===================== 其他功能 =====================
-
+      
       async function syncWithGist(action) {
         if (!appState.githubToken) {
           if (action === 'pull') return;
           showNotification('请先配置GitHub令牌', 'warning');
           return;
         }
-
+        
         syncStatusText.textContent = action === 'push' ? '正在推送数据...' : '正在拉取数据...';
         syncStatus.style.display = 'flex';
-
+        
         try {
           const data = {
             folders: appState.folders,
             links: appState.links,
             updatedAt: new Date().toISOString(),
-            appVersion: '2.1'
+            appVersion: '2.0'
           };
-
+          
           if (action === 'push') {
             if (appState.gistId) {
               await updateGist(appState.gistId, data);
@@ -2154,10 +1306,10 @@
                 appState.links = remoteData.links || [];
                 appState.lastSync = remoteData.updatedAt;
                 localStorage.setItem('lastSync', appState.lastSync);
-
+                
                 // 保存到本地
                 saveDataToLocalStorage();
-
+                
                 // 更新UI
                 updateStats();
                 renderCurrentView();
@@ -2175,7 +1327,7 @@
           }, 1000);
         }
       }
-
+      
       async function createGist(data) {
         try {
           const response = await fetch('https://api.github.com/gists', {
@@ -2196,18 +1348,18 @@
               }
             })
           });
-
+          
           if (!response.ok) {
             throw new Error(`创建Gist失败: ${response.status}`);
           }
-
+          
           const result = await response.json();
           return result.id;
         } catch (error) {
           throw error;
         }
       }
-
+      
       async function updateGist(gistId, data) {
         try {
           const response = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -2227,7 +1379,7 @@
               }
             })
           });
-
+          
           if (!response.ok) {
             throw new Error(`更新Gist失败: ${response.status}`);
           }
@@ -2235,7 +1387,7 @@
           throw error;
         }
       }
-
+      
       async function fetchGist(gistId) {
         try {
           const response = await fetch(`https://api.github.com/gists/${gistId}`, {
@@ -2245,11 +1397,11 @@
               'User-Agent': 'Personal-Navigation-App'
             }
           });
-
+          
           if (!response.ok) {
             throw new Error(`获取Gist失败: ${response.status}`);
           }
-
+          
           const result = await response.json();
           const content = result.files['navigation.json'].content;
           return JSON.parse(content);
@@ -2257,15 +1409,15 @@
           throw error;
         }
       }
-
+      
       function renderCurrentView() {
         const searchTerm = searchInput.value.toLowerCase().trim();
         const isSearching = searchTerm !== '';
-
+        
         // 清空内容
         contentGrid.innerHTML = '';
         quickActions.innerHTML = '';
-
+        
         if (isSearching) {
           // 搜索模式
           renderSearchResults(searchTerm);
@@ -2279,13 +1431,13 @@
           backBtn.style.display = 'block';
         }
       }
-
+      
       function renderFolderView(parentId) {
         // 获取当前文件夹下的子文件夹
         const subfolders = appState.folders
           .filter(folder => folder.parentId === parentId)
           .sort((a, b) => (a.order || 0) - (b.order || 0));
-
+        
         // 显示/隐藏内容区域
         if (parentId === '') {
           contentGrid.style.display = 'grid';
@@ -2294,7 +1446,7 @@
           contentGrid.style.display = 'none';
           linksContainer.style.display = 'block';
         }
-
+        
         // 如果没有子文件夹，显示空状态
         if (subfolders.length === 0 && parentId === '') {
           contentGrid.innerHTML = `
@@ -2309,61 +1461,61 @@
             </div>
           </div>
           `;
-
+          
           // 添加事件监听器
           document.getElementById('firstFolderBtn').addEventListener('click', () => {
             openFolderModal('');
           });
-
+          
           return;
         }
-
+        
         // 渲染子文件夹
         subfolders.forEach(folder => {
           const folderCard = createFolderCard(folder);
           contentGrid.appendChild(folderCard);
         });
-
+        
         // 如果是根目录，显示快速操作
         if (parentId === '') {
           updateQuickActions();
         }
-
+        
         // 更新面包屑导航
         updateBreadcrumb(parentId);
       }
-
+      
       function renderFolderDetails(folderId) {
         const folder = appState.folders.find(f => f.id === folderId);
         if (!folder) return;
-
+        
         // 更新文件夹详情页标题
         currentFolderName.textContent = folder.name;
         currentFolderIcon.className = `fas fa-${folder.icon || 'folder'}`;
-
+        
         // 获取当前文件夹下的子文件夹
         const subfolders = appState.folders
           .filter(f => f.parentId === folderId)
           .sort((a, b) => (a.order || 0) - (b.order || 0));
-
+        
         // 获取当前文件夹下的链接
         const folderLinks = appState.links
           .filter(link => link.folderId === folderId)
           .sort((a, b) => (a.order || 0) - (b.order || 0));
-
+        
         // 显示文件夹详情页
         contentGrid.style.display = 'none';
         linksContainer.style.display = 'block';
-
+        
         // 清空链接列表
         linksList.innerHTML = '';
-
+        
         // 渲染子文件夹（在链接列表顶部）
         subfolders.forEach(subfolder => {
           const folderCard = createLinkCard(subfolder, true);
           linksList.appendChild(folderCard);
         });
-
+        
         // 渲染链接
         if (folderLinks.length === 0 && subfolders.length === 0) {
           linksList.innerHTML = `
@@ -2379,28 +1531,28 @@
             linksList.appendChild(linkCard);
           });
         }
-
+        
         // 更新面包屑导航
         updateBreadcrumb(folderId);
       }
-
+      
       function renderSearchResults(searchTerm) {
         // 搜索文件夹
         const matchedFolders = appState.folders.filter(folder =>
           folder.name.toLowerCase().includes(searchTerm) ||
           (folder.description && folder.description.toLowerCase().includes(searchTerm))
         );
-
+        
         // 搜索链接
         const matchedLinks = appState.links.filter(link =>
           link.name.toLowerCase().includes(searchTerm) ||
           link.url.toLowerCase().includes(searchTerm) ||
           (link.notes && link.notes.toLowerCase().includes(searchTerm))
         );
-
+        
         // 清空内容
         contentGrid.innerHTML = '';
-
+        
         // 显示搜索结果统计
         const resultCount = matchedFolders.length + matchedLinks.length;
         quickActions.innerHTML = `
@@ -2408,12 +1560,12 @@
           找到 ${resultCount} 个结果 (${matchedFolders.length} 个文件夹, ${matchedLinks.length} 个链接)
         </div>
         `;
-
+        
         // 隐藏其他视图
         linksContainer.style.display = 'none';
         backBtn.style.display = 'none';
         contentGrid.style.display = 'grid';
-
+        
         if (resultCount === 0) {
           contentGrid.innerHTML = `
           <div class="empty-state">
@@ -2424,29 +1576,29 @@
           `;
           return;
         }
-
+        
         // 渲染匹配的文件夹
         matchedFolders.forEach(folder => {
           const folderCard = createFolderCard(folder);
           contentGrid.appendChild(folderCard);
         });
-
+        
         // 渲染匹配的链接（以卡片形式显示）
         matchedLinks.forEach(link => {
           const linkCard = createLinkCard(link, false, true);
           contentGrid.appendChild(linkCard);
         });
       }
-
+      
       function createFolderCard(folder) {
         const folderCard = document.createElement('div');
         folderCard.className = 'folder-card';
         folderCard.dataset.id = folder.id;
-
+        
         // 获取子文件夹和链接数量
         const subfolderCount = appState.folders.filter(f => f.parentId === folder.id).length;
         const linkCount = appState.links.filter(link => link.folderId === folder.id).length;
-
+        
         folderCard.innerHTML = `
         <div class="folder-header">
           <div class="folder-info">
@@ -2472,38 +1624,38 @@
           <span>${linkCount} 个链接</span>
         </div>
         `;
-
+        
         // 添加点击事件（进入文件夹）
-        folderCard.addEventListener('click', function (e) {
+        folderCard.addEventListener('click', function(e) {
           if (!e.target.closest('.folder-actions')) {
             navigateToFolder(folder.id);
           }
         });
-
+        
         // 添加编辑和删除按钮事件
-        folderCard.querySelector('.edit-folder-btn').addEventListener('click', function (e) {
+        folderCard.querySelector('.edit-folder-btn').addEventListener('click', function(e) {
           e.stopPropagation();
           openFolderModal(this.dataset.id);
         });
-
-        folderCard.querySelector('.delete-folder-btn').addEventListener('click', function (e) {
+        
+        folderCard.querySelector('.delete-folder-btn').addEventListener('click', function(e) {
           e.stopPropagation();
           deleteFolder(this.dataset.id);
         });
-
+        
         return folderCard;
       }
-
+      
       function createLinkCard(item, isFolder = false, isSearchResult = false) {
         const card = document.createElement('div');
         card.className = 'link-card';
-
+        
         if (isFolder) {
           // 创建文件夹卡片（在链接列表中）
           const folder = item;
           const subfolderCount = appState.folders.filter(f => f.parentId === folder.id).length;
           const linkCount = appState.links.filter(link => link.folderId === folder.id).length;
-
+          
           card.innerHTML = `
           <div class="link-header">
             <div class="link-icon-container">
@@ -2527,29 +1679,29 @@
             </button>
           </div>
           `;
-
+          
           // 添加事件监听器
-          card.querySelector('button:first-child').addEventListener('click', function (e) {
+          card.querySelector('button:first-child').addEventListener('click', function(e) {
             e.stopPropagation();
             navigateToFolder(this.dataset.id);
           });
-
-          card.querySelector('.edit-folder-btn').addEventListener('click', function (e) {
+          
+          card.querySelector('.edit-folder-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             openFolderModal(this.dataset.id);
           });
-
-          card.querySelector('.delete-folder-btn').addEventListener('click', function (e) {
+          
+          card.querySelector('.delete-folder-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             deleteFolder(this.dataset.id);
           });
-
+          
         } else {
           // 创建链接卡片
           const link = item;
           const folder = appState.folders.find(f => f.id === link.folderId);
           const folderName = folder ? folder.name : '根目录';
-
+          
           card.innerHTML = `
           <div class="link-header">
             <div class="link-icon-container" id="linkIcon-${link.id}">
@@ -2576,48 +1728,48 @@
             </button>
           </div>
           `;
-
+          
           // 加载链接图标
           loadLinkIcon(link);
-
+          
           // 如果是搜索结果，添加点击打开功能
           if (isSearchResult) {
             card.style.cursor = 'pointer';
-            card.addEventListener('click', function (e) {
+            card.addEventListener('click', function(e) {
               if (!e.target.closest('.link-actions')) {
                 window.open(link.url, '_blank');
               }
             });
           }
-
+          
           // 添加编辑和删除按钮事件
-          card.querySelector('.edit-link-btn').addEventListener('click', function (e) {
+          card.querySelector('.edit-link-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             editLink(this.dataset.id);
           });
-
-          card.querySelector('.delete-link-btn').addEventListener('click', function (e) {
+          
+          card.querySelector('.delete-link-btn').addEventListener('click', function(e) {
             e.stopPropagation();
             deleteLink(this.dataset.id);
           });
         }
-
+        
         return card;
       }
-
+      
       function loadLinkIcon(link) {
         if (!link.icon && link.url) {
           try {
             const domain = new URL(link.url).hostname;
             const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-
+            
             const iconContainer = document.getElementById(`linkIcon-${link.id}`);
             if (iconContainer) {
               const img = new Image();
-              img.onload = function () {
+              img.onload = function() {
                 iconContainer.innerHTML = `<img src="${faviconUrl}" alt="${link.name}">`;
               };
-              img.onerror = function () {
+              img.onerror = function() {
                 // 保持默认图标
               };
               img.src = faviconUrl;
@@ -2632,11 +1784,11 @@
           }
         }
       }
-
+      
       function updateQuickActions() {
         // 获取根目录下的链接数量
         const rootLinks = appState.links.filter(link => link.folderId === '').length;
-
+        
         quickActions.innerHTML = `
         <button class="btn btn-secondary" id="viewRootLinksBtn">
           <i class="fas fa-link"></i> 查看根目录链接 (${rootLinks})
@@ -2645,34 +1797,34 @@
           <i class="fas fa-sitemap"></i> 查看所有文件夹
         </button>
         `;
-
+        
         // 添加事件监听器
-        document.getElementById('viewRootLinksBtn').addEventListener('click', function () {
+        document.getElementById('viewRootLinksBtn').addEventListener('click', function() {
           showRootLinks();
         });
-
-        document.getElementById('viewAllFoldersBtn').addEventListener('click', function () {
+        
+        document.getElementById('viewAllFoldersBtn').addEventListener('click', function() {
           showAllFolders();
         });
       }
-
+      
       function showRootLinks() {
         appState.currentFolderId = '';
         contentGrid.style.display = 'none';
         linksContainer.style.display = 'block';
-
+        
         // 更新标题
         currentFolderName.textContent = '根目录链接';
         currentFolderIcon.className = 'fas fa-home';
-
+        
         // 获取根目录链接
         const rootLinks = appState.links
           .filter(link => link.folderId === '')
           .sort((a, b) => (a.order || 0) - (b.order || 0));
-
+        
         // 清空链接列表
         linksList.innerHTML = '';
-
+        
         if (rootLinks.length === 0) {
           linksList.innerHTML = `
           <div class="empty-state" style="grid-column: 1 / -1;">
@@ -2687,45 +1839,45 @@
             linksList.appendChild(linkCard);
           });
         }
-
+        
         // 更新面包屑导航
         breadcrumb.innerHTML = `
         <div class="breadcrumb-item active" data-id="">根目录</div>
         <div class="breadcrumb-separator">/</div>
         <div class="breadcrumb-item active">链接</div>
         `;
-
+        
         backBtn.style.display = 'block';
       }
-
+      
       function showAllFolders() {
         // 显示所有文件夹的树状视图
         contentGrid.innerHTML = '';
-
+        
         // 构建文件夹树
         const folderTree = buildFolderTree();
-
+        
         // 渲染文件夹树
         renderFolderTree(folderTree);
-
+        
         // 更新面包屑导航
         breadcrumb.innerHTML = `
         <div class="breadcrumb-item active" data-id="">根目录</div>
         <div class="breadcrumb-separator">/</div>
         <div class="breadcrumb-item active">所有文件夹</div>
         `;
-
+        
         backBtn.style.display = 'block';
       }
-
+      
       function buildFolderTree(parentId = '', level = 0) {
         const folders = appState.folders.filter(f => f.parentId === parentId);
         const tree = [];
-
+        
         folders.forEach(folder => {
           const children = buildFolderTree(folder.id, level + 1);
           const linkCount = appState.links.filter(link => link.folderId === folder.id).length;
-
+          
           tree.push({
             ...folder,
             level,
@@ -2733,10 +1885,10 @@
             linkCount
           });
         });
-
+        
         return tree;
       }
-
+      
       function renderFolderTree(tree) {
         tree.forEach(item => {
           const indent = item.level * 20;
@@ -2744,7 +1896,7 @@
           folderCard.className = 'folder-card';
           folderCard.style.marginLeft = `${indent}px`;
           folderCard.style.borderLeft = item.level > 0 ? `3px solid var(--primary-color)` : 'none';
-
+          
           folderCard.innerHTML = `
           <div class="folder-header">
             <div class="folder-info">
@@ -2770,45 +1922,45 @@
             <span>${item.linkCount} 个链接</span>
           </div>
           `;
-
+          
           contentGrid.appendChild(folderCard);
-
+          
           // 添加事件监听器
-          folderCard.querySelector('button:first-child').addEventListener('click', function (e) {
+          folderCard.querySelector('button:first-child').addEventListener('click', function(e) {
             navigateToFolder(this.dataset.id);
           });
-
-          folderCard.querySelector('.edit-folder-btn').addEventListener('click', function (e) {
+          
+          folderCard.querySelector('.edit-folder-btn').addEventListener('click', function(e) {
             openFolderModal(this.dataset.id);
           });
-
+          
           // 递归渲染子文件夹
           if (item.children.length > 0) {
             renderFolderTree(item.children);
           }
         });
       }
-
+      
       function navigateToFolder(folderId) {
         appState.currentFolderId = folderId;
         renderCurrentView();
       }
-
+      
       function updateBreadcrumb(folderId) {
         breadcrumb.innerHTML = '';
-
+        
         // 根目录
         breadcrumb.innerHTML = '<div class="breadcrumb-item" data-id="">根目录</div>';
-
+        
         // 如果当前不在根目录，构建路径
         if (folderId) {
           const path = getFolderPath(folderId);
-
+          
           path.forEach(folder => {
             breadcrumb.innerHTML += '<div class="breadcrumb-separator">/</div>';
             breadcrumb.innerHTML += `<div class="breadcrumb-item" data-id="${folder.id}">${folder.name}</div>`;
           });
-
+          
           // 最后一个为当前文件夹
           const lastItem = breadcrumb.querySelector('.breadcrumb-item:last-child');
           lastItem.classList.add('active');
@@ -2817,19 +1969,19 @@
           const rootItem = breadcrumb.querySelector('.breadcrumb-item');
           rootItem.classList.add('active');
         }
-
+        
         // 添加点击事件
         breadcrumb.querySelectorAll('.breadcrumb-item:not(.active)').forEach(item => {
-          item.addEventListener('click', function () {
+          item.addEventListener('click', function() {
             navigateToFolder(this.dataset.id);
           });
         });
       }
-
+      
       function getFolderPath(folderId) {
         const path = [];
         let currentId = folderId;
-
+        
         while (currentId) {
           const folder = appState.folders.find(f => f.id === currentId);
           if (folder) {
@@ -2839,10 +1991,10 @@
             break;
           }
         }
-
+        
         return path;
       }
-
+      
       function openFolderModal(folderId = null) {
         const modal = document.getElementById('folderModal');
         const title = document.getElementById('folderModalTitle');
@@ -2850,11 +2002,10 @@
         const nameInput = document.getElementById('folderName');
         const descInput = document.getElementById('folderDescription');
         const parentSelect = document.getElementById('parentFolder');
-        const iconInput = document.getElementById('folderIcon');
-
+        
         // 重置表单
         form.reset();
-
+        
         // 填充父文件夹选择
         parentSelect.innerHTML = '<option value="">无 (根目录)</option>';
         appState.folders.forEach(folder => {
@@ -2863,7 +2014,7 @@
             const option = document.createElement('option');
             option.value = folder.id;
             option.textContent = folder.name;
-
+            
             // 如果是编辑模式且当前文件夹有父文件夹，则选中
             if (folderId) {
               const currentFolder = appState.folders.find(f => f.id === folderId);
@@ -2871,58 +2022,38 @@
                 option.selected = true;
               }
             }
-
+            
             parentSelect.appendChild(option);
           }
         });
-
+        
         if (folderId) {
           // 编辑模式
           appState.editingFolderId = folderId;
           title.textContent = '编辑文件夹';
           const folder = appState.folders.find(f => f.id === folderId);
-
+          
           if (folder) {
             nameInput.value = folder.name;
             descInput.value = folder.description || '';
-            iconInput.value = folder.icon || 'folder';
-
-            // 选择对应的图标
-            document.querySelectorAll('.folder-icon-option').forEach(option => {
-              if (option.dataset.icon === folder.icon) {
-                option.classList.add('selected');
-              } else {
-                option.classList.remove('selected');
-              }
-            });
           }
         } else {
           // 新建模式
           appState.editingFolderId = null;
           title.textContent = '新建文件夹';
-          iconInput.value = 'folder';
-
+          
           // 默认选择当前文件夹作为父文件夹
           if (appState.currentFolderId) {
             parentSelect.value = appState.currentFolderId;
           }
-
-          // 重置图标选择
-          document.querySelectorAll('.folder-icon-option').forEach(option => {
-            if (option.dataset.icon === 'folder') {
-              option.classList.add('selected');
-            } else {
-              option.classList.remove('selected');
-            }
-          });
         }
-
+        
         modal.classList.add('active');
-
+        
         // 聚焦到名称输入框
         setTimeout(() => nameInput.focus(), 100);
       }
-
+      
       function openLinkModal(folderId = null) {
         const modal = document.getElementById('linkModal');
         const title = document.getElementById('linkModalTitle');
@@ -2931,13 +2062,12 @@
         const urlInput = document.getElementById('linkUrl');
         const notesInput = document.getElementById('linkNotes');
         const folderSelect = document.getElementById('linkFolder');
-        const iconPreview = document.getElementById('linkIconPreview');
-
+        
         // 重置表单
         form.reset();
         appState.editingLinkId = null;
         title.textContent = '添加链接';
-
+        
         // 填充文件夹选择
         folderSelect.innerHTML = '<option value="">无 (显示在根目录)</option>';
         appState.folders.forEach(folder => {
@@ -2946,47 +2076,22 @@
           option.textContent = folder.name;
           folderSelect.appendChild(option);
         });
-
+        
         // 如果指定了文件夹，则选中
         if (folderId !== null) {
           folderSelect.value = folderId;
         }
-
-        // 重置图标预览
-        iconPreview.innerHTML = '<i class="fas fa-link"></i>';
-
-        // URL输入时尝试获取图标
-        urlInput.addEventListener('input', async function () {
-          if (this.value && this.value.includes('.')) {
-            try {
-              const domain = new URL(this.value).hostname;
-              const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-
-              // 测试图片是否能加载
-              const img = new Image();
-              img.onload = function () {
-                iconPreview.innerHTML = `<img src="${faviconUrl}" alt="网站图标">`;
-              };
-              img.onerror = function () {
-                iconPreview.innerHTML = '<i class="fas fa-link"></i>';
-              };
-              img.src = faviconUrl;
-            } catch (e) {
-              // URL无效，忽略
-            }
-          }
-        });
-
+        
         modal.classList.add('active');
-
+        
         // 聚焦到名称输入框
         setTimeout(() => nameInput.focus(), 100);
       }
-
+      
       function editLink(linkId) {
         const link = appState.links.find(l => l.id === linkId);
         if (!link) return;
-
+        
         const modal = document.getElementById('linkModal');
         const title = document.getElementById('linkModalTitle');
         const form = document.getElementById('linkForm');
@@ -2994,16 +2099,15 @@
         const urlInput = document.getElementById('linkUrl');
         const notesInput = document.getElementById('linkNotes');
         const folderSelect = document.getElementById('linkFolder');
-        const iconPreview = document.getElementById('linkIconPreview');
-
+        
         appState.editingLinkId = linkId;
         title.textContent = '编辑链接';
-
+        
         // 填充表单
         nameInput.value = link.name;
         urlInput.value = link.url;
         notesInput.value = link.notes || '';
-
+        
         // 填充文件夹选择
         folderSelect.innerHTML = '<option value="">无 (显示在根目录)</option>';
         appState.folders.forEach(folder => {
@@ -3015,21 +2119,14 @@
           }
           folderSelect.appendChild(option);
         });
-
-        // 显示图标
-        if (link.icon) {
-          iconPreview.innerHTML = `<img src="${link.icon}" alt="${link.name}">`;
-        } else {
-          iconPreview.innerHTML = '<i class="fas fa-link"></i>';
-        }
-
+        
         modal.classList.add('active');
       }
-
+      
       function deleteLink(linkId) {
         const link = appState.links.find(l => l.id === linkId);
         if (!link) return;
-
+        
         if (confirm(`确定要删除链接 "${link.name}" 吗？`)) {
           appState.links = appState.links.filter(l => l.id !== linkId);
           saveData();
@@ -3037,26 +2134,26 @@
           showNotification('链接已删除', 'success');
         }
       }
-
+      
       function deleteFolder(folderId) {
         const folder = appState.folders.find(f => f.id === folderId);
         if (!folder) return;
-
+        
         // 检查文件夹中是否有子文件夹
         const subfolders = appState.folders.filter(f => f.parentId === folderId);
         // 检查文件夹中是否有链接
         const folderLinks = appState.links.filter(l => l.folderId === folderId);
-
+        
         let message = `确定要删除文件夹 "${folder.name}" 吗？`;
         if (subfolders.length > 0 || folderLinks.length > 0) {
           message = `文件夹 "${folder.name}" 中包含 ${subfolders.length} 个子文件夹和 ${folderLinks.length} 个链接，删除文件夹将同时删除这些内容。确定要继续吗？`;
         }
-
+        
         if (confirm(message)) {
           // 删除文件夹和其中的内容
           appState.folders = appState.folders.filter(f => f.id !== folderId);
           appState.links = appState.links.filter(l => l.folderId !== folderId);
-
+          
           // 递归删除子文件夹
           function deleteSubfolders(parentId) {
             const children = appState.folders.filter(f => f.parentId === parentId);
@@ -3066,24 +2163,24 @@
               deleteSubfolders(child.id);
             });
           }
-
+          
           deleteSubfolders(folderId);
           saveData();
           renderCurrentView();
           showNotification('文件夹已删除', 'success');
         }
       }
-
+      
       function showNotification(message, type = 'info') {
         notification.textContent = message;
         notification.className = `notification ${type}`;
         notification.classList.add('show');
-
+        
         setTimeout(() => {
           notification.classList.remove('show');
         }, 3000);
       }
-
+      
       function updateLastSyncDisplay() {
         if (appState.lastSync) {
           const date = new Date(appState.lastSync);
@@ -3092,85 +2189,240 @@
           lastSyncTime.textContent = '从未同步';
         }
       }
-
+      
       function setTheme(theme) {
         // 清除现有主题类
         document.body.classList.remove('dark-mode');
-
+        
         if (theme === 'dark') {
           document.body.classList.add('dark-mode');
-          themeIcon.className = 'fas fa-sun';
+          document.getElementById('themeIcon').className = 'fas fa-sun';
         } else if (theme === 'light') {
-          themeIcon.className = 'fas fa-moon';
+          document.getElementById('themeIcon').className = 'fas fa-moon';
         } else if (theme === 'auto') {
           // 自动模式：根据系统偏好设置
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           if (prefersDark) {
             document.body.classList.add('dark-mode');
-            themeIcon.className = 'fas fa-sun';
+            document.getElementById('themeIcon').className = 'fas fa-sun';
           } else {
-            themeIcon.className = 'fas fa-moon';
+            document.getElementById('themeIcon').className = 'fas fa-moon';
           }
         }
-
+        
         appState.theme = theme;
         localStorage.setItem('theme', theme);
-
-        // 更新主题选择器状态
-        document.querySelectorAll('.theme-selector').forEach(btn => {
-          if (btn.dataset.theme === theme) {
-            btn.classList.add('active');
-          } else {
-            btn.classList.remove('active');
-          }
-        });
       }
-
+      
+      // 导出所有链接为HTML文件
+      function exportAllLinks() {
+        const timestamp = new Date().toISOString().split('T')[0];
+        const fileName = `我的导航链接-${timestamp}.html`;
+        
+        // 构建文件夹树
+        const folderTree = buildFolderTreeForExport();
+        const rootLinks = appState.links
+          .filter(link => !link.folderId)
+          .sort((a, b) => (a.order || 0) - (b.order || 0));
+        
+        // 生成HTML内容
+        const htmlContent = generateHtmlExport(folderTree, rootLinks);
+        
+        // 创建Blob并下载
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showNotification(`已导出${appState.links.length}个链接到HTML文件`, 'success');
+      }
+      
+      // 为导出构建文件夹树
+      function buildFolderTreeForExport(parentId = '') {
+        const folders = appState.folders.filter(f => f.parentId === parentId);
+        const tree = [];
+        
+        folders.forEach(folder => {
+          const children = buildFolderTreeForExport(folder.id);
+          const folderLinks = appState.links
+            .filter(link => link.folderId === folder.id)
+            .sort((a, b) => (a.order || 0) - (b.order || 0));
+          
+          tree.push({
+            ...folder,
+            children,
+            links: folderLinks
+          });
+        });
+        
+        return tree;
+      }
+      
+      // 生成HTML导出内容
+      function generateHtmlExport(folderTree, rootLinks) {
+        const totalLinks = appState.links.length;
+        const totalFolders = appState.folders.length;
+        const exportDate = new Date().toLocaleString('zh-CN');
+        
+        return `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的导航链接 - ${exportDate}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.5; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #e2e8f0; }
+        .header h1 { color: #4f46e5; margin-bottom: 10px; }
+        .stats { display: flex; justify-content: center; gap: 30px; margin: 20px 0; flex-wrap: wrap; }
+        .stat-item { text-align: center; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); min-width: 120px; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #4f46e5; }
+        .stat-label { font-size: 14px; color: #64748b; }
+        .folder-section { margin-bottom: 40px; }
+        .folder-header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 15px 20px; border-radius: 10px 10px 0 0; display: flex; align-items: center; gap: 10px; margin-bottom: 0; }
+        .folder-content { background: white; border-radius: 0 0 10px 10px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; }
+        .link-item { background: #f8fafc; border-radius: 8px; padding: 15px; border: 1px solid #e2e8f0; transition: all 0.3s ease; }
+        .link-item:hover { transform: translateY(-2px); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); border-color: #4f46e5; }
+        .link-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .link-title { font-weight: 600; font-size: 16px; color: #1e293b; margin-bottom: 4px; }
+        .link-url { font-size: 12px; color: #64748b; word-break: break-all; }
+        .link-notes { font-size: 13px; color: #475569; line-height: 1.5; margin-top: 10px; padding: 10px; background: rgba(79, 70, 229, 0.05); border-radius: 6px; border-left: 3px solid #4f46e5; }
+        .subfolder { margin-left: 20px; margin-top: 20px; border-left: 3px solid #a5b4fc; padding-left: 20px; }
+        .footer { text-align: center; margin-top: 50px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #64748b; font-size: 14px; }
+        @media (max-width: 768px) { .link-grid { grid-template-columns: 1fr; } .stats { gap: 15px; } .stat-item { min-width: 100px; } }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>我的导航链接</h1>
+        <p>导出时间：${exportDate}</p>
+        <div class="stats">
+            <div class="stat-item"><div class="stat-value">${totalLinks}</div><div class="stat-label">个链接</div></div>
+            <div class="stat-item"><div class="stat-value">${totalFolders}</div><div class="stat-label">个文件夹</div></div>
+        </div>
+    </div>
+    ${generateHtmlFolderTree(folderTree, rootLinks)}
+    <div class="footer">
+        <p>个人导航页 &copy; ${new Date().getFullYear()} | 生成时间：${exportDate}</p>
+        <p>总链接数：${totalLinks} | 总文件夹数：${totalFolders}</p>
+    </div>
+</body>
+</html>`;
+      }
+      
+      // 生成HTML文件夹树
+      function generateHtmlFolderTree(folderTree, rootLinks = [], level = 0) {
+        let html = '';
+        
+        // 渲染根目录链接
+        if (rootLinks.length > 0 && level === 0) {
+          html += `
+          <div class="folder-section">
+            <div class="folder-header">
+              <h2>根目录链接</h2>
+            </div>
+            <div class="folder-content">
+              <div class="link-grid">
+          `;
+          
+          rootLinks.forEach(link => {
+            html += `
+                <div class="link-item">
+                  <div class="link-header">
+                    <div>
+                      <div class="link-title">${link.name}</div>
+                      <div class="link-url">${link.url}</div>
+                    </div>
+                  </div>
+                  ${link.notes ? `<div class="link-notes">${link.notes}</div>` : ''}
+                </div>
+            `;
+          });
+          
+          html += `
+              </div>
+            </div>
+          </div>
+          `;
+        }
+        
+        // 渲染文件夹树
+        folderTree.forEach(folder => {
+          const indentClass = level > 0 ? ' subfolder' : '';
+          
+          html += `
+          <div class="folder-section${indentClass}">
+            <div class="folder-header">
+              <h2>${folder.name}${folder.description ? ` - ${folder.description}` : ''}</h2>
+            </div>
+            <div class="folder-content">
+          `;
+          
+          if (folder.links.length > 0) {
+            html += '<div class="link-grid">';
+            
+            folder.links.forEach(link => {
+              html += `
+                <div class="link-item">
+                  <div class="link-header">
+                    <div>
+                      <div class="link-title">${link.name}</div>
+                      <div class="link-url">${link.url}</div>
+                    </div>
+                  </div>
+                  ${link.notes ? `<div class="link-notes">${link.notes}</div>` : ''}
+                </div>
+              `;
+            });
+            
+            html += '</div>';
+          } else {
+            html += '<p style="color: #64748b; text-align: center; padding: 20px;">此文件夹暂无链接</p>';
+          }
+          
+          // 递归渲染子文件夹
+          if (folder.children.length > 0) {
+            html += generateHtmlFolderTree(folder.children, [], level + 1);
+          }
+          
+          html += `
+            </div>
+          </div>
+          `;
+        });
+        
+        return html;
+      }
+      
       function setupEventListeners() {
         // 添加文件夹按钮
         document.getElementById('addFolderBtn').addEventListener('click', () => openFolderModal());
-
+        
         // 添加链接按钮
         document.getElementById('addLinkBtn').addEventListener('click', () => openLinkModal(appState.currentFolderId));
-
-        // 导出所有链接按钮（顶部导航栏）
-        document.getElementById('exportAllBtn').addEventListener('click', openExportModal);
-
-        // 在设置面板中打开导出模态框的按钮
-        document.getElementById('openExportModalBtn').addEventListener('click', function() {
-          document.getElementById('settingsModal').classList.remove('active');
-          setTimeout(() => openExportModal(), 300);
-        });
-
-        // 导出HTML按钮
-        document.getElementById('exportHtmlBtn').addEventListener('click', exportAsHtml);
-
-        // 导出JSON按钮
-        document.getElementById('exportJsonBtn').addEventListener('click', exportAsJson);
-
-        // 导出文本按钮
-        document.getElementById('exportTextBtn').addEventListener('click', exportAsText);
-
-        // 导出CSV按钮
-        document.getElementById('exportCsvBtn').addEventListener('click', exportAsCsv);
-
-        // 导出取消按钮
-        document.getElementById('exportCancelBtn').addEventListener('click', function() {
-          document.getElementById('exportModal').classList.remove('active');
-        });
-
+        
+        // 导出所有链接按钮
+        document.getElementById('exportAllBtn').addEventListener('click', exportAllLinks);
+        
         // 添加到当前文件夹按钮
         document.getElementById('addLinkToCurrentBtn').addEventListener('click', () => {
           openLinkModal(appState.currentFolderId);
         });
-
+        
         // 添加子文件夹按钮
         document.getElementById('addSubfolderBtn').addEventListener('click', () => {
           openFolderModal();
         });
-
+        
         // 返回按钮
-        backBtn.addEventListener('click', function () {
+        backBtn.addEventListener('click', function() {
           if (appState.currentFolderId === '') {
             // 返回根目录
             linksContainer.style.display = 'none';
@@ -3186,34 +2438,33 @@
             }
           }
         });
-
+        
         // 设置按钮
         document.getElementById('settingsBtn').addEventListener('click', () => {
           document.getElementById('settingsModal').classList.add('active');
-
+          
           // 填充设置表单
           document.getElementById('githubToken').value = appState.githubToken;
           document.getElementById('gistId').value = appState.gistId;
-
+          
           // 更新状态显示
           document.getElementById('tokenStatus').textContent = appState.githubToken ? '已配置' : '未配置';
           document.getElementById('currentGistId').textContent = appState.gistId || '未设置';
         });
-
-        // 文件夹表单提交 - 修复：防止默认提交行为
-        folderForm.addEventListener('submit', function (e) {
+        
+        // 文件夹表单提交
+        document.getElementById('folderForm').addEventListener('submit', function(e) {
           e.preventDefault();
-
+          
           const name = document.getElementById('folderName').value.trim();
           const description = document.getElementById('folderDescription').value.trim();
           const parentId = document.getElementById('parentFolder').value || '';
-          const icon = document.getElementById('folderIcon').value;
-
+          
           if (!name) {
             showNotification('请输入文件夹名称', 'error');
             return;
           }
-
+          
           if (appState.editingFolderId) {
             // 更新现有文件夹
             const folder = appState.folders.find(f => f.id === appState.editingFolderId);
@@ -3221,7 +2472,6 @@
               folder.name = name;
               folder.description = description;
               folder.parentId = parentId;
-              folder.icon = icon;
               folder.updatedAt = Date.now();
             }
           } else {
@@ -3231,60 +2481,45 @@
               name,
               description,
               parentId,
-              icon,
+              icon: 'folder',
               order: appState.folders.filter(f => f.parentId === parentId).length + 1,
               createdAt: Date.now()
             };
-
+            
             appState.folders.push(newFolder);
           }
-
+          
           saveData();
           renderCurrentView();
           document.getElementById('folderModal').classList.remove('active');
           showNotification(appState.editingFolderId ? '文件夹已更新' : '文件夹已创建', 'success');
           appState.editingFolderId = null;
         });
-
-        // 链接表单提交 - 修复：防止默认提交行为
-        linkForm.addEventListener('submit', async function (e) {
+        
+        // 链接表单提交
+        document.getElementById('linkForm').addEventListener('submit', async function(e) {
           e.preventDefault();
-
+          
           const name = document.getElementById('linkName').value.trim();
           let url = document.getElementById('linkUrl').value.trim();
           const folderId = document.getElementById('linkFolder').value;
           const notes = document.getElementById('linkNotes').value.trim();
-
+          
           if (!name) {
             showNotification('请输入链接名称', 'error');
             return;
           }
-
+          
           if (!url) {
             showNotification('请输入URL', 'error');
             return;
           }
-
+          
           // 确保URL有协议前缀
           if (!url.startsWith('http://') && !url.startsWith('https://')) {
             url = 'https://' + url;
           }
-
-          // 获取网站图标
-          let iconUrl = '';
-          try {
-            const domain = new URL(url).hostname;
-            iconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
-
-            // 验证图标是否有效
-            const response = await fetch(iconUrl, { method: 'HEAD' });
-            if (!response.ok) {
-              iconUrl = '';
-            }
-          } catch (error) {
-            iconUrl = '';
-          }
-
+          
           if (appState.editingLinkId) {
             // 更新现有链接
             const link = appState.links.find(l => l.id === appState.editingLinkId);
@@ -3293,7 +2528,6 @@
               link.url = url;
               link.folderId = folderId;
               link.notes = notes;
-              link.icon = iconUrl || link.icon;
               link.updatedAt = Date.now();
             }
           } else {
@@ -3304,35 +2538,26 @@
               url,
               folderId,
               notes,
-              icon: iconUrl,
+              icon: '',
               order: appState.links.filter(l => l.folderId === folderId).length + 1,
               createdAt: Date.now()
             };
-
+            
             appState.links.push(newLink);
           }
-
+          
           saveData();
           renderCurrentView();
           document.getElementById('linkModal').classList.remove('active');
           showNotification(appState.editingLinkId ? '链接已更新' : '链接已添加', 'success');
           appState.editingLinkId = null;
         });
-
-        // 图标选择
-        document.querySelectorAll('.folder-icon-option').forEach(option => {
-          option.addEventListener('click', function () {
-            document.querySelectorAll('.folder-icon-option').forEach(o => o.classList.remove('selected'));
-            this.classList.add('selected');
-            document.getElementById('folderIcon').value = this.dataset.icon;
-          });
-        });
-
+        
         // 令牌可见性切换
-        document.getElementById('toggleTokenVisibility').addEventListener('click', function () {
+        document.getElementById('toggleTokenVisibility').addEventListener('click', function() {
           const tokenInput = document.getElementById('githubToken');
           const icon = this.querySelector('i');
-
+          
           if (tokenInput.type === 'password') {
             tokenInput.type = 'text';
             icon.className = 'fas fa-eye-slash';
@@ -3341,72 +2566,89 @@
             icon.className = 'fas fa-eye';
           }
         });
-
+        
         // 保存设置
-        document.getElementById('saveSettingsBtn').addEventListener('click', function () {
+        document.getElementById('saveSettingsBtn').addEventListener('click', function() {
           const token = document.getElementById('githubToken').value.trim();
           const gistId = document.getElementById('gistId').value.trim();
-
+          
           if (!token) {
             showNotification('请输入GitHub令牌', 'warning');
             return;
           }
-
+          
           // 验证令牌格式
           if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
             showNotification('令牌格式不正确，应以 ghp_ 或 github_pat_ 开头', 'warning');
             return;
           }
-
+          
           appState.githubToken = token;
           appState.gistId = gistId;
           localStorage.setItem('githubToken', token);
           if (gistId) {
             localStorage.setItem('gistId', gistId);
           }
-
+          
           updateLastSyncDisplay();
           showNotification('设置已保存', 'success');
-
+          
           setTimeout(() => {
             document.getElementById('settingsModal').classList.remove('active');
           }, 1000);
         });
-
+        
         // 测试同步
-        document.getElementById('testSyncBtn').addEventListener('click', function () {
+        document.getElementById('testSyncBtn').addEventListener('click', function() {
           syncWithGist('pull');
         });
-
+        
         // 手动同步按钮
-        document.getElementById('manualSyncBtn').addEventListener('click', function () {
+        document.getElementById('manualSyncBtn').addEventListener('click', function() {
           if (!appState.githubToken) {
             showNotification('请先在设置中配置GitHub令牌', 'warning');
             return;
           }
           syncWithGist('pull');
         });
-
+        
         // 导出数据为JSON
-        document.getElementById('exportDataBtn').addEventListener('click', function () {
-          exportAsJson();
+        document.getElementById('exportDataBtn').addEventListener('click', function() {
+          const data = {
+            folders: appState.folders,
+            links: appState.links,
+            exportedAt: new Date().toISOString(),
+            appVersion: '2.0'
+          };
+          
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `navigation-data-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          
+          showNotification('数据已导出为JSON', 'success');
           document.getElementById('settingsModal').classList.remove('active');
         });
-
+        
         // 导入数据
-        document.getElementById('importDataBtn').addEventListener('click', function () {
+        document.getElementById('importDataBtn').addEventListener('click', function() {
           document.getElementById('importFileInput').click();
         });
-
-        document.getElementById('importFileInput').addEventListener('change', function (e) {
+        
+        document.getElementById('importFileInput').addEventListener('change', function(e) {
           const file = e.target.files[0];
           if (!file) return;
-
+          
           const reader = new FileReader();
-          reader.onload = function (event) {
+          reader.onload = function(event) {
             try {
               const data = JSON.parse(event.target.result);
-
+              
               if (confirm('导入数据将覆盖当前所有数据，确定要继续吗？')) {
                 appState.folders = data.folders || [];
                 appState.links = data.links || [];
@@ -3421,9 +2663,9 @@
           };
           reader.readAsText(file);
         });
-
+        
         // 清空数据
-        document.getElementById('clearDataBtn').addEventListener('click', function () {
+        document.getElementById('clearDataBtn').addEventListener('click', function() {
           if (confirm('确定要清空所有数据吗？此操作不可恢复！')) {
             appState.folders = [];
             appState.links = [];
@@ -3432,14 +2674,14 @@
             showNotification('所有数据已清空', 'success');
           }
         });
-
+        
         // 搜索功能
-        searchInput.addEventListener('input', function () {
+        searchInput.addEventListener('input', function() {
           renderCurrentView();
         });
-
+        
         // 主题切换
-        document.getElementById('themeToggle').addEventListener('click', function () {
+        document.getElementById('themeToggle').addEventListener('click', function() {
           let newTheme;
           if (appState.theme === 'light') {
             newTheme = 'dark';
@@ -3448,48 +2690,35 @@
           } else {
             newTheme = 'light';
           }
-
+          
           setTheme(newTheme);
           showNotification(`已切换至${newTheme === 'light' ? '浅色' : newTheme === 'dark' ? '深色' : '自动'}主题`, 'success');
         });
-
-        // 主题选择器
-        document.querySelectorAll('.theme-selector').forEach(btn => {
-          btn.addEventListener('click', function () {
-            const theme = this.dataset.theme;
-            setTheme(theme);
-            showNotification(`已切换至${theme === 'light' ? '浅色' : theme === 'dark' ? '深色' : '自动'}主题`, 'success');
-          });
-        });
-
+        
         // 模态框关闭按钮
         document.querySelectorAll('.modal-close').forEach(btn => {
-          btn.addEventListener('click', function () {
+          btn.addEventListener('click', function() {
             this.closest('.modal').classList.remove('active');
           });
         });
-
+        
         document.getElementById('folderCancelBtn').addEventListener('click', () => {
           document.getElementById('folderModal').classList.remove('active');
           appState.editingFolderId = null;
         });
-
+        
         document.getElementById('linkCancelBtn').addEventListener('click', () => {
           document.getElementById('linkModal').classList.remove('active');
           appState.editingLinkId = null;
         });
-
-        document.getElementById('exportModalClose').addEventListener('click', () => {
-          document.getElementById('exportModal').classList.remove('active');
-        });
-
+        
         document.getElementById('settingsModalClose').addEventListener('click', () => {
           document.getElementById('settingsModal').classList.remove('active');
         });
-
+        
         // 点击模态框外部关闭
         document.querySelectorAll('.modal').forEach(modal => {
-          modal.addEventListener('click', function (e) {
+          modal.addEventListener('click', function(e) {
             if (e.target === this) {
               this.classList.remove('active');
               appState.editingFolderId = null;
@@ -3497,23 +2726,23 @@
             }
           });
         });
-
+        
         // 系统主题变化监听
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
           if (appState.theme === 'auto') {
             setTheme('auto');
           }
         });
-
+        
         // 添加移动端优化：隐藏按钮文字
         if (window.innerWidth <= 768) {
           document.querySelectorAll('.desktop-only').forEach(el => {
             el.style.display = 'none';
           });
         }
-
+        
         // 窗口大小变化监听
-        window.addEventListener('resize', function () {
+        window.addEventListener('resize', function() {
           if (window.innerWidth <= 768) {
             document.querySelectorAll('.desktop-only').forEach(el => {
               el.style.display = 'none';
@@ -3528,5 +2757,4 @@
     });
   </script>
 </body>
-
 </html>
