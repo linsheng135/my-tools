@@ -293,6 +293,42 @@
     
     .custom-textarea:focus { outline: none; border-color: #9C27B0; }
     
+    /* 输入框顶部工具栏 */
+    .textarea-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .textarea-toolbar .title-count {
+        font-size: 0.9rem;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .clear-input-btn {
+        padding: 6px 12px;
+        background-color: #ffebee;
+        color: #c62828;
+        border: 1px solid #ffcdd2;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+    }
+    
+    .clear-input-btn:hover {
+        background-color: #ffcdd2;
+    }
+    
     /* 按钮组优化 */
     .btn-group { 
         display: flex; 
@@ -327,6 +363,11 @@
         background-color: #f8f9fa; 
         color: #2c3e50; 
         border: 2px solid #e0e0e0; 
+    }
+    
+    .danger-btn {
+        background: linear-gradient(to right, #f44336, #d32f2f);
+        color: white;
     }
     
     .excel-btn { 
@@ -490,6 +531,8 @@
         
         .quick-action-btn { padding: 8px 10px; font-size: 0.85rem; }
         
+        .clear-input-btn { padding: 5px 10px; font-size: 0.8rem; }
+        
         .notification { 
             left: 12px; 
             right: 12px; 
@@ -563,6 +606,19 @@
                 <h2 class="section-title"><i class="fas fa-edit"></i> 标题输入框</h2>
                 <p style="margin-bottom: 15px; color: #555; font-size: 0.95rem;">每行输入一个标题，点击"更新列表"按钮添加到下方</p>
                 
+                <!-- 输入框工具栏 -->
+                <div class="textarea-toolbar">
+                    <div class="title-count">
+                        <i class="fas fa-font"></i>
+                        <span id="inputLineCount">0 行</span>
+                        <span style="margin: 0 5px;">•</span>
+                        <span id="inputCharCountTotal">0 字</span>
+                    </div>
+                    <button class="clear-input-btn" id="clearInputBtn">
+                        <i class="fas fa-times-circle"></i> 清空输入框
+                    </button>
+                </div>
+                
                 <textarea class="custom-textarea" id="customTitles" placeholder="请在此输入标题，每行一个...&#10;例如：&#10;霸道总裁爱上我&#10;重生之逆袭人生&#10;都市异能神医"></textarea>
                 
                 <div class="btn-group">
@@ -572,6 +628,16 @@
                     <button class="action-btn secondary-btn" id="clearTitlesBtn">
                         <i class="fas fa-trash-alt"></i> 清空列表
                     </button>
+                </div>
+                
+                <!-- 输入框使用提示 -->
+                <div style="margin-top: 15px; padding: 12px; background-color: #f0f7ff; border-radius: 8px; font-size: 0.9rem; color: #555;">
+                    <p style="margin-bottom: 5px;"><i class="fas fa-lightbulb" style="color: #2196F3;"></i> <strong>快速输入技巧：</strong></p>
+                    <ul style="padding-left: 20px; margin-bottom: 0;">
+                        <li>每行输入一个标题，按回车换行</li>
+                        <li>可以从其他应用复制标题列表粘贴到这里</li>
+                        <li>点击"清空输入框"按钮可快速清空输入内容</li>
+                    </ul>
                 </div>
             </section>
             
@@ -689,7 +755,7 @@
         </div>
         
         <footer>
-            <p>小说标题处理工具 &copy; 2023 | 手机优化版 v2.0 | 专为手机端使用设计</p>
+            <p>小说标题处理工具 &copy; 2023 | 手机优化版 v2.1 | 专为手机端使用设计</p>
         </footer>
     </div>
     
@@ -711,7 +777,7 @@
     // 选中的标题索引
     let selectedTitles = new Set();
     
-    // 初始化显示标题
+    // 初始化
     document.addEventListener('DOMContentLoaded', function() {
         renderTitles();
         
@@ -721,10 +787,13 @@
         // 清空标题列表按钮事件
         document.getElementById('clearTitlesBtn').addEventListener('click', clearTitles);
         
+        // 清空输入框按钮事件
+        document.getElementById('clearInputBtn').addEventListener('click', clearInput);
+        
         // 复制全部标题按钮事件
         document.getElementById('copyAllBtn').addEventListener('click', copyAllTitles);
         
-        // 导出CSV按钮事件（导出编辑后的标题）
+        // 导出CSV按钮事件
         document.getElementById('exportCSVBtn').addEventListener('click', exportToCSV);
         
         // 全选按钮事件
@@ -741,6 +810,12 @@
         
         // 撤销所有编辑按钮事件
         document.getElementById('discardAllEditsBtn').addEventListener('click', discardAllEdits);
+        
+        // 输入框实时统计
+        document.getElementById('customTitles').addEventListener('input', updateInputStats);
+        
+        // 初始化输入框统计
+        updateInputStats();
         
         // 显示标题数量
         updateTitleCount();
@@ -901,6 +976,42 @@
         const charCountElement = document.getElementById(`inputCharCount-${index}`);
         const count = getCharCount(inputElement.value);
         charCountElement.textContent = `${count}字`;
+    }
+    
+    // 更新输入框统计信息
+    function updateInputStats() {
+        const textarea = document.getElementById('customTitles');
+        const text = textarea.value;
+        
+        // 计算行数
+        const lines = text.split('\n').filter(line => line.trim().length > 0);
+        const lineCount = lines.length;
+        
+        // 计算总字数
+        let totalChars = 0;
+        lines.forEach(line => {
+            totalChars += getCharCount(line);
+        });
+        
+        // 更新显示
+        document.getElementById('inputLineCount').textContent = `${lineCount} 行`;
+        document.getElementById('inputCharCountTotal').textContent = `${totalChars} 字`;
+    }
+    
+    // 清空输入框
+    function clearInput() {
+        const textarea = document.getElementById('customTitles');
+        
+        if (!textarea.value.trim()) {
+            showNotification('输入框已经是空的', true);
+            return;
+        }
+        
+        if (confirm('确定要清空输入框中的所有内容吗？')) {
+            textarea.value = '';
+            updateInputStats();
+            showNotification('输入框已清空');
+        }
     }
     
     // 获取字符数
