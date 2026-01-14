@@ -739,8 +739,8 @@
                     <div class="copy-option selected" data-format="excel">
                         <input type="radio" name="copyFormat" id="excelFormat" checked>
                         <div class="copy-option-text">
-                            <div class="copy-option-title">Excel格式（推荐）</div>
-                            <div class="copy-option-desc">复制后粘贴到Excel，每个标题占一个单元格</div>
+                            <div class="copy-option-title">Excel一列格式（推荐）</div>
+                            <div class="copy-option-desc">复制后粘贴到Excel的A列，每个标题占一个单元格（垂直排列）</div>
                         </div>
                     </div>
                     
@@ -778,7 +778,7 @@
                         <h4><i class="fas fa-lightbulb"></i> Excel粘贴技巧</h4>
                         <p><strong>正确粘贴方法：</strong> 在Excel中选中A1单元格，然后按 <kbd>Ctrl</kbd> + <kbd>V</kbd> 粘贴</p>
                         <p><strong>自动调整列宽：</strong> 双击A列右侧的边界线即可自动调整列宽</p>
-                        <p><strong>快捷键：</strong> 选中A列后按 <kbd>Alt</kbd> + <kbd>H</kbd> + <kbd>O</kbd> + <kbd>I</kbd> 快速调整列宽</p>
+                        <p><strong>选中整列：</strong> 点击A列标题可以选中整列</p>
                     </div>
                 </div>
             </section>
@@ -788,9 +788,9 @@
                 <button class="copy-selected-btn" id="copySelectedBtn">
                     <i class="fas fa-copy"></i> 复制选中标题 (<span id="selectedCountBig">0</span>)
                 </button>
-                <p style="text-align: center; margin-top: 10px; color: #666; font-size: 0.9rem;">将选中的所有标题复制到剪贴板，粘贴到Excel时每个标题占一个单元格</p>
+                <p style="text-align: center; margin-top: 10px; color: #666; font-size: 0.9rem;">将选中的所有标题复制到剪贴板，粘贴到Excel的A列时每个标题占一个单元格</p>
                 <p style="text-align: center; margin-top: 5px; color: #888; font-size: 0.85rem;">
-                    当前复制格式: <span id="currentCopyFormat">Excel格式</span>
+                    当前复制格式: <span id="currentCopyFormat">Excel一列格式</span>
                 </p>
             </section>
         </div>
@@ -815,14 +815,14 @@
                 <li><strong>添加标题：</strong> 在顶部输入框中输入标题，每行一个，点击"更新列表"</li>
                 <li><strong>编辑标题：</strong> 点击标题旁边的"编辑"按钮，修改标题内容，然后点击"保存"</li>
                 <li><strong>复制标题：</strong> 单个标题点击"复制"，批量复制请勾选标题后点击底部"复制选中标题"</li>
-                <li><strong>复制到Excel：</strong> 选择"Excel格式"复制，在Excel中选中A1单元格粘贴，每个标题占一个单元格</li>
+                <li><strong>复制到Excel：</strong> 选择"Excel一列格式"复制，在Excel中选中A1单元格粘贴，每个标题占A列的一个单元格</li>
                 <li><strong>导出到Excel：</strong> 点击"导出CSV"按钮，用Excel打开后自动调整列宽</li>
                 <li><strong>字数统计：</strong> 每个标题下方会显示字数，编辑保存后自动更新</li>
             </ol>
         </div>
         
         <footer>
-            <p>小说标题处理工具 &copy; 2023 | 手机优化版 v2.2 | 专为手机端使用设计</p>
+            <p>小说标题处理工具 &copy; 2023 | 手机优化版 v2.3 | 专为手机端使用设计</p>
         </footer>
     </div>
     
@@ -898,9 +898,9 @@
                 
                 // 更新显示
                 document.getElementById('currentCopyFormat').textContent = 
-                    copyFormat === 'excel' ? 'Excel格式' : '纯文本格式';
+                    copyFormat === 'excel' ? 'Excel一列格式' : '纯文本格式';
                 
-                showNotification(`已切换到${copyFormat === 'excel' ? 'Excel格式' : '纯文本格式'}复制`);
+                showNotification(`已切换到${copyFormat === 'excel' ? 'Excel一列格式' : '纯文本格式'}复制`);
             });
         });
         
@@ -1387,20 +1387,14 @@
             return;
         }
         
-        let textToCopy;
-        
-        if (copyFormat === 'excel') {
-            // Excel格式：使用制表符分隔，每个标题占一个单元格
-            textToCopy = currentTitles.join('\t');
-        } else {
-            // 纯文本格式：使用换行符分隔
-            textToCopy = currentTitles.join('\n');
-        }
+        // 两种格式都使用换行符分隔
+        // 这样粘贴到Excel时，每个标题会在A列的不同行
+        const textToCopy = currentTitles.join('\n');
         
         copyToClipboard(textToCopy);
         
         if (copyFormat === 'excel') {
-            showNotification(`已复制全部 ${currentTitles.length} 个标题到剪贴板。在Excel中选中A1单元格粘贴，每个标题将占据一个单元格`);
+            showNotification(`已复制全部 ${currentTitles.length} 个标题到剪贴板。在Excel中选中A1单元格粘贴，每个标题将占据A列的一个单元格`);
         } else {
             showNotification(`已复制全部 ${currentTitles.length} 个标题到剪贴板。每个标题一行，适合粘贴到文本编辑器`);
         }
@@ -1417,20 +1411,13 @@
             .sort((a, b) => a - b)
             .map(index => currentTitles[index]);
         
-        let textToCopy;
-        
-        if (copyFormat === 'excel') {
-            // Excel格式：使用制表符分隔，每个标题占一个单元格
-            textToCopy = selected.join('\t');
-        } else {
-            // 纯文本格式：使用换行符分隔
-            textToCopy = selected.join('\n');
-        }
+        // 两种格式都使用换行符分隔
+        const textToCopy = selected.join('\n');
         
         copyToClipboard(textToCopy);
         
         if (copyFormat === 'excel') {
-            showNotification(`已复制 ${selectedTitles.size} 个选中标题到剪贴板。在Excel中选中A1单元格粘贴，每个标题将占据一个单元格`);
+            showNotification(`已复制 ${selectedTitles.size} 个选中标题到剪贴板。在Excel中选中A1单元格粘贴，每个标题将占据A列的一个单元格`);
         } else {
             showNotification(`已复制 ${selectedTitles.size} 个选中标题到剪贴板。每个标题一行，适合粘贴到文本编辑器`);
         }
