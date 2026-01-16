@@ -1557,7 +1557,7 @@
         updateLinkCardsSelection();
       }
 
-      // 访问选中的链接
+      // 访问选中的链接 - 修复版本
       function openSelectedLinks() {
         if (appState.selectedLinks.size === 0) {
           showNotification('请先选择要访问的链接', 'warning');
@@ -1568,29 +1568,44 @@
         let openedCount = 0;
         let failedCount = 0;
 
-        selectedLinks.forEach(linkId => {
-          const link = appState.links.find(l => l.id === linkId);
-          if (link && link.url) {
-            try {
-              window.open(link.url, '_blank');
-              openedCount++;
-            } catch (e) {
-              console.error('无法打开链接:', link.url, e);
+        // 使用延时打开链接，避免浏览器阻止
+        selectedLinks.forEach((linkId, index) => {
+          setTimeout(() => {
+            const link = appState.links.find(l => l.id === linkId);
+            if (link && link.url) {
+              try {
+                // 使用不同的方式打开链接，避免被浏览器阻止
+                const a = document.createElement('a');
+                a.href = link.url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                openedCount++;
+              } catch (e) {
+                console.error('无法打开链接:', link.url, e);
+                failedCount++;
+              }
+            } else {
               failedCount++;
             }
-          } else {
-            failedCount++;
-          }
+
+            // 如果是最后一个链接，显示通知
+            if (index === selectedLinks.length - 1) {
+              setTimeout(() => {
+                let message = `已在新标签页中打开 ${openedCount} 个链接`;
+                if (failedCount > 0) {
+                  message += `，${failedCount} 个链接打开失败`;
+                }
+                showNotification(message, openedCount > 0 ? 'success' : 'warning');
+                
+                // 清空选择
+                clearSelection();
+              }, 500);
+            }
+          }, index * 100); // 每个链接间隔100ms打开，避免被浏览器阻止
         });
-
-        let message = `已在新标签页中打开 ${openedCount} 个链接`;
-        if (failedCount > 0) {
-          message += `，${failedCount} 个链接打开失败`;
-        }
-        showNotification(message, openedCount > 0 ? 'success' : 'warning');
-
-        // 清空选择
-        clearSelection();
       }
 
       // 移动选中的链接到其他文件夹
@@ -2880,7 +2895,7 @@
         // 反选按钮
         invertSelectionBtn.addEventListener('click', invertSelection);
 
-        // 访问选中链接按钮
+        // 访问选中链接按钮 - 修复版本
         openSelectedBtn.addEventListener('click', openSelectedLinks);
 
         // 移动选中链接按钮
