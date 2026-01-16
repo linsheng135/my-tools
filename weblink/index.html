@@ -998,10 +998,15 @@
       font-size: 14px;
     }
 
-    /* 优化链接卡片访问按钮 */
-    .visit-link-btn {
-      flex: 1;
-      justify-content: center;
+    /* 选择模式提示 */
+    .selection-mode-hint {
+      padding: 10px;
+      background: rgba(99, 102, 241, 0.1);
+      border-radius: 8px;
+      margin-bottom: 15px;
+      font-size: 14px;
+      color: var(--primary-color);
+      text-align: center;
     }
   </style>
 </head>
@@ -1065,7 +1070,6 @@
         <button class="btn btn-select btn-small" id="openSelectedBtn">
           <i class="fas fa-external-link-alt"></i> 访问选中链接
         </button>
-        <!-- 新增：移动选中链接按钮 -->
         <button class="btn btn-warning btn-small" id="moveSelectedBtn">
           <i class="fas fa-folder-open"></i> 移动到
         </button>
@@ -1102,6 +1106,12 @@
           </button>
         </div>
       </div>
+      
+      <!-- 选择模式提示 -->
+      <div class="selection-mode-hint" id="selectionModeHint" style="display: none;">
+        <i class="fas fa-mouse-pointer"></i> 点击链接右上角的复选框选择/取消选择链接
+      </div>
+      
       <div class="links-list" id="linksList">
         <!-- 链接将通过JavaScript动态加载 -->
       </div>
@@ -1351,6 +1361,7 @@
       const linkCount = document.getElementById('linkCount');
       const subfolderCount = document.getElementById('subfolderCount');
       const quickActions = document.getElementById('quickActions');
+      const selectionModeHint = document.getElementById('selectionModeHint');
 
       // 批量选择相关DOM元素
       const bulkActionsBar = document.getElementById('bulkActionsBar');
@@ -1360,7 +1371,7 @@
       const openSelectedBtn = document.getElementById('openSelectedBtn');
       const clearSelectionBtn = document.getElementById('clearSelectionBtn');
       const bulkSelectBtn = document.getElementById('bulkSelectBtn');
-      const moveSelectedBtn = document.getElementById('moveSelectedBtn'); // 新增
+      const moveSelectedBtn = document.getElementById('moveSelectedBtn');
 
       // 初始化应用
       initApp();
@@ -1369,7 +1380,7 @@
         // 设置主题
         setTheme(appState.theme);
 
-        // 加载数据
+        // 加载数据（没有示例数据）
         loadData();
 
         // 更新统计信息
@@ -1412,74 +1423,7 @@
           }
         }
 
-        // 如果没有数据，添加示例数据
-        if (appState.folders.length === 0) {
-          appState.folders = [
-            {
-              id: 'folder1',
-              name: '工作',
-              description: '日常工作相关链接',
-              icon: 'briefcase',
-              parentId: '',
-              order: 1,
-              createdAt: Date.now()
-            },
-            {
-              id: 'folder2',
-              name: '开发',
-              description: '编程和开发资源',
-              icon: 'code',
-              parentId: '',
-              order: 2,
-              createdAt: Date.now()
-            }
-          ];
-        }
-
-        if (appState.links.length === 0) {
-          appState.links = [
-            {
-              id: 'link1',
-              name: 'GitHub',
-              url: 'https://github.com',
-              folderId: 'folder2',
-              icon: '',
-              notes: '代码托管平台，用于版本控制和协作开发',
-              order: 1,
-              createdAt: Date.now()
-            },
-            {
-              id: 'link2',
-              name: 'Google',
-              url: 'https://google.com',
-              folderId: '',
-              icon: '',
-              notes: '搜索引擎，查找信息和资料',
-              order: 2,
-              createdAt: Date.now()
-            },
-            {
-              id: 'link3',
-              name: 'Stack Overflow',
-              url: 'https://stackoverflow.com',
-              folderId: 'folder2',
-              icon: '',
-              notes: '程序员问答社区',
-              order: 3,
-              createdAt: Date.now()
-            },
-            {
-              id: 'link4',
-              name: 'MDN Web Docs',
-              url: 'https://developer.mozilla.org',
-              folderId: 'folder2',
-              icon: '',
-              notes: 'Web开发技术文档',
-              order: 4,
-              createdAt: Date.now()
-            }
-          ];
-        }
+        // 没有示例数据，完全空白的初始状态
 
         // 保存初始数据到本地存储
         saveDataToLocalStorage();
@@ -1524,12 +1468,14 @@
           bulkSelectBtn.innerHTML = '<i class="fas fa-times"></i><span class="desktop-only">取消选择</span>';
           bulkSelectBtn.style.background = 'var(--danger-color)';
           bulkActionsBar.classList.add('active');
-          showNotification('已进入批量选择模式', 'success');
+          selectionModeHint.style.display = 'block';
+          showNotification('已进入批量选择模式，点击链接右上角的复选框选择链接', 'success');
         } else {
           // 退出批量选择模式
           bulkSelectBtn.innerHTML = '<i class="fas fa-check-circle"></i><span class="desktop-only">批量选择</span>';
           bulkSelectBtn.style.background = 'var(--select-color)';
           bulkActionsBar.classList.remove('active');
+          selectionModeHint.style.display = 'none';
           clearSelection();
           showNotification('已退出批量选择模式', 'info');
         }
@@ -1567,6 +1513,11 @@
         const currentFolderId = appState.currentFolderId;
         const currentLinks = appState.links.filter(link => link.folderId === currentFolderId);
 
+        if (currentLinks.length === 0) {
+          showNotification('当前文件夹中没有链接', 'warning');
+          return;
+        }
+
         currentLinks.forEach(link => {
           appState.selectedLinks.add(link.id);
         });
@@ -1580,6 +1531,11 @@
       function invertSelection() {
         const currentFolderId = appState.currentFolderId;
         const currentLinks = appState.links.filter(link => link.folderId === currentFolderId);
+
+        if (currentLinks.length === 0) {
+          showNotification('当前文件夹中没有链接', 'warning');
+          return;
+        }
 
         currentLinks.forEach(link => {
           if (appState.selectedLinks.has(link.id)) {
@@ -1650,7 +1606,7 @@
         const targetFolderSelect = document.getElementById('moveTargetFolder');
 
         // 更新信息
-        info.innerHTML = `将移动 <span id="moveLinksCount">${appState.selectedLinks.size}</span> 个选中的链接`;
+        document.getElementById('moveLinksCount').textContent = appState.selectedLinks.size;
 
         // 填充文件夹选择列表
         targetFolderSelect.innerHTML = '<option value="">根目录</option>';
@@ -1705,7 +1661,7 @@
 
         // 如果当前是批量选择模式但没有选中任何链接，显示提示
         if (appState.bulkSelectMode && appState.selectedLinks.size === 0) {
-          selectedCount.textContent = '请选择链接';
+          selectedCount.textContent = '请点击链接右上角的复选框选择链接';
         }
       }
 
@@ -1913,6 +1869,7 @@
           contentGrid.style.display = 'grid';
           linksContainer.style.display = 'none';
           bulkActionsBar.classList.remove('active');
+          selectionModeHint.style.display = 'none';
         } else {
           contentGrid.style.display = 'none';
           linksContainer.style.display = 'block';
@@ -1929,6 +1886,9 @@
                 <button class="btn" id="firstFolderBtn">
                   <i class="fas fa-folder-plus"></i> 创建第一个文件夹
                 </button>
+                <button class="btn" id="firstLinkBtn" style="margin-left: 10px;">
+                  <i class="fas fa-plus"></i> 添加第一个链接
+                </button>
               </div>
             </div>
           `;
@@ -1936,6 +1896,10 @@
           // 添加事件监听器
           document.getElementById('firstFolderBtn').addEventListener('click', () => {
             openFolderModal('');
+          });
+
+          document.getElementById('firstLinkBtn').addEventListener('click', () => {
+            openLinkModal('');
           });
 
           return;
@@ -1998,7 +1962,7 @@
           `;
         } else {
           folderLinks.forEach(link => {
-            const linkCard = createLinkCard(link, false, true);
+            const linkCard = createLinkCard(link, false);
             linksList.appendChild(linkCard);
           });
         }
@@ -2037,6 +2001,7 @@
         backBtn.style.display = 'none';
         contentGrid.style.display = 'grid';
         bulkActionsBar.classList.remove('active');
+        selectionModeHint.style.display = 'none';
 
         if (resultCount === 0) {
           contentGrid.innerHTML = `
@@ -2057,7 +2022,7 @@
 
         // 渲染匹配的链接（以卡片形式显示）
         matchedLinks.forEach(link => {
-          const linkCard = createLinkCard(link, false, true);
+          const linkCard = createLinkCard(link, false);
           contentGrid.appendChild(linkCard);
         });
       }
@@ -2118,7 +2083,7 @@
         return folderCard;
       }
 
-      function createLinkCard(item, isFolder = false, isSearchResult = false) {
+      function createLinkCard(item, isFolder = false) {
         const card = document.createElement('div');
         card.className = 'link-card';
         card.dataset.id = item.id;
@@ -2176,7 +2141,7 @@
           const folderName = folder ? folder.name : '根目录';
 
           // 只在批量选择模式下显示复选框
-          const showCheckbox = appState.bulkSelectMode && !isSearchResult;
+          const showCheckbox = appState.bulkSelectMode;
           const isSelected = appState.selectedLinks.has(link.id);
 
           card.innerHTML = `
@@ -2195,7 +2160,7 @@
             </div>
             ${link.notes ? `<div class="link-notes">${link.notes}</div>` : ''}
             <div class="link-actions">
-              <a href="${link.url}" target="_blank" class="btn btn-small visit-link-btn" onclick="event.stopPropagation();">
+              <a href="${link.url}" target="_blank" class="btn btn-small" onclick="event.stopPropagation();">
                 <i class="fas fa-external-link-alt"></i> 访问
               </a>
               <button class="btn btn-small btn-secondary edit-link-btn" data-id="${link.id}">
@@ -2430,6 +2395,7 @@
           bulkSelectBtn.innerHTML = '<i class="fas fa-check-circle"></i><span class="desktop-only">批量选择</span>';
           bulkSelectBtn.style.background = 'var(--select-color)';
           bulkActionsBar.classList.remove('active');
+          selectionModeHint.style.display = 'none';
           clearSelection();
         }
 
