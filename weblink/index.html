@@ -546,7 +546,7 @@
       border-radius: var(--radius);
       padding: 24px;
       width: 100%;
-      max-width: 600px;
+      max-width: 500px;
       max-height: 90vh;
       overflow-y: auto;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -1008,53 +1008,6 @@
       color: var(--primary-color);
       text-align: center;
     }
-
-    /* 打开链接确认模态框样式 */
-    .open-links-list {
-      max-height: 300px;
-      overflow-y: auto;
-      margin: 15px 0;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 10px;
-    }
-
-    .open-links-item {
-      padding: 10px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .open-links-item:last-child {
-      border-bottom: none;
-    }
-
-    .open-links-item-icon {
-      width: 24px;
-      height: 24px;
-      flex-shrink: 0;
-    }
-
-    .open-links-item-text {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .open-links-item-name {
-      font-weight: 500;
-      font-size: 14px;
-      margin-bottom: 2px;
-    }
-
-    .open-links-item-url {
-      font-size: 12px;
-      color: var(--text-secondary);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
   </style>
 </head>
 
@@ -1286,26 +1239,6 @@
       <div class="form-actions">
         <button type="button" class="btn btn-secondary" id="moveLinksCancelBtn">取消</button>
         <button type="button" class="btn btn-warning" id="moveLinksConfirmBtn">移动</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 模态框：打开链接确认 -->
-  <div class="modal" id="openLinksModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 class="modal-title">打开选中的链接</h3>
-        <button class="modal-close" id="openLinksModalClose">&times;</button>
-      </div>
-      <div class="move-links-info">
-        将打开 <span id="openLinksCount">0</span> 个选中的链接
-      </div>
-      <div class="open-links-list" id="openLinksList">
-        <!-- 链接列表将动态生成 -->
-      </div>
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" id="openLinksCancelBtn">取消</button>
-        <button type="button" class="btn btn-select" id="openLinksConfirmBtn">打开所有链接</button>
       </div>
     </div>
   </div>
@@ -1624,118 +1557,55 @@
         updateLinkCardsSelection();
       }
 
-      // 打开选中的链接 - 修复版本：显示确认模态框
+      // 访问选中的链接 - 修复版本
       function openSelectedLinks() {
         if (appState.selectedLinks.size === 0) {
           showNotification('请先选择要访问的链接', 'warning');
           return;
         }
 
-        // 显示打开链接确认模态框
-        const modal = document.getElementById('openLinksModal');
-        const openLinksList = document.getElementById('openLinksList');
-        const openLinksCount = document.getElementById('openLinksCount');
-
-        // 更新计数
-        openLinksCount.textContent = appState.selectedLinks.size;
-
-        // 清空列表
-        openLinksList.innerHTML = '';
-
-        // 获取选中的链接
-        const selectedLinks = Array.from(appState.selectedLinks);
-
-        // 生成链接列表
-        selectedLinks.forEach(linkId => {
-          const link = appState.links.find(l => l.id === linkId);
-          if (link) {
-            const listItem = document.createElement('div');
-            listItem.className = 'open-links-item';
-            
-            // 获取链接图标
-            let iconHtml = '<i class="fas fa-link"></i>';
-            if (link.icon) {
-              iconHtml = `<img src="${link.icon}" alt="${link.name}" class="open-links-item-icon">`;
-            } else if (link.url) {
-              try {
-                const domain = new URL(link.url).hostname;
-                const faviconUrl = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
-                iconHtml = `<img src="${faviconUrl}" alt="${link.name}" class="open-links-item-icon">`;
-              } catch (e) {
-                // 使用默认图标
-              }
-            }
-            
-            listItem.innerHTML = `
-              <div class="open-links-item-icon">${iconHtml}</div>
-              <div class="open-links-item-text">
-                <div class="open-links-item-name">${link.name}</div>
-                <div class="open-links-item-url">${link.url}</div>
-              </div>
-            `;
-            openLinksList.appendChild(listItem);
-          }
-        });
-
-        modal.classList.add('active');
-      }
-
-      // 实际执行打开链接操作
-      function executeOpenLinks() {
         const selectedLinks = Array.from(appState.selectedLinks);
         let openedCount = 0;
         let failedCount = 0;
 
-        // 使用一个特殊的方法：先打开第一个链接，然后在每个新标签页中继续打开下一个链接
-        function openNextLink(index) {
-          if (index >= selectedLinks.length) {
-            // 所有链接都已尝试打开
-            setTimeout(() => {
-              let message = `已在新标签页中打开 ${openedCount} 个链接`;
-              if (failedCount > 0) {
-                message += `，${failedCount} 个链接打开失败`;
+        // 使用延时打开链接，避免浏览器阻止
+        selectedLinks.forEach((linkId, index) => {
+          setTimeout(() => {
+            const link = appState.links.find(l => l.id === linkId);
+            if (link && link.url) {
+              try {
+                // 使用不同的方式打开链接，避免被浏览器阻止
+                const a = document.createElement('a');
+                a.href = link.url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                openedCount++;
+              } catch (e) {
+                console.error('无法打开链接:', link.url, e);
+                failedCount++;
               }
-              showNotification(message, openedCount > 0 ? 'success' : 'warning');
-              
-              // 清空选择
-              clearSelection();
-            }, 500);
-            return;
-          }
-
-          const linkId = selectedLinks[index];
-          const link = appState.links.find(l => l.id === linkId);
-          
-          if (link && link.url) {
-            try {
-              // 使用form提交的方式打开链接，这种方法更可靠
-              const form = document.createElement('form');
-              form.action = link.url;
-              form.target = '_blank';
-              form.method = 'GET';
-              form.style.display = 'none';
-              document.body.appendChild(form);
-              form.submit();
-              document.body.removeChild(form);
-              
-              openedCount++;
-            } catch (e) {
-              console.error('无法打开链接:', link.url, e);
+            } else {
               failedCount++;
             }
-          } else {
-            failedCount++;
-          }
 
-          // 继续打开下一个链接，有较长的延时让浏览器有时间处理
-          setTimeout(() => openNextLink(index + 1), 500);
-        }
-
-        // 开始打开链接
-        openNextLink(0);
-        
-        // 关闭模态框
-        document.getElementById('openLinksModal').classList.remove('active');
+            // 如果是最后一个链接，显示通知
+            if (index === selectedLinks.length - 1) {
+              setTimeout(() => {
+                let message = `已在新标签页中打开 ${openedCount} 个链接`;
+                if (failedCount > 0) {
+                  message += `，${failedCount} 个链接打开失败`;
+                }
+                showNotification(message, openedCount > 0 ? 'success' : 'warning');
+                
+                // 清空选择
+                clearSelection();
+              }, 500);
+            }
+          }, index * 100); // 每个链接间隔100ms打开，避免被浏览器阻止
+        });
       }
 
       // 移动选中的链接到其他文件夹
@@ -3176,17 +3046,6 @@
           appState.editingLinkId = null;
         });
 
-        // 打开链接模态框相关事件
-        document.getElementById('openLinksConfirmBtn').addEventListener('click', executeOpenLinks);
-
-        document.getElementById('openLinksCancelBtn').addEventListener('click', function () {
-          document.getElementById('openLinksModal').classList.remove('active');
-        });
-
-        document.getElementById('openLinksModalClose').addEventListener('click', function () {
-          document.getElementById('openLinksModal').classList.remove('active');
-        });
-
         // 移动链接模态框相关事件
         document.getElementById('moveLinksConfirmBtn').addEventListener('click', function () {
           const targetFolderId = document.getElementById('moveTargetFolder').value;
@@ -3198,4 +3057,214 @@
         });
 
         document.getElementById('moveLinksModalClose').addEventListener('click', function () {
-          document
+          document.getElementById('moveLinksModal').classList.remove('active');
+        });
+
+        // 令牌可见性切换
+        document.getElementById('toggleTokenVisibility').addEventListener('click', function () {
+          const tokenInput = document.getElementById('githubToken');
+          const icon = this.querySelector('i');
+
+          if (tokenInput.type === 'password') {
+            tokenInput.type = 'text';
+            icon.className = 'fas fa-eye-slash';
+          } else {
+            tokenInput.type = 'password';
+            icon.className = 'fas fa-eye';
+          }
+        });
+
+        // 保存设置
+        document.getElementById('saveSettingsBtn').addEventListener('click', function () {
+          const token = document.getElementById('githubToken').value.trim();
+          const gistId = document.getElementById('gistId').value.trim();
+
+          if (!token) {
+            showNotification('请输入GitHub令牌', 'warning');
+            return;
+          }
+
+          // 验证令牌格式
+          if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+            showNotification('令牌格式不正确，应以 ghp_ 或 github_pat_ 开头', 'warning');
+            return;
+          }
+
+          appState.githubToken = token;
+          appState.gistId = gistId;
+
+          localStorage.setItem('githubToken', token);
+          if (gistId) {
+            localStorage.setItem('gistId', gistId);
+          }
+
+          updateLastSyncDisplay();
+          showNotification('设置已保存', 'success');
+
+          setTimeout(() => {
+            document.getElementById('settingsModal').classList.remove('active');
+          }, 1000);
+        });
+
+        // 测试同步
+        document.getElementById('testSyncBtn').addEventListener('click', function () {
+          syncWithGist('pull');
+        });
+
+        // 手动同步按钮
+        document.getElementById('manualSyncBtn').addEventListener('click', function () {
+          if (!appState.githubToken) {
+            showNotification('请先在设置中配置GitHub令牌', 'warning');
+            return;
+          }
+          syncWithGist('pull');
+        });
+
+        // 导出数据为JSON
+        document.getElementById('exportDataBtn').addEventListener('click', function () {
+          const data = {
+            folders: appState.folders,
+            links: appState.links,
+            exportedAt: new Date().toISOString(),
+            appVersion: '2.2'
+          };
+
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `navigation-data-${new Date().toISOString().split('T')[0]}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          showNotification('数据已导出为JSON', 'success');
+          document.getElementById('settingsModal').classList.remove('active');
+        });
+
+        // 导入数据
+        document.getElementById('importDataBtn').addEventListener('click', function () {
+          document.getElementById('importFileInput').click();
+        });
+
+        document.getElementById('importFileInput').addEventListener('change', function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (event) {
+            try {
+              const data = JSON.parse(event.target.result);
+
+              if (confirm('导入数据将覆盖当前所有数据，确定要继续吗？')) {
+                appState.folders = data.folders || [];
+                appState.links = data.links || [];
+                saveData();
+                renderCurrentView();
+                showNotification('数据已导入', 'success');
+              }
+            } catch (error) {
+              showNotification('导入失败：文件格式错误', 'error');
+            }
+            e.target.value = '';
+          };
+          reader.readAsText(file);
+        });
+
+        // 清空数据
+        document.getElementById('clearDataBtn').addEventListener('click', function () {
+          if (confirm('确定要清空所有数据吗？此操作不可恢复！')) {
+            appState.folders = [];
+            appState.links = [];
+            appState.selectedLinks.clear();
+            saveData();
+            renderCurrentView();
+            showNotification('所有数据已清空', 'success');
+          }
+        });
+
+        // 搜索功能
+        searchInput.addEventListener('input', function () {
+          renderCurrentView();
+        });
+
+        // 主题切换
+        document.getElementById('themeToggle').addEventListener('click', function () {
+          let newTheme;
+          if (appState.theme === 'light') {
+            newTheme = 'dark';
+          } else if (appState.theme === 'dark') {
+            newTheme = 'auto';
+          } else {
+            newTheme = 'light';
+          }
+
+          setTheme(newTheme);
+          showNotification(`已切换至${newTheme === 'light' ? '浅色' : newTheme === 'dark' ? '深色' : '自动'}主题`, 'success');
+        });
+
+        // 模态框关闭按钮
+        document.querySelectorAll('.modal-close').forEach(btn => {
+          btn.addEventListener('click', function () {
+            this.closest('.modal').classList.remove('active');
+          });
+        });
+
+        document.getElementById('folderCancelBtn').addEventListener('click', () => {
+          document.getElementById('folderModal').classList.remove('active');
+          appState.editingFolderId = null;
+        });
+
+        document.getElementById('linkCancelBtn').addEventListener('click', () => {
+          document.getElementById('linkModal').classList.remove('active');
+          appState.editingLinkId = null;
+        });
+
+        document.getElementById('settingsModalClose').addEventListener('click', () => {
+          document.getElementById('settingsModal').classList.remove('active');
+        });
+
+        // 点击模态框外部关闭
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.addEventListener('click', function (e) {
+            if (e.target === this) {
+              this.classList.remove('active');
+              appState.editingFolderId = null;
+              appState.editingLinkId = null;
+            }
+          });
+        });
+
+        // 系统主题变化监听
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+          if (appState.theme === 'auto') {
+            setTheme('auto');
+          }
+        });
+
+        // 添加移动端优化：隐藏按钮文字
+        if (window.innerWidth <= 768) {
+          document.querySelectorAll('.desktop-only').forEach(el => {
+            el.style.display = 'none';
+          });
+        }
+
+        // 窗口大小变化监听
+        window.addEventListener('resize', function () {
+          if (window.innerWidth <= 768) {
+            document.querySelectorAll('.desktop-only').forEach(el => {
+              el.style.display = 'none';
+            });
+          } else {
+            document.querySelectorAll('.desktop-only').forEach(el => {
+              el.style.display = 'inline';
+            });
+          }
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>
